@@ -1,0 +1,21 @@
+Package: mmb
+Type: Package
+Title: Arbitrary Dependency Mixed Multivariate Bayesian Models for Regression, Classification
+    and Neighborhood Search using Joint Probabilities and Kernel Density Estimation
+Version: 0.1.0
+Author: Sebastian Hönel
+Maintainer: Sebastian Hönel <sebastian.honel@lnu.se>
+Description: This package supports Bayesian models with full and partial (hence arbitrary)
+    dependencies between variables. Discrete and continuous variables are supported,
+    and conditional joint probabilities and probability densities are estimated
+    using Kernel Density Estimation. The full general form, which implements an
+    extension to Bayes' theorem, as well as the simple form, which is just a
+    Bayesian network, both support regression through segmentation and KDE.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Suggests: 
+    testthat,
+    covr
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.1.1
