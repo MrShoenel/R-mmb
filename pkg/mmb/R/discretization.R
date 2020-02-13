@@ -1,0 +1,85 @@
+#' Discretizes a continuous random variable into buckets (ranges). Each range
+#' is delimited by an exclusive minimum value and an inclusive maximum value.
+#' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @param data a vector with numeric data
+#' @param openEndRanges boolean default True. If true, then the minimum value
+#' of the first range will be set to @seealso \code{.Machine$double.xmin} and
+#' the maximum value of the last range will be set to @seealso \code{.Machine$double.xmax},
+#' so that all values get covered.
+#' @param numRanges integer default NA. If NULL, then the amount of ranges
+#' (buckets) depends on the amount of data given. A minimum of two buckets is
+#' used then, and a maximum of ceiling(log2(length(data))).
+#' @param exclMinVal numeric default NULL. Used to delimit the lower bound of
+#' the given data. If not given, then no value is excluded, as the exclusive
+#' lower bound becomes the minimum of the given data minus an epsilon of 1e-15.
+#' @param inclMaxVal numeric default NULL. Used to delimit the upper bound of
+#' the given data. If not given, then the upper inclusive bound is the max of
+#' the given data.
+#' @return List a List of vectors, where each vector has two values, the first
+#' being the exclusive minimum value of the range, and the second being the
+#' inclusive maximum value of the range. The list will be as long as the number
+#' of buckets requested.
+#' @export
+discretizeVariableToRanges <- function(data, openEndRanges = T, numRanges = NA,
+                                       exclMinVal = NULL, inclMaxVal = NULL) {
+  if (!is.numeric(numRanges) || is.na(numRanges)) {
+    numRanges <- max(c(2, ceiling(log2(length(data)))))
+  }
+  if (!is.numeric(exclMinVal) || is.na(exclMinVal)) {
+    exclMinVal <- min(data) - 1e-15 # Do not exclude anything
+  }
+  if (!is.numeric(inclMaxVal) || is.na(inclMaxVal)) {
+    inclMaxVal <- max(data)
+  }
+
+  dataCut <- data[data > exclMinVal & data <= inclMaxVal]
+  tempRange <- range(dataCut, na.rm = TRUE)
+  dataRange <- tempRange[2] - tempRange[1]
+  dataStep <- dataRange / numRanges
+
+
+  allRanges <- list()
+  intStart <- exclMinVal
+  intStop <- intStart + dataStep
+  for (i in 1:numRanges) {
+    # Generate an interval (intStart, intStop]
+    allRanges[[i]] <- c(intStart, intStop)
+
+    intStart <- intStart + dataStep
+    intStop <- intStop + dataStep
+  }
+
+  # Let's correct the first and last bucket if open end:
+  if (openEndRanges) {
+    allRanges[[1]][1] <- -1 * .Machine$double.xmax
+    allRanges[[numRanges]][2] <- .Machine$double.xmax
+  } else {
+    # Because of rounding (dataStep), the inclMax may be smaller
+    # than the actual max, so we correct it!
+    allRanges[[numRanges]][2] <- inclMaxVal
+  }
+
+  return(allRanges)
+}
+
+
+
+#' Given a list of previously computed ranges for a random variable, this
+#' function returns the index of the range the given value belongs to (i.e.,
+#' in which bucket it belongs). The indexes start R-typically at 1. Per
+#' definition, a value is within a range, if it is larger than the range's
+#' minimum and less than or equal to its maximum.
+#' @param ranges list of ranges, as obtained by @seealso \code{discretizeVariableToRanges}
+#' @param value numeric a value drawn from the previously discretized
+#' random variable.
+#' @return integer the index of the range the given value falls into.
+#' @export
+getRangeForDiscretizedValue <- function(ranges, value) {
+  for (i in 1:length(ranges)) {
+    valRange <- ranges[[i]] # vector with (min, max]
+    if (value > valRange[1] && value <= valRange[2]) {
+      return(i)
+    }
+  }
+  stop(paste("The given value", value, "is not within any of the ranges"))
+}

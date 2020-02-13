@@ -37,3 +37,14 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+# Coverage related
+coverage.html
+lib/*
+
+# Generated documentaion
+docs/*
+
+# Binary files
+*.tar.gz
+pkg/**/*.pdf
