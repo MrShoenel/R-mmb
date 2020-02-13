@@ -3,5 +3,17 @@
 language: R
 cache: packages
 
+branches:
+  only:
+  - develop
+  - master
+
+env:
+  global:
+  - MAKEFLAGS="-j 2"
+
+before_install:
+  - cd mmb
+
 after_success:
   - Rscript -e 'covr::codecov()'
