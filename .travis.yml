@@ -12,7 +12,7 @@ env:
   - MAKEFLAGS="-j 2"
 
 before_install:
-  - cd mmb
+  - cd pkg/mmb
 
 after_success:
   - Rscript -e 'covr::codecov()'
