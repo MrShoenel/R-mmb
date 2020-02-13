@@ -15,17 +15,20 @@ cov <- function() {
 
 test <- function() {
   print("Running all unit tests..")
-  devtools::test()
+  temp <- data.frame(devtools::test())
+  if (sum(temp$failed) > 0) {
+    stop(paste(sum(temp$failed), "tests failed."))
+  }
 }
 
 
 build <- function() {
-  devtools::document()
   devtools::build()
 }
 
 
 if (length(args) == 0) {
+  devtools::document()
   test()
   cov()
   build()
