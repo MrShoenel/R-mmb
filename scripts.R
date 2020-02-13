@@ -1,15 +1,35 @@
 args <- commandArgs(trailingOnly = T)
 print(args)
 
-setwd(paste(getwd(), "mmb", sep = "/"))
+setwd(paste(getwd(), "pkg", "mmb", sep = "/"))
 
 cov <- function() {
   print("Generating coverage report..")
   covr::report(
     x = covr::package_coverage(),
-    file = "coverage.html",
+    file = "../../coverage.html",
     browse = T
   )
+}
+
+
+check <- function(strict = T) {
+  temp <- devtools::check()
+  print(temp)
+
+  cnt <- data.frame(
+    err = length(temp$errors),
+    war = length(temp$warnings),
+    not = length(temp$notes)
+  )
+
+  if (cnt$err > 1) {
+    stop(paste("check() exited with", cnt$err, "errors."))
+  }
+
+  if (strict && sum(cnt) > 0) {
+    stop(paste("strict enabled and having one or more warnings/notes."))
+  }
 }
 
 
@@ -22,17 +42,18 @@ test <- function() {
 }
 
 
-build <- function() {
-  devtools::build()
+devtools::document()
+
+doAll <- length(args) > 0 & args[1] == "all"
+if (doAll) {
+  check()
 }
 
 
-if (length(args) == 0) {
-  devtools::document()
-  test()
-  cov()
-  build()
-} else {
-  print(paste("You have supplied these arguments:", paste(args, collapse = ", ")))
-  print("However, arguments are currently ignored.")
+test()
+cov()
+
+
+if (doAll) {
+  devtools::build()
 }

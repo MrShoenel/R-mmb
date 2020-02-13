@@ -19,15 +19,8 @@
 #' being the exclusive minimum value of the range, and the second being the
 #' inclusive maximum value of the range. The list will be as long as the number
 #' of buckets requested.
-#' @aliases discretizeVariableToRanges discretizeVariableToRanges.default
-#' @export discretizeVariableToRanges
-discretizeVariableToRanges <- function(...) UseMethod("discretizeVariableToRanges")
-
-
-#' @rdname discretizeVariableToRanges
-#' @method discretizeVariableToRanges default
 #' @export
-discretizeVariableToRanges.default <- function(data, openEndRanges = T, numRanges = NA,
+discretizeVariableToRanges <- function(data, openEndRanges = T, numRanges = NA,
                                        exclMinVal = NULL, inclMaxVal = NULL) {
   if (!is.numeric(numRanges) || is.na(numRanges)) {
     numRanges <- max(c(2, ceiling(log2(length(data)))))
@@ -80,15 +73,8 @@ discretizeVariableToRanges.default <- function(data, openEndRanges = T, numRange
 #' @param value numeric a value drawn from the previously discretized
 #' random variable.
 #' @return integer the index of the range the given value falls into.
-#' @aliases getRangeForDiscretizedValue getRangeForDiscretizedValue.default
-#' @export getRangeForDiscretizedValue
-getRangeForDiscretizedValue <- function(...) UseMethod("getRangeForDiscretizedValue")
-
-
-#' @rdname getRangeForDiscretizedValue
-#' @method getRangeForDiscretizedValue default
 #' @export
-getRangeForDiscretizedValue.default <- function(ranges, value) {
+getRangeForDiscretizedValue <- function(ranges, value) {
   for (i in 1:length(ranges)) {
     valRange <- ranges[[i]] # vector with (min, max]
     if (value > valRange[1] && value <= valRange[2]) {

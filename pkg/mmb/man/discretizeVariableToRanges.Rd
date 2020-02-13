@@ -2,14 +2,11 @@
 % Please edit documentation in R/discretization.R
 \name{discretizeVariableToRanges}
 \alias{discretizeVariableToRanges}
-\alias{discretizeVariableToRanges.default}
 \title{Discretizes a continuous random variable into buckets (ranges). Each range
 is delimited by an exclusive minimum value and an inclusive maximum value.}
 \usage{
-discretizeVariableToRanges(...)
-
-\method{discretizeVariableToRanges}{default}(data, openEndRanges = T,
-  numRanges = NA, exclMinVal = NULL, inclMaxVal = NULL)
+discretizeVariableToRanges(data, openEndRanges = T, numRanges = NA,
+  exclMinVal = NULL, inclMaxVal = NULL)
 }
 \arguments{
 \item{data}{a vector with numeric data}

@@ -2,16 +2,13 @@
 % Please edit documentation in R/discretization.R
 \name{getRangeForDiscretizedValue}
 \alias{getRangeForDiscretizedValue}
-\alias{getRangeForDiscretizedValue.default}
 \title{Given a list of previously computed ranges for a random variable, this
 function returns the index of the range the given value belongs to (i.e.,
 in which bucket it belongs). The indexes start R-typically at 1. Per
 definition, a value is within a range, if it is larger than the range's
 minimum and less than or equal to its maximum.}
 \usage{
-getRangeForDiscretizedValue(...)
-
-\method{getRangeForDiscretizedValue}{default}(ranges, value)
+getRangeForDiscretizedValue(ranges, value)
 }
 \arguments{
 \item{ranges}{list of ranges, as obtained by @seealso \code{discretizeVariableToRanges}}
