@@ -41,6 +41,15 @@ test <- function() {
   }
 }
 
+buildSite <- function() {
+  if (file.exists("../../docs")) {
+    unlink("../../docs", recursive = T)
+  }
+  devtools::build_site()
+  file.rename("./docs", "../../docs")
+  browseURL(normalizePath(paste(getwd(), "../../docs/index.html", sep = "/")))
+}
+
 
 devtools::document()
 
@@ -56,4 +65,6 @@ cov()
 
 if (doAll) {
   devtools::build()
+  devtools::build_manual()
+  buildSite()
 }

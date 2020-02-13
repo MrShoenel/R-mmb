@@ -42,5 +42,9 @@ vignettes/*.pdf
 coverage.html
 lib/*
 
+# Generated documentaion
+docs/*
+
 # Binary files
 *.tar.gz
+pkg/**/*.pdf
