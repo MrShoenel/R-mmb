@@ -5,7 +5,6 @@ cache: packages
 
 branches:
   only:
-  - develop
   - master
 
 env:
