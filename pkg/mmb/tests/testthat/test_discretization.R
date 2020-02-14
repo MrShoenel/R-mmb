@@ -53,7 +53,7 @@ test_that("numRanges is not required", {
   # this is done like this: max(c(2, ceiling(log2(length(data))))),
   # so that the amount of ranges is >= 2
 
-  ranges <- discretizeVariableToRanges(c(1))
+  ranges <- expect_warning(discretizeVariableToRanges(c(1)))
 
   expect_gte(length(ranges), 2)
 
@@ -61,3 +61,26 @@ test_that("numRanges is not required", {
 
   expect_equal(length(ranges), 3)
 })
+
+
+test_that("warnings and errors work", {
+  expect_does_throw(discretizeVariableToRanges(
+    data = NULL
+  ))
+
+  expect_does_throw(discretizeVariableToRanges(
+    data = NULL,
+    exclMinVal = -5,
+    inclMaxVal = 5
+  ))
+
+  expect_does_not_throw(discretizeVariableToRanges(
+    data = NULL,
+    exclMinVal = -5,
+    inclMaxVal = 5,
+    numRanges = 3
+  ))
+})
+
+
+

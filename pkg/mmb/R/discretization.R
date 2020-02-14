@@ -22,7 +22,25 @@
 #' @export
 discretizeVariableToRanges <- function(data, openEndRanges = T, numRanges = NA,
                                        exclMinVal = NULL, inclMaxVal = NULL) {
-  if (!is.numeric(numRanges) || is.na(numRanges)) {
+  # Now we either need data or ranges.
+  hasData <- is.numeric(data) && length(data) > 0
+  hasLimits <- is.numeric(exclMinVal) && is.numeric(inclMaxVal) && exclMinVal < inclMaxVal
+  hasRanges <- is.numeric(numRanges) && numRanges > 0
+
+  if (!hasData) {
+    # That's fine, but then we need limits and ranges
+    if (!hasLimits) stop("No data and no limits given.")
+    if (!hasRanges) stop("No data and no ranges given.")
+
+    data <- c(exclMinVal, inclMaxVal)
+    exclMinVal <- exclMinVal - 1e-15
+  } else {
+    if (length(data) == 1 && mmb::getWarnings())
+      warning("Only one datapoint given for discretization.")
+  }
+
+
+  if (!hasRanges) {
     numRanges <- max(c(2, ceiling(log2(length(data)))))
   }
   if (!is.numeric(exclMinVal) || is.na(exclMinVal)) {
@@ -31,6 +49,8 @@ discretizeVariableToRanges <- function(data, openEndRanges = T, numRanges = NA,
   if (!is.numeric(inclMaxVal) || is.na(inclMaxVal)) {
     inclMaxVal <- max(data)
   }
+
+
 
   dataCut <- data[data > exclMinVal & data <= inclMaxVal]
   tempRange <- range(dataCut, na.rm = TRUE)

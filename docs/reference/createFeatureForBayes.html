@@ -6,8 +6,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Discretizes a continuous random variable into buckets (ranges). Each range
-is delimited by an exclusive minimum value and an inclusive maximum value. — discretizeVariableToRanges • mmb</title>
+<title>Transforms a sample's feature's value into a dataframe, that holds
+its name, type and value. Currently supports numeric, factor, string
+and boolean values. — createFeatureForBayes • mmb</title>
 
 
 <!-- jquery -->
@@ -36,10 +37,12 @@ is delimited by an exclusive minimum value and an inclusive maximum value. — d
 
 
 
-<meta property="og:title" content="Discretizes a continuous random variable into buckets (ranges). Each range
-is delimited by an exclusive minimum value and an inclusive maximum value. — discretizeVariableToRanges" />
-<meta property="og:description" content="Discretizes a continuous random variable into buckets (ranges). Each range
-is delimited by an exclusive minimum value and an inclusive maximum value." />
+<meta property="og:title" content="Transforms a sample's feature's value into a dataframe, that holds
+its name, type and value. Currently supports numeric, factor, string
+and boolean values. — createFeatureForBayes" />
+<meta property="og:description" content="Transforms a sample's feature's value into a dataframe, that holds
+its name, type and value. Currently supports numeric, factor, string
+and boolean values." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -103,60 +106,52 @@ is delimited by an exclusive minimum value and an inclusive maximum value." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Discretizes a continuous random variable into buckets (ranges). Each range
-is delimited by an exclusive minimum value and an inclusive maximum value.</h1>
+    <h1>Transforms a sample's feature's value into a dataframe, that holds
+its name, type and value. Currently supports numeric, factor, string
+and boolean values.</h1>
     
-    <div class="hidden name"><code>discretizeVariableToRanges.Rd</code></div>
+    <div class="hidden name"><code>createFeatureForBayes.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Discretizes a continuous random variable into buckets (ranges). Each range
-is delimited by an exclusive minimum value and an inclusive maximum value.</p>
+    <p>Transforms a sample's feature's value into a dataframe, that holds
+its name, type and value. Currently supports numeric, factor, string
+and boolean values.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>discretizeVariableToRanges</span>(<span class='no'>data</span>, <span class='kw'>openEndRanges</span> <span class='kw'>=</span> <span class='no'>T</span>, <span class='kw'>numRanges</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>exclMinVal</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>inclMaxVal</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>createFeatureForBayes</span>(<span class='no'>name</span>, <span class='no'>value</span>, <span class='kw'>isLabel</span> <span class='kw'>=</span> <span class='no'>F</span>, <span class='kw'>isDiscrete</span> <span class='kw'>=</span> <span class='no'>F</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
-      <td><p>a vector with numeric data</p></td>
+      <th>name</th>
+      <td><p>the name of the feature or variable.</p></td>
     </tr>
     <tr>
-      <th>openEndRanges</th>
-      <td><p>boolean default True. If true, then the minimum value
-of the first range will be set to @seealso <code>.Machine$double.xmin</code> and
-the maximum value of the last range will be set to @seealso <code>.Machine$double.xmax</code>,
-so that all values get covered.</p></td>
+      <th>value</th>
+      <td><p>the value of the feature or variable.</p></td>
     </tr>
     <tr>
-      <th>numRanges</th>
-      <td><p>integer default NA. If NULL, then the amount of ranges
-(buckets) depends on the amount of data given. A minimum of two buckets is
-used then, and a maximum of ceiling(log2(length(data))).</p></td>
+      <th>isLabel</th>
+      <td><p>default FALSE. Indicates whether this feature or variable
+is the target variable (the label or value to predict).</p></td>
     </tr>
     <tr>
-      <th>exclMinVal</th>
-      <td><p>numeric default NULL. Used to delimit the lower bound of
-the given data. If not given, then no value is excluded, as the exclusive
-lower bound becomes the minimum of the given data minus an epsilon of 1e-15.</p></td>
-    </tr>
-    <tr>
-      <th>inclMaxVal</th>
-      <td><p>numeric default NULL. Used to delimit the upper bound of
-the given data. If not given, then the upper inclusive bound is the max of
-the given data.</p></td>
+      <th>isDiscrete</th>
+      <td><p>default FALSE. Used to indicate whether the feature or
+variable given is discrete. This will also be set to true if the value
+given is a charater, factor or a logical.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>List a List of vectors, where each vector has two values, the first
-being the exclusive minimum value of the range, and the second being the
-inclusive maximum value of the range. The list will be as long as the number
-of buckets requested.</p>
+    <p>A data.frame with one row holding all the feature's value's
+properties.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code>sampleToBayesFeatures</code> that uses this function</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -164,6 +159,7 @@ of buckets requested.</p>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
+      <li><a href="#see-also">See also</a></li>
     </ul>
 
     <h2>Author</h2>

@@ -3,6 +3,7 @@ expect_does_throw <- function(expr, doExpect = T) {
     expr
     return(F)
   }, error=function(cond) {
+    if (interactive()) warning(paste("Caught:", cond))
     return(T)
   })
 

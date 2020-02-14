@@ -67,7 +67,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -119,6 +119,14 @@
       <tr>
         
         <td>
+          <p><code><a href="createFeatureForBayes.html">createFeatureForBayes()</a></code> </p>
+        </td>
+        <td><p>Transforms a sample's feature's value into a dataframe, that holds
+its name, type and value. Currently supports numeric, factor, string
+and boolean values.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="discretizeVariableToRanges.html">discretizeVariableToRanges()</a></code> </p>
         </td>
         <td><p>Discretizes a continuous random variable into buckets (ranges). Each range
@@ -133,6 +141,46 @@ function returns the index of the range the given value belongs to (i.e.,
 in which bucket it belongs). The indexes start R-typically at 1. Per
 definition, a value is within a range, if it is larger than the range's
 minimum and less than or equal to its maximum.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="getValueKeyOfBayesFeatures.html">getValueKeyOfBayesFeatures()</a></code> </p>
+        </td>
+        <td><p>Given a data.frame with one or multiple features as constructed by</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="getValueOfBayesFeatures.html">getValueOfBayesFeatures()</a></code> </p>
+        </td>
+        <td><p>Given a data.frame with one or multiple features as constructed by</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="getWarnings.html">getWarnings()</a></code> </p>
+        </td>
+        <td><p>Getter for the state of warnings. Returns true if enabled.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="make.varClosure.html">make.varClosure()</a></code> </p>
+        </td>
+        <td><p>Creates a closure over a variable and returns its getter and setter.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sampleToBayesFeatures.html">sampleToBayesFeatures()</a></code> </p>
+        </td>
+        <td><p>Helper function that takes one sample (e.g., a row of a dataframe
+with validation data) and transforms it into a data.frame where
+each row corresponds to one feature (and its value) of the sample.
+This is done using @seealso <code>createFeatureForBayes</code>. This
+operation can be thought of transposing a matrix.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="setWarnings.html">setWarnings()</a></code> </p>
+        </td>
+        <td><p>Setter for enabling or disabling warnings. Warnings are enabled by default.</p></td>
       </tr>
     </tbody>
     </table>
