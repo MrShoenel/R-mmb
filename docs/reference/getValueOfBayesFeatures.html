@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Discretizes a continuous random variable into buckets (ranges). Each range
-is delimited by an exclusive minimum value and an inclusive maximum value. — discretizeVariableToRanges • mmb</title>
+<title>Given a data.frame with one or multiple features as constructed by — getValueOfBayesFeatures • mmb</title>
 
 
 <!-- jquery -->
@@ -36,10 +35,8 @@ is delimited by an exclusive minimum value and an inclusive maximum value. — d
 
 
 
-<meta property="og:title" content="Discretizes a continuous random variable into buckets (ranges). Each range
-is delimited by an exclusive minimum value and an inclusive maximum value. — discretizeVariableToRanges" />
-<meta property="og:description" content="Discretizes a continuous random variable into buckets (ranges). Each range
-is delimited by an exclusive minimum value and an inclusive maximum value." />
+<meta property="og:title" content="Given a data.frame with one or multiple features as constructed by — getValueOfBayesFeatures" />
+<meta property="og:description" content="Given a data.frame with one or multiple features as constructed by" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -103,60 +100,39 @@ is delimited by an exclusive minimum value and an inclusive maximum value." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Discretizes a continuous random variable into buckets (ranges). Each range
-is delimited by an exclusive minimum value and an inclusive maximum value.</h1>
+    <h1>Given a data.frame with one or multiple features as constructed by</h1>
     
-    <div class="hidden name"><code>discretizeVariableToRanges.Rd</code></div>
+    <div class="hidden name"><code>getValueOfBayesFeatures.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Discretizes a continuous random variable into buckets (ranges). Each range
-is delimited by an exclusive minimum value and an inclusive maximum value.</p>
+    <p>Given a data.frame with one or multiple features as constructed by</p>
     </div>
 
-    <pre class="usage"><span class='fu'>discretizeVariableToRanges</span>(<span class='no'>data</span>, <span class='kw'>openEndRanges</span> <span class='kw'>=</span> <span class='no'>T</span>, <span class='kw'>numRanges</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>exclMinVal</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>inclMaxVal</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>getValueOfBayesFeatures</span>(<span class='no'>dfFeature</span>, <span class='no'>featName</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
-      <td><p>a vector with numeric data</p></td>
+      <th>dfFeature</th>
+      <td><p>a data.frame for a single feature or variable
+as constructed by @seealso <code>createFeatureForBayes</code>.</p></td>
     </tr>
     <tr>
-      <th>openEndRanges</th>
-      <td><p>boolean default True. If true, then the minimum value
-of the first range will be set to @seealso <code>.Machine$double.xmin</code> and
-the maximum value of the last range will be set to @seealso <code>.Machine$double.xmax</code>,
-so that all values get covered.</p></td>
-    </tr>
-    <tr>
-      <th>numRanges</th>
-      <td><p>integer default NA. If NULL, then the amount of ranges
-(buckets) depends on the amount of data given. A minimum of two buckets is
-used then, and a maximum of ceiling(log2(length(data))).</p></td>
-    </tr>
-    <tr>
-      <th>exclMinVal</th>
-      <td><p>numeric default NULL. Used to delimit the lower bound of
-the given data. If not given, then no value is excluded, as the exclusive
-lower bound becomes the minimum of the given data minus an epsilon of 1e-15.</p></td>
-    </tr>
-    <tr>
-      <th>inclMaxVal</th>
-      <td><p>numeric default NULL. Used to delimit the upper bound of
-the given data. If not given, then the upper inclusive bound is the max of
-the given data.</p></td>
+      <th>featName</th>
+      <td><p>the name of the feature or variable of which to
+obtain the value.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>List a List of vectors, where each vector has two values, the first
-being the exclusive minimum value of the range, and the second being the
-inclusive maximum value of the range. The list will be as long as the number
-of buckets requested.</p>
+    <p>the value of the feature.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code>createFeatureForBayes</code> and a name, extracts the
+value of the feature specified by name.</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -164,6 +140,7 @@ of buckets requested.</p>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
+      <li><a href="#see-also">See also</a></li>
     </ul>
 
     <h2>Author</h2>
