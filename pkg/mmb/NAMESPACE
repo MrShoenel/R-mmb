@@ -2,3 +2,5 @@
 
 export(discretizeVariableToRanges)
 export(getRangeForDiscretizedValue)
+export(getWarnings)
+export(setWarnings)
