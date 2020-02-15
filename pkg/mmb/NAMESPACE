@@ -3,6 +3,8 @@
 export(conditionalDataMin)
 export(createFeatureForBayes)
 export(discretizeVariableToRanges)
+export(estimatePdf)
+export(getProbForDiscrete)
 export(getRangeForDiscretizedValue)
 export(getValueKeyOfBayesFeatures)
 export(getValueOfBayesFeatures)
