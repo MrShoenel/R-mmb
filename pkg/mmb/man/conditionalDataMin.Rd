@@ -2,12 +2,9 @@
 % Please edit documentation in R/conditionaData.R
 \name{conditionalDataMin}
 \alias{conditionalDataMin}
-\title{Given a dataframe and a list of features (and their values), this
-function returns a subset of the rows where each feature's value
-is equal to (discrete feature) or less-than-or-equal (numeric feature).
-Only rows fulfilling all conditions are returned. Then this data can
-be used to estimate kernel densities given the remaining data or to
-compute frequencies (for discrete features).}
+\title{Takes a data.frame and segments it, according to the selected variables.
+Only rows satisfying all conditions are kept. Supports discrete and con-
+tinuous variables.}
 \usage{
 conditionalDataMin(df, features, selectedFeatureNames = c(),
   retainMinValues = 1)
@@ -16,19 +13,6 @@ conditionalDataMin(df, features, selectedFeatureNames = c(),
 \item{df}{data.frame with data to segment. If it contains less than or
 equally many rows as specified by \code{retainMinValues}, then the same
 data.frame is returned.}
-
-\item{features}{a data.frame from @seealso \code{sampleToBayesFeatures}}
-
-\item{selectedFeatureNames}{a string vector to select the features that
-the conditions will rely on. If empty, then the unconditied (i.e., original)
-dataframe will be returned.}
-
-\item{retainMinValues}{default 1. The minimum amount of rows to retain.
-Filtering the data by the selected features may reduce the amount of
-remaining rows quickly, and this can be used as an early stopping criteria.
-Note that filtering is done variable by variable, and the amount of
-remaining rows is evaluated after each segmenting-step. If the threshold
-is undercut, then the result from the previous round is returned.}
 
 \item{features}{data.frame of bayes-features that are used to segment.
 Each feature's value is used to segment the data, and the features are
@@ -39,23 +23,22 @@ not given, then the order of this data.frame is used.}
 names of the variables that shall be used for segmenting. Segmenting is
 done variable by variable, and the order depends on this vector. If this
 vector is empty, then the originally given data.frame is returned.}
+
+\item{retainMinValues}{default 1. The minimum amount of rows to retain.
+Filtering the data by the selected features may reduce the amount of
+remaining rows quickly, and this can be used as an early stopping criteria.
+Note that filtering is done variable by variable, and the amount of
+remaining rows is evaluated after each segmenting-step. If the threshold
+is undercut, then the result from the previous round is returned.}
 }
 \value{
-a data.frame with those rows meeting all conditions
-Takes a data.frame and segments it, according to the selected variables.
-Only rows satisfying all conditions are kept. Supports discrete and con-
-tinuous variables.
-
 data.frame that is segmented according to the selected variables
 and the minimum amount of rows to retain.
 }
 \description{
-Given a dataframe and a list of features (and their values), this
-function returns a subset of the rows where each feature's value
-is equal to (discrete feature) or less-than-or-equal (numeric feature).
-Only rows fulfilling all conditions are returned. Then this data can
-be used to estimate kernel densities given the remaining data or to
-compute frequencies (for discrete features).
+Takes a data.frame and segments it, according to the selected variables.
+Only rows satisfying all conditions are kept. Supports discrete and con-
+tinuous variables.
 }
 \seealso{
 \code{getValueKeyOfBayesFeatures()}
