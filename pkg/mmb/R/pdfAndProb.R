@@ -11,11 +11,17 @@
 #' @param densFun function default \code{stats::density} with bandwith 'SJ'.
 #' Function to compute the empirical density of a non-empty vector of numerical
 #' data.
-#' @return list with a function that is the empirical PDF using KDE. It
+#' @return list with a function that is the empirical PDF using KDE. The list
 #' also has two properties 'min' and 'max' which represent the integratable
 #' range of that function. 'min' and 'max' are both zero if not data (an
 #' empty vector) was given. If one data point was given, then they correspond
-#' to its value -/+ \code{.Machine$double.eps}.
+#' to its value -/+ \code{.Machine$double.eps}. The list further contains two
+#' numeric vectors 'x' and 'y', and a property 'argmax'. If no data was given,
+#' 'x' and 'y' are zero, and 'argmax' is NA. If one data points was given,
+#' then 'x' and 'argmax' equal it, and 'y' is set to 1. If two or more data
+#' points given, then the empirical density is estimated and 'x' and y' are
+#' filled from its estimate. 'argmax' is then set to that 'x', where 'y'
+#' becomes max.
 #' @export
 estimatePdf <- function(data = c(), densFun = function(vec) {
   stats::density(vec, bw = "SJ")
@@ -24,12 +30,16 @@ estimatePdf <- function(data = c(), densFun = function(vec) {
   pdf <- list(
     fun = NULL,
     min = 0,
-    max = 0
+    max = 0,
+    x = c(),
+    y = c(),
+    argmax = NA
   )
 
   if (l == 0) {
     if (mmb::getWarnings()) warning("No data was given for the PDF.")
     pdf$fun <- function(x) 0
+
   } else if (l == 1) {
     if (mmb::getWarnings()) warning("Only one data point given for estimating the PDF.")
     pdf$fun <- function(x) {
@@ -40,13 +50,18 @@ estimatePdf <- function(data = c(), densFun = function(vec) {
     }
     pdf$min <- data[1] - .Machine$double.eps
     pdf$max <- data[1] + .Machine$double.eps
+    pdf$x <- c(data[1])
+    pdf$y <- c(1)
+    pdf$argmax <- data[1]
   } else {
     densFun <- densFun(data)
     pdf$fun <- stats::approxfun(densFun)
     pdf$min <- min(densFun$x)
     pdf$max <- max(densFun$x)
+    pdf$x <- densFun$x
+    pdf$y <- densFun$y
+    pdf$argmax <- pdf$x[which.max(pdf$y)]
   }
-
 
   return(pdf)
 }

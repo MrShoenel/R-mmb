@@ -17,11 +17,17 @@ Function to compute the empirical density of a non-empty vector of numerical
 data.}
 }
 \value{
-list with a function that is the empirical PDF using KDE. It
+list with a function that is the empirical PDF using KDE. The list
 also has two properties 'min' and 'max' which represent the integratable
 range of that function. 'min' and 'max' are both zero if not data (an
 empty vector) was given. If one data point was given, then they correspond
-to its value -/+ \code{.Machine$double.eps}.
+to its value -/+ \code{.Machine$double.eps}. The list further contains two
+numeric vectors 'x' and 'y', and a property 'argmax'. If no data was given,
+'x' and 'y' are zero, and 'argmax' is NA. If one data points was given,
+then 'x' and 'argmax' equal it, and 'y' is set to 1. If two or more data
+points given, then the empirical density is estimated and 'x' and y' are
+filled from its estimate. 'argmax' is then set to that 'x', where 'y'
+becomes max.
 }
 \description{
 Given a few observations of a random variable, this function returns an
