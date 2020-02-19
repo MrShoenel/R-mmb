@@ -2,37 +2,55 @@
 % Please edit documentation in R/bayesSimple.R
 \name{bayesInferSimple}
 \alias{bayesInferSimple}
-\title{This function tests for a single nominal label, using the selected features
-for dependency. It retains at least one value during segmenting and then
-returns the probability of the target-label (the value of the feature that
-is the label). In order to determine the most likely label, this function
-needs to be called once for each candidate.}
+\title{Uses simple Bayesian inference to determine the probability or relative
+likelihood of a given value. This function can also regress to the most
+likely value instead. Simple means that segmented data is used in a way
+that is equal to how a Bayesian network works. For a finite set of labels,
+this function needs to be called for each, to obtain the probability of
+each label (or, for n-1 labels or until a label with >.5 probability is
+found). For obtaining the probability of a continuous value, this function
+is useful for deciding between picking among a finite set of values. For
+regression, set \code{doRegress = T} to obtain the most likely value of
+the target feature, instead of obtaining its relative likelihood.}
 \usage{
-bayesInferSimple(df, features, labelCol, selectedFeatureNames = c())
+bayesInferSimple(df, features, targetCol, selectedFeatureNames = c(),
+  doRegress = F)
 }
 \arguments{
 \item{df}{data.frame}
 
-\item{features}{data.frame with bayes-features. One of the features needs to
-be the label-column.}
+\item{features}{data.frame with bayes-features. One of the features needs
+to be the label-column.}
 
-\item{labelCol}{string with the name of the feature that represents the label.}
+\item{targetCol}{string with the name of the feature that represents the
+label.}
 
-\item{selectedFeatureNames}{vector default \code{c()}. Vector of strings that
-are the names of the features the to-predict label depends on. If an empty
-vector is given, then all of the features are used (except for the label). The
-order then depends on the features' order.}
+\item{selectedFeatureNames}{vector default \code{c()}. Vector of strings
+that are the names of the features the to-predict label depends on. If an
+empty vector is given, then all of the features are used (except for the
+label). The order then depends on the features' order.}
+
+\item{doRegress}{default FALSE a boolean to indicate whether to do a
+regression instead of returning the relative likelihood of a continuous
+feature. If the target feature is discrete and regression is requested,
+will issue a warning.}
 }
 \value{
-double the probability of the target-label, using the maximum a
-posteriori estimate.
+numeric probability (inferring discrete labels) or relative
+likelihood (regression, inferring likelihood of continuous value) or most
+likely value given the conditional features.
 }
 \description{
-This function tests for a single nominal label, using the selected features
-for dependency. It retains at least one value during segmenting and then
-returns the probability of the target-label (the value of the feature that
-is the label). In order to determine the most likely label, this function
-needs to be called once for each candidate.
+Uses simple Bayesian inference to determine the probability or relative
+likelihood of a given value. This function can also regress to the most
+likely value instead. Simple means that segmented data is used in a way
+that is equal to how a Bayesian network works. For a finite set of labels,
+this function needs to be called for each, to obtain the probability of
+each label (or, for n-1 labels or until a label with >.5 probability is
+found). For obtaining the probability of a continuous value, this function
+is useful for deciding between picking among a finite set of values. For
+regression, set \code{doRegress = T} to obtain the most likely value of
+the target feature, instead of obtaining its relative likelihood.
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}

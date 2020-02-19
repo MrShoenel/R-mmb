@@ -2,11 +2,12 @@
 % Please edit documentation in R/bayesSimple.R
 \name{bayesRegressSimple}
 \alias{bayesRegressSimple}
-\title{This function returns the most likely numerical value for the target variable
-using maximum a posteriori estimation. It retains at least two values for the
-target variable during segmenting so that an empirical PDF can be estimated.}
+\title{Uses simple Bayesian inferencing to segment the data given the conditional
+features. Then estimates a density over the remaining values of the target
+feature and returns the most likely value using a maximum a posteriori
+estimate of the kernel (returning its mode).}
 \usage{
-bayesRegressSimple(df, features, labelCol, selectedFeatureNames = c())
+bayesRegressSimple(df, features, targetCol, selectedFeatureNames = c())
 }
 \arguments{
 \item{df}{data.frame}
@@ -14,7 +15,7 @@ bayesRegressSimple(df, features, labelCol, selectedFeatureNames = c())
 \item{features}{data.frame with bayes-features. One of the features needs to
 be the label-column (not required or no value required).}
 
-\item{labelCol}{string with the name of the feature that represents the label
+\item{targetCol}{string with the name of the feature that represents the label
 (here the target variable for regression).}
 
 \item{selectedFeatureNames}{vector default \code{c()}. Vector of strings that
@@ -23,9 +24,13 @@ vector is given, then all of the features are used (except for the label). The
 order then depends on the features' order.}
 }
 \description{
-This function returns the most likely numerical value for the target variable
-using maximum a posteriori estimation. It retains at least two values for the
-target variable during segmenting so that an empirical PDF can be estimated.
+Uses simple Bayesian inferencing to segment the data given the conditional
+features. Then estimates a density over the remaining values of the target
+feature and returns the most likely value using a maximum a posteriori
+estimate of the kernel (returning its mode).
+}
+\seealso{
+\code{mmb::bayesInferSimple()}
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
