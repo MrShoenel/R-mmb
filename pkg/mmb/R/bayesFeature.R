@@ -34,6 +34,32 @@ createFeatureForBayes <- function(name, value, isLabel = F, isDiscrete = F) {
 }
 
 
+#' Internal function to check common arguments for function that
+#' use samples transformed to bayes-features.
+#' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @param dfFeature a data.frame for a single feature or variable
+#' as constructed by @seealso \code{createFeatureForBayes}.
+#' @param featName the name of the feature or variable of which to
+#' obtain the value.
+#' @return data.frame the row corresponding to the given feature name
+checkBayesFeature <- function(dfFeature, featName) {
+  if (!is.data.frame(dfFeature)) {
+    stop("The given dfFeature is not a data.frame.")
+  }
+
+  if (!is.character(featName) || nchar(featName) == 0) {
+    stop("The given featureName is not a string or it is empty.")
+  }
+
+  row <- dfFeature[which(dfFeature$name == featName), ]
+  if (nrow(row) == 0) {
+    stop("The given featName is not within the data.frame.")
+  }
+
+  row
+}
+
+
 #' Given a data.frame with one or multiple features as constructed by
 #' @seealso \code{createFeatureForBayes} and a name, extracts the
 #' value of the feature specified by name.
@@ -45,14 +71,7 @@ createFeatureForBayes <- function(name, value, isLabel = F, isDiscrete = F) {
 #' @return the value of the feature.
 #' @export
 getValueOfBayesFeatures <- function(dfFeature, featName) {
-  if (!is.data.frame(dfFeature)) {
-    stop("The given dfFeature is not a data.frame.")
-  }
-
-  row <- dfFeature[which(dfFeature$name == featName), ]
-  if (nrow(row) == 0) {
-    stop("The given featName is not within the data.frame.")
-  }
+  row <- checkBayesFeature(dfFeature, featName)
 
   if (!is.na(row$valueNumeric)) { return(row$valueNumeric) }
   if (!is.na(row$valueFactor)) { return(row$valueFactor) }
@@ -75,7 +94,8 @@ getValueOfBayesFeatures <- function(dfFeature, featName) {
 #' @return the (internal) type of the feature.
 #' @export
 getValueKeyOfBayesFeatures <- function(dfFeature, featName) {
-  row <- dfFeature[which(dfFeature$name == featName), ]
+  row <- checkBayesFeature(dfFeature, featName)
+
   if (!is.na(row$valueNumeric)) { return("valueNumeric") }
   if (!is.na(row$valueFactor)) { return("valueFactor") }
   if (!is.na(row$valueString)) { return("valueString") }

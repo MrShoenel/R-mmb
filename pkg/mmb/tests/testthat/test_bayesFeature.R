@@ -100,5 +100,12 @@ test_that("a sample may not have other kinds of values", {
 })
 
 
+test_that("it stops if arguments are invalid", {
+  expect_does_throw({
+    checkBayesFeature(data.frame(foo=42), featName = "")
+  })
+})
+
+
 
 
