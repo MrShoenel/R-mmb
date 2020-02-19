@@ -21,4 +21,7 @@ Suggests:
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
 Imports: 
-    datasets
+    datasets,
+    stats,
+    foreach,
+    doParallel

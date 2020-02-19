@@ -6,7 +6,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Getter for the state of warnings. Returns true if enabled. — getWarnings • mmb</title>
+<title>Computes one single factor that is needed for full Bayesian inferencing.
+In an equation such as P(A|B) = P(B|A) * P(A) / P(B), the target-feature
+is A, while the conditional feature is B. There are three factors in that
+equation (two in the numerator and one in the denominator). This function
+calculates exactly one factor and expects all features to be given in the
+right order. If computing the denominator, no target-feature is required. — bayesComputeProductFactor • mmb</title>
 
 
 <!-- jquery -->
@@ -35,8 +40,18 @@
 
 
 
-<meta property="og:title" content="Getter for the state of warnings. Returns true if enabled. — getWarnings" />
-<meta property="og:description" content="Getter for the state of warnings. Returns true if enabled." />
+<meta property="og:title" content="Computes one single factor that is needed for full Bayesian inferencing.
+In an equation such as P(A|B) = P(B|A) * P(A) / P(B), the target-feature
+is A, while the conditional feature is B. There are three factors in that
+equation (two in the numerator and one in the denominator). This function
+calculates exactly one factor and expects all features to be given in the
+right order. If computing the denominator, no target-feature is required. — bayesComputeProductFactor" />
+<meta property="og:description" content="Computes one single factor that is needed for full Bayesian inferencing.
+In an equation such as P(A|B) = P(B|A) * P(A) / P(B), the target-feature
+is A, while the conditional feature is B. There are three factors in that
+equation (two in the numerator and one in the denominator). This function
+calculates exactly one factor and expects all features to be given in the
+right order. If computing the denominator, no target-feature is required." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -100,26 +115,77 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Getter for the state of warnings. Returns true if enabled.</h1>
+    <h1>Computes one single factor that is needed for full Bayesian inferencing.
+In an equation such as P(A|B) = P(B|A) * P(A) / P(B), the target-feature
+is A, while the conditional feature is B. There are three factors in that
+equation (two in the numerator and one in the denominator). This function
+calculates exactly one factor and expects all features to be given in the
+right order. If computing the denominator, no target-feature is required.</h1>
     
-    <div class="hidden name"><code>getWarnings.Rd</code></div>
+    <div class="hidden name"><code>bayesComputeProductFactor.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Getter for the state of warnings. Returns true if enabled.</p>
+    <p>Computes one single factor that is needed for full Bayesian inferencing.
+In an equation such as P(A|B) = P(B|A) * P(A) / P(B), the target-feature
+is A, while the conditional feature is B. There are three factors in that
+equation (two in the numerator and one in the denominator). This function
+calculates exactly one factor and expects all features to be given in the
+right order. If computing the denominator, no target-feature is required.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>getWarnings</span>()</pre>
+    <pre class="usage"><span class='fu'>bayesComputeProductFactor</span>(<span class='no'>df</span>, <span class='no'>conditionalFeatures</span>, <span class='no'>targetFeature</span>,
+  <span class='no'>computeNumerator</span>, <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='no'>F</span>)</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>df</th>
+      <td><p>data.frame with data that is used to segment</p></td>
+    </tr>
+    <tr>
+      <th>conditionalFeatures</th>
+      <td><p>data.frame with Bayesian features, as produced
+by @seealso <code><a href='createFeatureForBayes.html'>mmb::createFeatureForBayes()</a></code>. This data.frame must not
+be empty, as we need to depend on at least one feature.</p></td>
+    </tr>
+    <tr>
+      <th>targetFeature</th>
+      <td><p>data.frame with exact one Bayesian feature. Any ex-
+cessive features are discarded and a warning is produced. If computing a
+factor for the denominator, this data.frame may be empty.</p></td>
+    </tr>
+    <tr>
+      <th>computeNumerator</th>
+      <td><p>boolean to indicate whether a factor for the
+numerator is build. In that case, the target feature is required.</p></td>
+    </tr>
+    <tr>
+      <th>retainMinValues</th>
+      <td><p>integer the amount of rows to minimally retain
+during segmenting using the conditional features.</p></td>
+    </tr>
+    <tr>
+      <th>doEcdf</th>
+      <td><p>default FALSE a boolean to indicate whether to use the
+empirical CDF to return a probability when inferencing a continuous
+feature. If false, uses the empirical PDF to return the rel. likelihood.
+This parameter does not have any effect when inferring discrete values.</p></td>
+    </tr>
+    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Boolean to indicate whether warnings are enabled or not.</p>
+    <p>numeric the factor as probability or relative likelihood. If the
+target feature is discrete, a probability is returned; a relative like-
+lihood, otherwise.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
     </ul>
 

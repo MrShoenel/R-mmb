@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Getter for the state of warnings. Returns true if enabled. — getWarnings • mmb</title>
+<title>Given a few observations of a random variable, this function returns an
+approximation of the PDF as a function. — estimatePdf • mmb</title>
 
 
 <!-- jquery -->
@@ -35,8 +36,10 @@
 
 
 
-<meta property="og:title" content="Getter for the state of warnings. Returns true if enabled. — getWarnings" />
-<meta property="og:description" content="Getter for the state of warnings. Returns true if enabled." />
+<meta property="og:title" content="Given a few observations of a random variable, this function returns an
+approximation of the PDF as a function. — estimatePdf" />
+<meta property="og:description" content="Given a few observations of a random variable, this function returns an
+approximation of the PDF as a function." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -100,27 +103,64 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Getter for the state of warnings. Returns true if enabled.</h1>
+    <h1>Given a few observations of a random variable, this function returns an
+approximation of the PDF as a function.</h1>
     
-    <div class="hidden name"><code>getWarnings.Rd</code></div>
+    <div class="hidden name"><code>estimatePdf.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Getter for the state of warnings. Returns true if enabled.</p>
+    <p>Given a few observations of a random variable, this function returns an
+approximation of the PDF as a function.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>getWarnings</span>()</pre>
+    <pre class="usage"><span class='fu'>estimatePdf</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(), <span class='kw'>densFun</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>vec</span>) {
+  <span class='kw pkg'>stats</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/density.html'>density</a></span>(<span class='no'>vec</span>, <span class='kw'>bw</span> <span class='kw'>=</span> <span class='st'>"SJ"</span>) })</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>data</th>
+      <td><p>vector of numeric data. Used to compute the empirical density
+of the data.</p></td>
+    </tr>
+    <tr>
+      <th>densFun</th>
+      <td><p>function default <code><a href='https://rdrr.io/r/stats/density.html'>stats::density</a></code> with bandwith 'SJ'.
+Function to compute the empirical density of a non-empty vector of numerical
+data.</p></td>
+    </tr>
+    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Boolean to indicate whether warnings are enabled or not.</p>
+    <p>list with a function that is the empirical PDF using KDE. The list
+also has two properties 'min' and 'max' which represent the integratable
+range of that function. 'min' and 'max' are both zero if not data (an
+empty vector) was given. If one data point was given, then they correspond
+to its value -/+ <code>.Machine$double.eps</code>. The list further contains two
+numeric vectors 'x' and 'y', and a property 'argmax'. If no data was given,
+'x' and 'y' are zero, and 'argmax' is NA. If one data points was given,
+then 'x' and 'argmax' equal it, and 'y' is set to 1. If two or more data
+points given, then the empirical density is estimated and 'x' and y' are
+filled from its estimate. 'argmax' is then set to that 'x', where 'y'
+becomes max.</p>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>If the given vector is empty, warns and returns a constant function
+that always returns zero for all values.</p>
+<p>If the given vector contains only one observation, then a function
+is returned that returns 1 iff the value supplied is the same as the
+observation. Otherwise, that function will return zero.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
+      <li><a href="#note">Note</a></li>
     </ul>
 
     <h2>Author</h2>

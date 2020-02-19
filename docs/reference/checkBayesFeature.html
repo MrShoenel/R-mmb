@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Getter for the state of warnings. Returns true if enabled. — getWarnings • mmb</title>
+<title>Internal function to check common arguments for function that
+use samples transformed to bayes-features. — checkBayesFeature • mmb</title>
 
 
 <!-- jquery -->
@@ -35,8 +36,10 @@
 
 
 
-<meta property="og:title" content="Getter for the state of warnings. Returns true if enabled. — getWarnings" />
-<meta property="og:description" content="Getter for the state of warnings. Returns true if enabled." />
+<meta property="og:title" content="Internal function to check common arguments for function that
+use samples transformed to bayes-features. — checkBayesFeature" />
+<meta property="og:description" content="Internal function to check common arguments for function that
+use samples transformed to bayes-features." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -100,26 +103,43 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Getter for the state of warnings. Returns true if enabled.</h1>
+    <h1>Internal function to check common arguments for function that
+use samples transformed to bayes-features.</h1>
     
-    <div class="hidden name"><code>getWarnings.Rd</code></div>
+    <div class="hidden name"><code>checkBayesFeature.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Getter for the state of warnings. Returns true if enabled.</p>
+    <p>Internal function to check common arguments for function that
+use samples transformed to bayes-features.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>getWarnings</span>()</pre>
+    <pre class="usage"><span class='fu'>checkBayesFeature</span>(<span class='no'>dfFeature</span>, <span class='no'>featName</span>)</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>dfFeature</th>
+      <td><p>a data.frame for a single feature or variable
+as constructed by @seealso <code>createFeatureForBayes</code>.</p></td>
+    </tr>
+    <tr>
+      <th>featName</th>
+      <td><p>the name of the feature or variable of which to
+obtain the value.</p></td>
+    </tr>
+    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Boolean to indicate whether warnings are enabled or not.</p>
+    <p>data.frame the row corresponding to the given feature name</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
     </ul>
 

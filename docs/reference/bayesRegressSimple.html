@@ -6,7 +6,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Getter for the state of warnings. Returns true if enabled. — getWarnings • mmb</title>
+<title>Uses simple Bayesian inferencing to segment the data given the conditional
+features. Then estimates a density over the remaining values of the target
+feature and returns the most likely value using a maximum a posteriori
+estimate of the kernel (returning its mode). — bayesRegressSimple • mmb</title>
 
 
 <!-- jquery -->
@@ -35,8 +38,14 @@
 
 
 
-<meta property="og:title" content="Getter for the state of warnings. Returns true if enabled. — getWarnings" />
-<meta property="og:description" content="Getter for the state of warnings. Returns true if enabled." />
+<meta property="og:title" content="Uses simple Bayesian inferencing to segment the data given the conditional
+features. Then estimates a density over the remaining values of the target
+feature and returns the most likely value using a maximum a posteriori
+estimate of the kernel (returning its mode). — bayesRegressSimple" />
+<meta property="og:description" content="Uses simple Bayesian inferencing to segment the data given the conditional
+features. Then estimates a density over the remaining values of the target
+feature and returns the most likely value using a maximum a posteriori
+estimate of the kernel (returning its mode)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -100,27 +109,65 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Getter for the state of warnings. Returns true if enabled.</h1>
+    <h1>Uses simple Bayesian inferencing to segment the data given the conditional
+features. Then estimates a density over the remaining values of the target
+feature and returns the most likely value using a maximum a posteriori
+estimate of the kernel (returning its mode).</h1>
     
-    <div class="hidden name"><code>getWarnings.Rd</code></div>
+    <div class="hidden name"><code>bayesRegressSimple.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Getter for the state of warnings. Returns true if enabled.</p>
+    <p>Uses simple Bayesian inferencing to segment the data given the conditional
+features. Then estimates a density over the remaining values of the target
+feature and returns the most likely value using a maximum a posteriori
+estimate of the kernel (returning its mode).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>getWarnings</span>()</pre>
+    <pre class="usage"><span class='fu'>bayesRegressSimple</span>(<span class='no'>df</span>, <span class='no'>features</span>, <span class='no'>targetCol</span>, <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>2</span>)</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>df</th>
+      <td><p>data.frame</p></td>
+    </tr>
+    <tr>
+      <th>features</th>
+      <td><p>data.frame with bayes-features. One of the features needs to
+be the label-column (not required or no value required).</p></td>
+    </tr>
+    <tr>
+      <th>targetCol</th>
+      <td><p>string with the name of the feature that represents the label
+(here the target variable for regression).</p></td>
+    </tr>
+    <tr>
+      <th>selectedFeatureNames</th>
+      <td><p>vector default <code><a href='https://rdrr.io/r/base/c.html'>c()</a></code>. Vector of strings that
+are the names of the features the to-predict label depends on. If an empty
+vector is given, then all of the features are used (except for the label). The
+order then depends on the features' order.</p></td>
+    </tr>
+    <tr>
+      <th>retainMinValues</th>
+      <td><p>integer to require a minimum amount of data points
+when segmenting the data feature by feature.</p></td>
+    </tr>
+    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>Boolean to indicate whether warnings are enabled or not.</p>
+    <div class='dont-index'><p><code><a href='bayesInferSimple.html'>mmb::bayesInferSimple()</a></code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#value">Value</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#see-also">See also</a></li>
     </ul>
 
     <h2>Author</h2>

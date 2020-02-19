@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Getter for the state of warnings. Returns true if enabled. — getWarnings • mmb</title>
+<title>Computes the probability (discrete feature) or relative likelihood
+(continuous feature) of one given feature and a concrete value for it. — bayesComputeMarginalFactor • mmb</title>
 
 
 <!-- jquery -->
@@ -35,8 +36,10 @@
 
 
 
-<meta property="og:title" content="Getter for the state of warnings. Returns true if enabled. — getWarnings" />
-<meta property="og:description" content="Getter for the state of warnings. Returns true if enabled." />
+<meta property="og:title" content="Computes the probability (discrete feature) or relative likelihood
+(continuous feature) of one given feature and a concrete value for it. — bayesComputeMarginalFactor" />
+<meta property="og:description" content="Computes the probability (discrete feature) or relative likelihood
+(continuous feature) of one given feature and a concrete value for it." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -100,26 +103,50 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Getter for the state of warnings. Returns true if enabled.</h1>
+    <h1>Computes the probability (discrete feature) or relative likelihood
+(continuous feature) of one given feature and a concrete value for it.</h1>
     
-    <div class="hidden name"><code>getWarnings.Rd</code></div>
+    <div class="hidden name"><code>bayesComputeMarginalFactor.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Getter for the state of warnings. Returns true if enabled.</p>
+    <p>Computes the probability (discrete feature) or relative likelihood
+(continuous feature) of one given feature and a concrete value for it.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>getWarnings</span>()</pre>
+    <pre class="usage"><span class='fu'>bayesComputeMarginalFactor</span>(<span class='no'>df</span>, <span class='no'>feature</span>, <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='no'>F</span>)</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>df</th>
+      <td><p>data.frame that contains all the feature's data</p></td>
+    </tr>
+    <tr>
+      <th>feature</th>
+      <td><p>data.frame containing the designated feature as created
+by @seealso <code><a href='createFeatureForBayes.html'>mmb::createFeatureForBayes()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>doEcdf</th>
+      <td><p>default FALSE a boolean to indicate whether to use the
+empirical CDF to return a probability when inferencing a continuous
+feature. If false, uses the empirical PDF to return the rel. likelihood.
+This parameter does not have any effect when inferring discrete values.</p></td>
+    </tr>
+    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Boolean to indicate whether warnings are enabled or not.</p>
+    <p>numeric the probability or likelihood of the given feature
+assuming its given value.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
     </ul>
 
