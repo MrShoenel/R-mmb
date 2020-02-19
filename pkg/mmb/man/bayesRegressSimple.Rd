@@ -7,7 +7,8 @@ features. Then estimates a density over the remaining values of the target
 feature and returns the most likely value using a maximum a posteriori
 estimate of the kernel (returning its mode).}
 \usage{
-bayesRegressSimple(df, features, targetCol, selectedFeatureNames = c())
+bayesRegressSimple(df, features, targetCol, selectedFeatureNames = c(),
+  retainMinValues = 2)
 }
 \arguments{
 \item{df}{data.frame}
@@ -22,6 +23,9 @@ be the label-column (not required or no value required).}
 are the names of the features the to-predict label depends on. If an empty
 vector is given, then all of the features are used (except for the label). The
 order then depends on the features' order.}
+
+\item{retainMinValues}{integer to require a minimum amount of data points
+when segmenting the data feature by feature.}
 }
 \description{
 Uses simple Bayesian inferencing to segment the data given the conditional

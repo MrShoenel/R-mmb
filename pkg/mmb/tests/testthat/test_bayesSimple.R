@@ -29,22 +29,45 @@ test_that("invalid arguments in simple bayes lead to warn/stop", {
 
   w <- mmb::getWarnings()
   mmb::setWarnings(T)
+
   expect_warning({
     mmb::bayesInferSimple(iris[1,], features, "Species")
   })
+
   expect_warning({
     featPet <- mmb::createFeatureForBayes("Petal.Length", mean(iris$Petal.Length))
     featSpe <- mmb::createFeatureForBayes("Species", iris$Species[1], isLabel = T)
-    mmb::bayesInferSimple(iris, rbind(featPet, featSpe), featSpe$name, doRegress = T)
+    mmb::bayesInferSimple(
+      iris, rbind(featPet, featSpe), featSpe$name, retainMinValues = 1, doRegress = T)
   })
+
+  expect_warning({
+    featSpe <- mmb::createFeatureForBayes("Species", iris$Species[1])
+    res <- mmb::bayesInferSimple(
+      iris, featSpe, "Petal.Length", retainMinValues = 0, doRegress = T)
+  })
+
   mmb::setWarnings(w)
 
+
   m <- mmb::getMessages()
+
   mmb::setMessages(T)
   expect_message({
     featSpe <- mmb::createFeatureForBayes("Species", iris$Species[1])
-    res <- mmb::bayesInferSimple(iris, featSpe, "Petal.Length", doRegress = T)
+    res <- mmb::bayesInferSimple(
+      iris, featSpe, "Petal.Length", retainMinValues = 2, doRegress = T)
   })
+
+  expect_message({
+    featPet <- mmb::createFeatureForBayes("Petal.Length", mean(iris$Petal.Length))
+    featSpe <- mmb::createFeatureForBayes("Species", iris$Species[1], isLabel = T)
+
+    res <- mmb::bayesInferSimple(
+      iris, rbind(featPet, featSpe), targetCol = featSpe$name,
+      retainMinValues = 0, selectedFeatureNames = featPet$name)
+  })
+
   mmb::setMessages(m)
 
   expect_does_throw({
@@ -59,6 +82,11 @@ test_that("invalid arguments in simple bayes lead to warn/stop", {
 
   expect_does_throw({
     mmb::bayesInferSimple(iris, data.frame(), "Petal.Length", doRegress = T)
+  })
+
+  expect_does_throw({
+    mmb::bayesInferSimple(df = NULL, features = NULL, targetCol = NULL,
+                          doRegress = T, doEcdf = T)
   })
 })
 
@@ -97,23 +125,41 @@ test_that("we can do simple Bayesian inferencing of continuous values", {
   featSep$valueNumeric <- 4.6
   res_4_6 <- mmb::bayesProbabilitySimple(temp, rbind(
     featSpe, featPet, featSep
-  ), targetCol = featSep$name)
+  ), targetCol = featSep$name, retainMinValues = 2)
   expect_gt(res_4_6, 0.6)
   expect_lt(res_4_6, 0.7)
 
   featSep$valueNumeric <- 4.0
   res_4_0 <- mmb::bayesProbabilitySimple(temp, rbind(
     featSpe, featPet, featSep
-  ), targetCol = featSep$name)
+  ), targetCol = featSep$name, retainMinValues = 2)
   expect_gt(res_4_0, 0.2)
   expect_lt(res_4_0, 0.3)
 
   featSep$valueNumeric <- 5.0
   res_5_0 <- mmb::bayesProbabilitySimple(temp, rbind(
     featSpe, featPet, featSep
-  ), targetCol = featSep$name)
+  ), targetCol = featSep$name, retainMinValues = 2)
   expect_gt(res_5_0, 0.4)
   expect_lt(res_5_0, 0.5)
+})
+
+
+test_that("we can inference probabilities on continuous values", {
+
+  temp <- iris[iris$Species == iris$Species[1] & iris$Petal.Length <= 1.25, ]
+
+  featSpe <- mmb::createFeatureForBayes("Species", iris$Species[1])
+  featPet <- mmb::createFeatureForBayes("Petal.Length", 1.25)
+  # Now to test the ecdf using these same conditions, we can see
+  # that the probability of finding a value for Sepal.Length of
+  # 4.6 or smaller is 50%
+  featSep <- mmb::createFeatureForBayes("Sepal.Length", 4.6, isLabel = T)
+
+  res <- mmb::bayesProbabilitySimple(temp, rbind(
+    featSpe, featPet, featSep
+  ), targetCol = featSep$name, doEcdf = TRUE)
+  expect_equal(res, 0.5, epsilon = 1e-12)
 })
 
 
@@ -151,6 +197,13 @@ test_that("simple Bayesian regression using one or more features work", {
     featLen,
     featWid
   ), selectedFeatureNames = c(), targetCol = "Petal.Length")
+
+  expect_does_throw({
+    mmb::bayesRegressSimple(iris, rbind(
+      featLen,
+      featWid
+    ), retainMinValues = 1, selectedFeatureNames = c(), targetCol = "Petal.Length")
+  })
 
   # The regression builds the PDF over the remaining Petal.Length and returns argmax
   pdf <- stats::density(temp$Petal.Length, bw = "SJ")

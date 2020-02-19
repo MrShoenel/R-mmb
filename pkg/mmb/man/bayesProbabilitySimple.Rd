@@ -6,7 +6,7 @@
 hood or a discrete labe or continuous value.}
 \usage{
 bayesProbabilitySimple(df, features, targetCol,
-  selectedFeatureNames = c())
+  selectedFeatureNames = c(), retainMinValues = 1, doEcdf = F)
 }
 \arguments{
 \item{df}{data.frame}
@@ -20,6 +20,13 @@ be the label-column.}
 are the names of the features the to-predict label depends on. If an empty
 vector is given, then all of the features are used (except for the label). The
 order then depends on the features' order.}
+
+\item{retainMinValues}{integer to require a minimum amount of data points
+when segmenting the data feature by feature.}
+
+\item{doEcdf}{default FALSE a boolean to indicate whether to use the
+empirical CDF to return a probability when inferencing a continuous
+feature. If false, uses the empirical PDF to return the rel. likelihood.}
 }
 \value{
 double the probability of the target-label, using the maximum a
