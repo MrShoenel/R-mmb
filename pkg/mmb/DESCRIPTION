@@ -16,6 +16,7 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Suggests: 
+    devtools,
     testthat,
     covr
 Roxygen: list(markdown = TRUE)
@@ -24,4 +25,5 @@ Imports:
     datasets,
     stats,
     foreach,
+    parallel,
     doParallel
