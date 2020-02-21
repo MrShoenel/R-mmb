@@ -67,7 +67,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -141,6 +141,20 @@ continuous value, otherwise, the empirical PDF is estimated and a rela-
 tive likelihood is returned.
 regression, set <code>doRegress = T</code> to obtain the most likely value of
 the target feature, instead of obtaining its relative likelihood.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="bayesProbability.html">bayesProbability()</a></code> </p>
+        </td>
+        <td><p>Full Bayesian inferencing for determining the probability or relative
+likelihood of a given value. Uses the full extended theorem of Bayes,
+taking all selected features into account. Expands
+Bayes' theorem to accomodate all dependent features, then calculates
+each conditional probability (or relative likelihood) and returns a
+single result reflecting the probability or relative likelihood of
+the target feature assuming its given value, given that all the other
+dependent features assume their given value. The target feature
+(designated by 'labelCol') may be discrete or continuous.</p></td>
       </tr><tr>
         
         <td>

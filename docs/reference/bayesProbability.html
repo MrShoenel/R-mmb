@@ -6,19 +6,15 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Uses simple Bayesian inference to determine the probability or relative
-likelihood of a given value. This function can also regress to the most
-likely value instead. Simple means that segmented data is used in a way
-that is equal to how a Bayesian network works. For a finite set of labels,
-this function needs to be called for each, to obtain the probability of
-each label (or, for n-1 labels or until a label with &gt;.5 probability is
-found). For obtaining the probability of a continuous value, this function
-is useful for deciding between picking among a finite set of values. The
-empirical CDF may be used to obtain an actual probability for a given
-continuous value, otherwise, the empirical PDF is estimated and a rela-
-tive likelihood is returned.
-regression, set <code>doRegress = T</code> to obtain the most likely value of
-the target feature, instead of obtaining its relative likelihood. — bayesInferSimple • mmb</title>
+<title>Full Bayesian inferencing for determining the probability or relative
+likelihood of a given value. Uses the full extended theorem of Bayes,
+taking all selected features into account. Expands
+Bayes' theorem to accomodate all dependent features, then calculates
+each conditional probability (or relative likelihood) and returns a
+single result reflecting the probability or relative likelihood of
+the target feature assuming its given value, given that all the other
+dependent features assume their given value. The target feature
+(designated by 'labelCol') may be discrete or continuous. — bayesProbability • mmb</title>
 
 
 <!-- jquery -->
@@ -47,32 +43,20 @@ the target feature, instead of obtaining its relative likelihood. — bayesInfer
 
 
 
-<meta property="og:title" content="Uses simple Bayesian inference to determine the probability or relative
-likelihood of a given value. This function can also regress to the most
-likely value instead. Simple means that segmented data is used in a way
-that is equal to how a Bayesian network works. For a finite set of labels,
-this function needs to be called for each, to obtain the probability of
-each label (or, for n-1 labels or until a label with &gt;.5 probability is
-found). For obtaining the probability of a continuous value, this function
-is useful for deciding between picking among a finite set of values. The
-empirical CDF may be used to obtain an actual probability for a given
-continuous value, otherwise, the empirical PDF is estimated and a rela-
-tive likelihood is returned.
-regression, set <code>doRegress = T</code> to obtain the most likely value of
-the target feature, instead of obtaining its relative likelihood. — bayesInferSimple" />
-<meta property="og:description" content="Uses simple Bayesian inference to determine the probability or relative
-likelihood of a given value. This function can also regress to the most
-likely value instead. Simple means that segmented data is used in a way
-that is equal to how a Bayesian network works. For a finite set of labels,
-this function needs to be called for each, to obtain the probability of
-each label (or, for n-1 labels or until a label with &amp;gt;.5 probability is
-found). For obtaining the probability of a continuous value, this function
-is useful for deciding between picking among a finite set of values. The
-empirical CDF may be used to obtain an actual probability for a given
-continuous value, otherwise, the empirical PDF is estimated and a rela-
-tive likelihood is returned.
-regression, set doRegress = T to obtain the most likely value of
-the target feature, instead of obtaining its relative likelihood." />
+<meta property="og:title" content="Full Bayesian inferencing for determining the probability or relative
+likelihood of a given value. Uses the full extended theorem of Bayes,
+taking all selected features into account. Expands
+Bayes' theorem to accomodate all dependent features, then calculates
+each conditional probability (or relative likelihood) and returns a
+single result reflecting the probability or relative likelihood of
+the target feature assuming its given value, given that all the other
+dependent features assume their given value. The target feature
+(designated by 'labelCol') may be discrete or continuous. — bayesProbability" />
+<meta property="og:description" content="If at least one of the depending features or the the target feature
+is continuous and the PDF ('doEcdf' = F) is built, the result of this
+function is a relative likelihood of the target feature's value. If
+all of the features are discrete or the empirical CDF is used instead
+of the PDF, the result of this function is a probability." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -136,48 +120,37 @@ the target feature, instead of obtaining its relative likelihood." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Uses simple Bayesian inference to determine the probability or relative
-likelihood of a given value. This function can also regress to the most
-likely value instead. Simple means that segmented data is used in a way
-that is equal to how a Bayesian network works. For a finite set of labels,
-this function needs to be called for each, to obtain the probability of
-each label (or, for n-1 labels or until a label with &gt;.5 probability is
-found). For obtaining the probability of a continuous value, this function
-is useful for deciding between picking among a finite set of values. The
-empirical CDF may be used to obtain an actual probability for a given
-continuous value, otherwise, the empirical PDF is estimated and a rela-
-tive likelihood is returned.
-regression, set <code>doRegress = T</code> to obtain the most likely value of
-the target feature, instead of obtaining its relative likelihood.</h1>
+    <h1>Full Bayesian inferencing for determining the probability or relative
+likelihood of a given value. Uses the full extended theorem of Bayes,
+taking all selected features into account. Expands
+Bayes' theorem to accomodate all dependent features, then calculates
+each conditional probability (or relative likelihood) and returns a
+single result reflecting the probability or relative likelihood of
+the target feature assuming its given value, given that all the other
+dependent features assume their given value. The target feature
+(designated by 'labelCol') may be discrete or continuous.</h1>
     
-    <div class="hidden name"><code>bayesInferSimple.Rd</code></div>
+    <div class="hidden name"><code>bayesProbability.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Uses simple Bayesian inference to determine the probability or relative
-likelihood of a given value. This function can also regress to the most
-likely value instead. Simple means that segmented data is used in a way
-that is equal to how a Bayesian network works. For a finite set of labels,
-this function needs to be called for each, to obtain the probability of
-each label (or, for n-1 labels or until a label with &gt;.5 probability is
-found). For obtaining the probability of a continuous value, this function
-is useful for deciding between picking among a finite set of values. The
-empirical CDF may be used to obtain an actual probability for a given
-continuous value, otherwise, the empirical PDF is estimated and a rela-
-tive likelihood is returned.
-regression, set <code>doRegress = T</code> to obtain the most likely value of
-the target feature, instead of obtaining its relative likelihood.</p>
+    <p>If at least one of the depending features or the the target feature
+is continuous and the PDF ('doEcdf' = F) is built, the result of this
+function is a relative likelihood of the target feature's value. If
+all of the features are discrete or the empirical CDF is used instead
+of the PDF, the result of this function is a probability.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>bayesInferSimple</span>(<span class='no'>df</span>, <span class='no'>features</span>, <span class='no'>targetCol</span>, <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>doRegress</span> <span class='kw'>=</span> <span class='no'>F</span>, <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='no'>F</span>)</pre>
+    <pre class="usage"><span class='fu'>bayesProbability</span>(<span class='no'>df</span>, <span class='no'>features</span>, <span class='no'>targetCol</span>, <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>shiftAmount</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='no'>F</span>,
+  <span class='kw'>useParallel</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>df</th>
-      <td><p>data.frame</p></td>
+      <td><p>data.frame that contains all the feature's data</p></td>
     </tr>
     <tr>
       <th>features</th>
@@ -197,16 +170,22 @@ empty vector is given, then all of the features are used (except for the
 label). The order then depends on the features' order.</p></td>
     </tr>
     <tr>
+      <th>shiftAmount</th>
+      <td><p>numeric an offset value used to increase any one
+probability (factor) in the full built equation. In scenarios with many
+dependencies, it is more likely that a single conditional probability
+becomes zero, which would result in the entire probability being zero.
+Since this is often useless, the 'shiftAmount' can be added to each
+factor, resulting in a non-zero probability that can at least be used
+to order samples by likelihood. Note that, with a positive 'shiftAmount',
+the result of this function cannot be said to be a probability any
+longer, but rather results in a comparable likelihood (a 'probability
+score').</p></td>
+    </tr>
+    <tr>
       <th>retainMinValues</th>
       <td><p>integer to require a minimum amount of data points
 when segmenting the data feature by feature.</p></td>
-    </tr>
-    <tr>
-      <th>doRegress</th>
-      <td><p>default FALSE a boolean to indicate whether to do a
-regression instead of returning the relative likelihood of a continuous
-feature. If the target feature is discrete and regression is requested,
-will issue a warning.</p></td>
     </tr>
     <tr>
       <th>doEcdf</th>
@@ -216,13 +195,25 @@ feature. If false, uses the empirical PDF to return the rel. likelihood.
 This parameter does not have any effect when inferring discrete values
 or when doing a regression.</p></td>
     </tr>
+    <tr>
+      <th>useParallel</th>
+      <td><p>default NULL a boolean to indicate whether to use a
+previously registered parallel backend. If no explicit value was given,
+calls <code><a href='https://rdrr.io/pkg/foreach/man/getDoParWorkers.html'>foreach::getDoParRegistered()</a></code> to check for a parallel
+backend. When using parallelism, this function calculates each factor
+in the numerator and denominator of the final equation in parallel.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>numeric probability (inferring discrete labels) or relative
 likelihood (regression, inferring likelihood of continuous value) or most
-likely value given the conditional features.</p>
+likely value given the conditional features. If using a positive
+<code>shiftAmount</code>, the result is a 'probability score'.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>test-case "a zero denominator can happen"</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -230,6 +221,7 @@ likely value given the conditional features.</p>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
+      <li><a href="#see-also">See also</a></li>
     </ul>
 
     <h2>Author</h2>

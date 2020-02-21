@@ -2,6 +2,7 @@
 
 export(bayesComputeMarginalFactor)
 export(bayesInferSimple)
+export(bayesProbability)
 export(bayesProbabilitySimple)
 export(bayesRegressSimple)
 export(bayesToLatex)
