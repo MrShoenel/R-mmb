@@ -6,9 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, string
-and boolean values. — createFeatureForBayes • mmb</title>
+<title>Uses simple Bayesian inference to return the probability or relative likeli-
+hood or a discrete labe or continuous value. — bayesProbabilitySimple • mmb</title>
 
 
 <!-- jquery -->
@@ -37,12 +36,10 @@ and boolean values. — createFeatureForBayes • mmb</title>
 
 
 
-<meta property="og:title" content="Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, string
-and boolean values. — createFeatureForBayes" />
-<meta property="og:description" content="Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, string
-and boolean values." />
+<meta property="og:title" content="Uses simple Bayesian inference to return the probability or relative likeli-
+hood or a discrete labe or continuous value. — bayesProbabilitySimple" />
+<meta property="og:description" content="Uses simple Bayesian inference to return the probability or relative likeli-
+hood or a discrete labe or continuous value." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -106,52 +103,63 @@ and boolean values." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, string
-and boolean values.</h1>
+    <h1>Uses simple Bayesian inference to return the probability or relative likeli-
+hood or a discrete labe or continuous value.</h1>
     
-    <div class="hidden name"><code>createFeatureForBayes.Rd</code></div>
+    <div class="hidden name"><code>bayesProbabilitySimple.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, string
-and boolean values.</p>
+    <p>Uses simple Bayesian inference to return the probability or relative likeli-
+hood or a discrete labe or continuous value.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createFeatureForBayes</span>(<span class='no'>name</span>, <span class='no'>value</span>, <span class='kw'>isLabel</span> <span class='kw'>=</span> <span class='no'>F</span>, <span class='kw'>isDiscrete</span> <span class='kw'>=</span> <span class='no'>F</span>)</pre>
+    <pre class="usage"><span class='fu'>bayesProbabilitySimple</span>(<span class='no'>df</span>, <span class='no'>features</span>, <span class='no'>targetCol</span>,
+  <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(), <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='no'>F</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>name</th>
-      <td><p>the name of the feature or variable.</p></td>
+      <th>df</th>
+      <td><p>data.frame</p></td>
     </tr>
     <tr>
-      <th>value</th>
-      <td><p>the value of the feature or variable.</p></td>
+      <th>features</th>
+      <td><p>data.frame with bayes-features. One of the features needs to
+be the label-column.</p></td>
     </tr>
     <tr>
-      <th>isLabel</th>
-      <td><p>default FALSE. Indicates whether this feature or variable
-is the target variable (the label or value to predict).</p></td>
+      <th>targetCol</th>
+      <td><p>string with the name of the feature that represents the label.</p></td>
     </tr>
     <tr>
-      <th>isDiscrete</th>
-      <td><p>default FALSE. Used to indicate whether the feature or
-variable given is discrete. This will also be set to true if the value
-given is a charater, factor or a logical.</p></td>
+      <th>selectedFeatureNames</th>
+      <td><p>vector default <code><a href='https://rdrr.io/r/base/c.html'>c()</a></code>. Vector of strings that
+are the names of the features the to-predict label depends on. If an empty
+vector is given, then all of the features are used (except for the label). The
+order then depends on the features' order.</p></td>
+    </tr>
+    <tr>
+      <th>retainMinValues</th>
+      <td><p>integer to require a minimum amount of data points
+when segmenting the data feature by feature.</p></td>
+    </tr>
+    <tr>
+      <th>doEcdf</th>
+      <td><p>default FALSE a boolean to indicate whether to use the
+empirical CDF to return a probability when inferencing a continuous
+feature. If false, uses the empirical PDF to return the rel. likelihood.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data.frame with one row holding all the feature's value's
-properties.</p>
+    <p>double the probability of the target-label, using the maximum a
+posteriori estimate.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code>sampleToBayesFeatures</code> that uses this function</p></div>
+    <div class='dont-index'><p><code><a href='bayesInferSimple.html'>mmb::bayesInferSimple()</a></code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

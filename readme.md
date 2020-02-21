@@ -4,7 +4,7 @@
 
 
 # R-package: `mmb`
-This is the repository of the R-package __`mmb`__ for _arbitrary dependency mixed multivariate bayesian models for regression, classification and neighborhood search using joint probabilities and Kernel Density Estimation._
+This is the repository of the R-package __`mmb`__ for _arbitrary dependency mixed multivariate bayesian models for inferencing, regression and neighborhood search using joint probabilities and Kernel Density Estimation._
 
 ## Building the package
 That's easy! Just run:

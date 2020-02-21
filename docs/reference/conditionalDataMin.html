@@ -6,9 +6,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, string
-and boolean values. — createFeatureForBayes • mmb</title>
+<title>Takes a data.frame and segments it, according to the selected variables.
+Only rows satisfying all conditions are kept. Supports discrete and con-
+tinuous variables. — conditionalDataMin • mmb</title>
 
 
 <!-- jquery -->
@@ -37,12 +37,12 @@ and boolean values. — createFeatureForBayes • mmb</title>
 
 
 
-<meta property="og:title" content="Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, string
-and boolean values. — createFeatureForBayes" />
-<meta property="og:description" content="Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, string
-and boolean values." />
+<meta property="og:title" content="Takes a data.frame and segments it, according to the selected variables.
+Only rows satisfying all conditions are kept. Supports discrete and con-
+tinuous variables. — conditionalDataMin" />
+<meta property="og:description" content="Takes a data.frame and segments it, according to the selected variables.
+Only rows satisfying all conditions are kept. Supports discrete and con-
+tinuous variables." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -106,52 +106,63 @@ and boolean values." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, string
-and boolean values.</h1>
+    <h1>Takes a data.frame and segments it, according to the selected variables.
+Only rows satisfying all conditions are kept. Supports discrete and con-
+tinuous variables.</h1>
     
-    <div class="hidden name"><code>createFeatureForBayes.Rd</code></div>
+    <div class="hidden name"><code>conditionalDataMin.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, string
-and boolean values.</p>
+    <p>Takes a data.frame and segments it, according to the selected variables.
+Only rows satisfying all conditions are kept. Supports discrete and con-
+tinuous variables.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createFeatureForBayes</span>(<span class='no'>name</span>, <span class='no'>value</span>, <span class='kw'>isLabel</span> <span class='kw'>=</span> <span class='no'>F</span>, <span class='kw'>isDiscrete</span> <span class='kw'>=</span> <span class='no'>F</span>)</pre>
+    <pre class="usage"><span class='fu'>conditionalDataMin</span>(<span class='no'>df</span>, <span class='no'>features</span>, <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>name</th>
-      <td><p>the name of the feature or variable.</p></td>
+      <th>df</th>
+      <td><p>data.frame with data to segment. If it contains less than or
+equally many rows as specified by <code>retainMinValues</code>, then the same
+data.frame is returned.</p></td>
     </tr>
     <tr>
-      <th>value</th>
-      <td><p>the value of the feature or variable.</p></td>
+      <th>features</th>
+      <td><p>data.frame of bayes-features that are used to segment.
+Each feature's value is used to segment the data, and the features are
+used in the order as given by <code>selectedFeatureNames</code>. If those are
+not given, then the order of this data.frame is used.</p></td>
     </tr>
     <tr>
-      <th>isLabel</th>
-      <td><p>default FALSE. Indicates whether this feature or variable
-is the target variable (the label or value to predict).</p></td>
+      <th>selectedFeatureNames</th>
+      <td><p>default <code><a href='https://rdrr.io/r/base/c.html'>c()</a></code>. Character vector with the
+names of the variables that shall be used for segmenting. Segmenting is
+done variable by variable, and the order depends on this vector. If this
+vector is empty, then the originally given data.frame is returned.</p></td>
     </tr>
     <tr>
-      <th>isDiscrete</th>
-      <td><p>default FALSE. Used to indicate whether the feature or
-variable given is discrete. This will also be set to true if the value
-given is a charater, factor or a logical.</p></td>
+      <th>retainMinValues</th>
+      <td><p>default 1. The minimum amount of rows to retain.
+Filtering the data by the selected features may reduce the amount of
+remaining rows quickly, and this can be used as an early stopping criteria.
+Note that filtering is done variable by variable, and the amount of
+remaining rows is evaluated after each segmenting-step. If the threshold
+is undercut, then the result from the previous round is returned.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data.frame with one row holding all the feature's value's
-properties.</p>
+    <p>data.frame that is segmented according to the selected variables
+and the minimum amount of rows to retain.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code>sampleToBayesFeatures</code> that uses this function</p></div>
+    <div class='dont-index'><p><code><a href='getValueKeyOfBayesFeatures.html'>getValueKeyOfBayesFeatures()</a></code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

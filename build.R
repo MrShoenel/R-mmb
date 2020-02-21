@@ -2,6 +2,8 @@ args <- commandArgs(trailingOnly = T)
 print(args)
 
 setwd(paste(getwd(), "pkg", "mmb", sep = "/"))
+base::Sys.setenv(IS_BUILD_COMMAND = "TRUE")
+source("./tests/helpers.R")
 
 cov <- function() {
   print("Generating coverage report..")
@@ -14,7 +16,8 @@ cov <- function() {
 
 
 check <- function(strict = T) {
-  temp <- devtools::check()
+  temp <- devtools::check(manual = F, document = F)
+
   print(temp)
 
   cnt <- data.frame(
@@ -51,20 +54,26 @@ buildSite <- function() {
 }
 
 
-devtools::document()
+tryCatch({
+  devtools::document()
+  install.mmb()
 
-doAll <- length(args) > 0 & args[1] == "all"
-if (doAll) {
-  check()
-}
+  doAll <- length(args) > 0 & args[1] == "all"
+  if (doAll) {
+    check()
+  }
+
+  #test() # testing is done by cov()
+  cov()
+
+  if (doAll) {
+    devtools::build_manual()
+    buildSite()
+  }
+
+  remove.mmb()
+}, finally = {
+  base::Sys.unsetenv("IS_BUILD_COMMAND")
+})
 
 
-test()
-cov()
-
-
-if (doAll) {
-  devtools::build()
-  devtools::build_manual()
-  buildSite()
-}

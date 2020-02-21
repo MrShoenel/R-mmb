@@ -67,7 +67,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -119,6 +119,82 @@
       <tr>
         
         <td>
+          <p><code><a href="bayesComputeMarginalFactor.html">bayesComputeMarginalFactor()</a></code> </p>
+        </td>
+        <td><p>Computes the probability (discrete feature) or relative likelihood
+(continuous feature) of one given feature and a concrete value for it.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="bayesInferSimple.html">bayesInferSimple()</a></code> </p>
+        </td>
+        <td><p>Uses simple Bayesian inference to determine the probability or relative
+likelihood of a given value. This function can also regress to the most
+likely value instead. Simple means that segmented data is used in a way
+that is equal to how a Bayesian network works. For a finite set of labels,
+this function needs to be called for each, to obtain the probability of
+each label (or, for n-1 labels or until a label with &gt;.5 probability is
+found). For obtaining the probability of a continuous value, this function
+is useful for deciding between picking among a finite set of values. The
+empirical CDF may be used to obtain an actual probability for a given
+continuous value, otherwise, the empirical PDF is estimated and a rela-
+tive likelihood is returned.
+regression, set <code>doRegress = T</code> to obtain the most likely value of
+the target feature, instead of obtaining its relative likelihood.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="bayesProbability.html">bayesProbability()</a></code> </p>
+        </td>
+        <td><p>Full Bayesian inferencing for determining the probability or relative
+likelihood of a given value. Uses the full extended theorem of Bayes,
+taking all selected features into account. Expands
+Bayes' theorem to accomodate all dependent features, then calculates
+each conditional probability (or relative likelihood) and returns a
+single result reflecting the probability or relative likelihood of
+the target feature assuming its given value, given that all the other
+dependent features assume their given value. The target feature
+(designated by 'labelCol') may be discrete or continuous.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="bayesProbabilitySimple.html">bayesProbabilitySimple()</a></code> </p>
+        </td>
+        <td><p>Uses simple Bayesian inference to return the probability or relative likeli-
+hood or a discrete labe or continuous value.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="bayesRegressSimple.html">bayesRegressSimple()</a></code> </p>
+        </td>
+        <td><p>Uses simple Bayesian inferencing to segment the data given the conditional
+features. Then estimates a density over the remaining values of the target
+feature and returns the most likely value using a maximum a posteriori
+estimate of the kernel (returning its mode).</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="bayesToLatex.html">bayesToLatex()</a></code> </p>
+        </td>
+        <td><p>Creates a string that can be used in Latex in an e.g. equation-environment.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="checkBayesFeature.html">checkBayesFeature()</a></code> </p>
+        </td>
+        <td><p>Internal function to check common arguments for function that
+use samples transformed to bayes-features.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="conditionalDataMin.html">conditionalDataMin()</a></code> </p>
+        </td>
+        <td><p>Takes a data.frame and segments it, according to the selected variables.
+Only rows satisfying all conditions are kept. Supports discrete and con-
+tinuous variables.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="createFeatureForBayes.html">createFeatureForBayes()</a></code> </p>
         </td>
         <td><p>Transforms a sample's feature's value into a dataframe, that holds
@@ -131,6 +207,26 @@ and boolean values.</p></td>
         </td>
         <td><p>Discretizes a continuous random variable into buckets (ranges). Each range
 is delimited by an exclusive minimum value and an inclusive maximum value.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="estimatePdf.html">estimatePdf()</a></code> </p>
+        </td>
+        <td><p>Given a few observations of a random variable, this function returns an
+approximation of the PDF as a function.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="getMessages.html">getMessages()</a></code> </p>
+        </td>
+        <td><p>Getter for the state of messages. Returns true if enabled.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="getProbForDiscrete.html">getProbForDiscrete()</a></code> </p>
+        </td>
+        <td><p>Similar to @seealso <code>estimatePdf</code>, this function returns the probability
+for a discrete value, given some observations.</p></td>
       </tr><tr>
         
         <td>
@@ -175,6 +271,13 @@ with validation data) and transforms it into a data.frame where
 each row corresponds to one feature (and its value) of the sample.
 This is done using @seealso <code>createFeatureForBayes</code>. This
 operation can be thought of transposing a matrix.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="setMessages.html">setMessages()</a></code> </p>
+        </td>
+        <td><p>Setter for enabling or disabling messages. Messages are disabled by default.
+Use these to enable high verbosity.</p></td>
       </tr><tr>
         
         <td>

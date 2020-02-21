@@ -9,12 +9,15 @@ that is equal to how a Bayesian network works. For a finite set of labels,
 this function needs to be called for each, to obtain the probability of
 each label (or, for n-1 labels or until a label with >.5 probability is
 found). For obtaining the probability of a continuous value, this function
-is useful for deciding between picking among a finite set of values. For
+is useful for deciding between picking among a finite set of values. The
+empirical CDF may be used to obtain an actual probability for a given
+continuous value, otherwise, the empirical PDF is estimated and a rela-
+tive likelihood is returned.
 regression, set \code{doRegress = T} to obtain the most likely value of
 the target feature, instead of obtaining its relative likelihood.}
 \usage{
 bayesInferSimple(df, features, targetCol, selectedFeatureNames = c(),
-  doRegress = F)
+  retainMinValues = 1, doRegress = F, doEcdf = F)
 }
 \arguments{
 \item{df}{data.frame}
@@ -30,10 +33,19 @@ that are the names of the features the to-predict label depends on. If an
 empty vector is given, then all of the features are used (except for the
 label). The order then depends on the features' order.}
 
+\item{retainMinValues}{integer to require a minimum amount of data points
+when segmenting the data feature by feature.}
+
 \item{doRegress}{default FALSE a boolean to indicate whether to do a
 regression instead of returning the relative likelihood of a continuous
 feature. If the target feature is discrete and regression is requested,
 will issue a warning.}
+
+\item{doEcdf}{default FALSE a boolean to indicate whether to use the
+empirical CDF to return a probability when inferencing a continuous
+feature. If false, uses the empirical PDF to return the rel. likelihood.
+This parameter does not have any effect when inferring discrete values
+or when doing a regression.}
 }
 \value{
 numeric probability (inferring discrete labels) or relative
@@ -48,7 +60,10 @@ that is equal to how a Bayesian network works. For a finite set of labels,
 this function needs to be called for each, to obtain the probability of
 each label (or, for n-1 labels or until a label with >.5 probability is
 found). For obtaining the probability of a continuous value, this function
-is useful for deciding between picking among a finite set of values. For
+is useful for deciding between picking among a finite set of values. The
+empirical CDF may be used to obtain an actual probability for a given
+continuous value, otherwise, the empirical PDF is estimated and a rela-
+tive likelihood is returned.
 regression, set \code{doRegress = T} to obtain the most likely value of
 the target feature, instead of obtaining its relative likelihood.
 }
