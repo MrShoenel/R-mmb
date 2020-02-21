@@ -10,6 +10,7 @@ branches:
 env:
   global:
   - MAKEFLAGS="-j 2"
+  - IS_BUILD_COMMAND=TRUE
 
 before_install:
   - cd pkg/mmb
