@@ -67,7 +67,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -126,6 +126,20 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="bayesConvertData.html">bayesConvertData()</a></code> </p>
+        </td>
+        <td><p>Converts all columns in a data.frame that are factors to character,
+except for the target column.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="bayesFeaturesToSample.html">bayesFeaturesToSample()</a></code> </p>
+        </td>
+        <td><p>Counter operation to @seealso <code>mmb::sampleToBayesFeatures()</code>.
+Takes a Bayes-feature data.frame and transforms it back to a row.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="bayesInferSimple.html">bayesInferSimple()</a></code> </p>
         </td>
         <td><p>Uses simple Bayesian inference to determine the probability or relative
@@ -146,15 +160,14 @@ the target feature, instead of obtaining its relative likelihood.</p></td>
         <td>
           <p><code><a href="bayesProbability.html">bayesProbability()</a></code> </p>
         </td>
-        <td><p>Full Bayesian inferencing for determining the probability or relative
-likelihood of a given value. Uses the full extended theorem of Bayes,
-taking all selected features into account. Expands
-Bayes' theorem to accomodate all dependent features, then calculates
-each conditional probability (or relative likelihood) and returns a
-single result reflecting the probability or relative likelihood of
-the target feature assuming its given value, given that all the other
-dependent features assume their given value. The target feature
-(designated by 'labelCol') may be discrete or continuous.</p></td>
+        <td><p>Full Bayesian inferencing for determining the probability or
+relative likelihood of a given value.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="bayesProbabilityAssign.html">bayesProbabilityAssign()</a></code> </p>
+        </td>
+        <td><p>Assign probabilities to one or more samples, given some training data.</p></td>
       </tr><tr>
         
         <td>
@@ -162,6 +175,18 @@ dependent features assume their given value. The target feature
         </td>
         <td><p>Uses simple Bayesian inference to return the probability or relative likeli-
 hood or a discrete labe or continuous value.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="bayesRegress.html">bayesRegress()</a></code> </p>
+        </td>
+        <td><p>Perform full-dependency Bayesian regression for a sample.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="bayesRegressAssign.html">bayesRegressAssign()</a></code> </p>
+        </td>
+        <td><p>Regression for one or more samples, given some training data.</p></td>
       </tr><tr>
         
         <td>
@@ -191,15 +216,17 @@ use samples transformed to bayes-features.</p></td>
         </td>
         <td><p>Takes a data.frame and segments it, according to the selected variables.
 Only rows satisfying all conditions are kept. Supports discrete and con-
-tinuous variables.</p></td>
+tinuous variables. Supports NA, NaN and NULL by using is.na, is.nan and
+is.null as comparator.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="createFeatureForBayes.html">createFeatureForBayes()</a></code> </p>
         </td>
         <td><p>Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, string
-and boolean values.</p></td>
+its name, type and value. Currently supports numeric, factor, character
+and boolean values. Note that factor is internally converted to
+character.</p></td>
       </tr><tr>
         
         <td>

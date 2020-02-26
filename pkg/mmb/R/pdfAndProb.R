@@ -10,7 +10,8 @@
 #' of the data.
 #' @param densFun function default \code{stats::density} with bandwith 'SJ'.
 #' Function to compute the empirical density of a non-empty vector of numerical
-#' data.
+#' data. Note that this function needs to return the properties 'x' and 'y' as
+#' \code{stats::density} does, so that we can return the argmax.
 #' @return list with a function that is the empirical PDF using KDE. The list
 #' also has two properties 'min' and 'max' which represent the integratable
 #' range of that function. 'min' and 'max' are both zero if not data (an
@@ -28,18 +29,16 @@ estimatePdf <- function(data = c(), densFun = function(vec) {
 }) {
   l <- length(data)
   pdf <- list(
-    fun = NULL,
+    fun = function(x) 0,
     min = 0,
     max = 0,
     x = c(),
     y = c(),
-    argmax = NA
+    argmax = NaN
   )
 
   if (l == 0) {
     if (mmb::getWarnings()) warning("No data was given for the PDF.")
-    pdf$fun <- function(x) 0
-
   } else if (l == 1) {
     if (mmb::getWarnings()) warning("Only one data point given for estimating the PDF.")
     pdf$fun <- function(x) {
@@ -54,13 +53,29 @@ estimatePdf <- function(data = c(), densFun = function(vec) {
     pdf$y <- c(1)
     pdf$argmax <- data[1]
   } else {
-    densFun <- densFun(data)
-    pdf$fun <- stats::approxfun(densFun)
-    pdf$min <- min(densFun$x)
-    pdf$max <- max(densFun$x)
-    pdf$x <- densFun$x
-    pdf$y <- densFun$y
-    pdf$argmax <- pdf$x[which.max(pdf$y)]
+    tryCatch({
+      set.seed(84735)
+      f <- densFun(data)
+      af <- stats::approxfun(f)
+      pdf$fun <- function(x) {
+        # If the current value is out of range, then its density is zero anyway, because
+        # all of the other values evolve around another range, i.e., the current value
+        # is outside the support of the ePDF.
+        if (x < pdf$min || x > pdf$max) {
+          return(0)
+        }
+        return(af(x))
+      }
+      pdf$min <- min(f$x)
+      pdf$max <- max(f$x)
+      pdf$x <- f$x
+      pdf$y <- f$y
+      pdf$argmax <- pdf$x[which.max(pdf$y)]
+    }, error=function(cond) {
+      if (mmb::getWarnings()) {
+        warning(paste("Density estimation failed:", cond))
+      }
+    })
   }
 
   return(pdf)

@@ -4,7 +4,8 @@
 \alias{conditionalDataMin}
 \title{Takes a data.frame and segments it, according to the selected variables.
 Only rows satisfying all conditions are kept. Supports discrete and con-
-tinuous variables.}
+tinuous variables. Supports NA, NaN and NULL by using is.na, is.nan and
+is.null as comparator.}
 \usage{
 conditionalDataMin(df, features, selectedFeatureNames = c(),
   retainMinValues = 1)
@@ -38,7 +39,8 @@ and the minimum amount of rows to retain.
 \description{
 Takes a data.frame and segments it, according to the selected variables.
 Only rows satisfying all conditions are kept. Supports discrete and con-
-tinuous variables.
+tinuous variables. Supports NA, NaN and NULL by using is.na, is.nan and
+is.null as comparator.
 }
 \seealso{
 \code{getValueKeyOfBayesFeatures()}

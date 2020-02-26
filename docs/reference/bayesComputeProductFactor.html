@@ -84,7 +84,7 @@ right order. If computing the denominator, no target-feature is required." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -135,7 +135,7 @@ right order. If computing the denominator, no target-feature is required.</p>
     </div>
 
     <pre class="usage"><span class='fu'>bayesComputeProductFactor</span>(<span class='no'>df</span>, <span class='no'>conditionalFeatures</span>, <span class='no'>targetFeature</span>,
-  <span class='no'>computeNumerator</span>, <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='no'>F</span>)</pre>
+  <span class='no'>computeNumerator</span>, <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -152,7 +152,7 @@ be empty, as we need to depend on at least one feature.</p></td>
     </tr>
     <tr>
       <th>targetFeature</th>
-      <td><p>data.frame with exact one Bayesian feature. Any ex-
+      <td><p>data.frame with exactly one Bayesian feature. Any ex-
 cessive features are discarded and a warning is produced. If computing a
 factor for the denominator, this data.frame may be empty.</p></td>
     </tr>
@@ -171,7 +171,10 @@ during segmenting using the conditional features.</p></td>
       <td><p>default FALSE a boolean to indicate whether to use the
 empirical CDF to return a probability when inferencing a continuous
 feature. If false, uses the empirical PDF to return the rel. likelihood.
-This parameter does not have any effect when inferring discrete values.</p></td>
+This parameter does not have any effect when inferring discrete values.
+Using the ECDF, a probability to find a value less than or equal to the
+given value is returned. Setting this parameter to true in conjunction
+with a non-zero shiftAmount must be done with caution.</p></td>
     </tr>
     </table>
 

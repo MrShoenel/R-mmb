@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Full Bayesian inferencing for determining the probability or
-relative likelihood of a given value. — bayesProbability • mmb</title>
+<title>Perform full-dependency Bayesian regression for a sample. — bayesRegress • mmb</title>
 
 
 <!-- jquery -->
@@ -36,20 +35,12 @@ relative likelihood of a given value. — bayesProbability • mmb</title>
 
 
 
-<meta property="og:title" content="Full Bayesian inferencing for determining the probability or
-relative likelihood of a given value. — bayesProbability" />
-<meta property="og:description" content="Uses the full extended theorem of Bayes, taking all selected features
-into account. Expands Bayes' theorem to accomodate all dependent
-features, then calculates each conditional probability (or relative
-likelihood) and returns a single result reflecting the probability or
-relative likelihood of the target feature assuming its given value,
-given that all the other dependent features assume their given value.
-The target feature (designated by 'labelCol') may be discrete or continuous.
-If at least one of the depending features or the the target feature
-is continuous and the PDF ('doEcdf' = FALSE) is built, the result of this
-function is a relative likelihood of the target feature's value. If
-all of the features are discrete or the empirical CDF is used instead
-of the PDF, the result of this function is a probability." />
+<meta property="og:title" content="Perform full-dependency Bayesian regression for a sample. — bayesRegress" />
+<meta property="og:description" content="This method performs full-dependency regression by
+discretizing the continuous target variable into ranges (buckets),
+then finding the most probable ranges. It can either regress on
+the values in the most likely range or sample from all ranges,
+according to their likelihood." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -113,30 +104,24 @@ of the PDF, the result of this function is a probability." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Full Bayesian inferencing for determining the probability or
-relative likelihood of a given value.</h1>
+    <h1>Perform full-dependency Bayesian regression for a sample.</h1>
     
-    <div class="hidden name"><code>bayesProbability.Rd</code></div>
+    <div class="hidden name"><code>bayesRegress.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Uses the full extended theorem of Bayes, taking all selected features
-into account. Expands Bayes' theorem to accomodate all dependent
-features, then calculates each conditional probability (or relative
-likelihood) and returns a single result reflecting the probability or
-relative likelihood of the target feature assuming its given value,
-given that all the other dependent features assume their given value.
-The target feature (designated by 'labelCol') may be discrete or continuous.
-If at least one of the depending features or the the target feature
-is continuous and the PDF ('doEcdf' = FALSE) is built, the result of this
-function is a relative likelihood of the target feature's value. If
-all of the features are discrete or the empirical CDF is used instead
-of the PDF, the result of this function is a probability.</p>
+    <p>This method performs full-dependency regression by
+discretizing the continuous target variable into ranges (buckets),
+then finding the most probable ranges. It can either regress on
+the values in the most likely range or sample from all ranges,
+according to their likelihood.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>bayesProbability</span>(<span class='no'>df</span>, <span class='no'>features</span>, <span class='no'>targetCol</span>, <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>shiftAmount</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useParallel</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>bayesRegress</span>(<span class='no'>df</span>, <span class='no'>features</span>, <span class='no'>targetCol</span>, <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>shiftAmount</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useParallel</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>numBuckets</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log2</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>df</span>))),
+  <span class='kw'>sampleFromAllBuckets</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>regressor</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>data</span>)
+  <span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/mmb/man/estimatePdf.html'>estimatePdf</a></span>(<span class='no'>data</span>)$<span class='no'>argmax</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -201,25 +186,46 @@ calls <code><a href='https://rdrr.io/pkg/foreach/man/getDoParWorkers.html'>forea
 backend. When using parallelism, this function calculates each factor
 in the numerator and denominator of the final equation in parallel.</p></td>
     </tr>
+    <tr>
+      <th>numBuckets</th>
+      <td><p>integer the amount of buckets to for discretization.
+Buckets are built in an equidistant manner, not as quantiles (i.e., one
+bucket has likely a different amount of values than another).</p></td>
+    </tr>
+    <tr>
+      <th>sampleFromAllBuckets</th>
+      <td><p>default TRUE boolean to indicate how to
+obtain values for regression from the buckets. If true, than takes
+values from those buckets with a non-zero probability, and according
+to their probability. If false, selects all values from the bucket
+with the highest probability.</p></td>
+    </tr>
+    <tr>
+      <th>regressor</th>
+      <td><p>Function that is given the collected values for
+regression and thus finally used to select a most likely value. Defaults
+to the built-in estimator for the empirical PDF and returns its argmax.
+However, any other function can be used, too, such as min, max, median,
+average etc. You may also use this function to obtain the raw values
+for further processing.</p></td>
+    </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>numeric probability (inferring discrete labels) or relative
-likelihood (regression, inferring likelihood of continuous value) or most
-likely value given the conditional features. If using a positive
-<code>shiftAmount</code>, the result is a 'probability score'.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>test-case "a zero denominator can happen"</p></div>
-
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>df</span> <span class='kw'>&lt;-</span> <span class='no'>iris</span>[, ]
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>84735</span>)
+<span class='no'>rn</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>base</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>df</span>), <span class='fl'>150</span>)
+<span class='no'>dfTrain</span> <span class='kw'>&lt;-</span> <span class='no'>df</span>[<span class='fl'>1</span>:<span class='fl'>120</span>, ]
+<span class='no'>dfValid</span> <span class='kw'>&lt;-</span> <span class='no'>df</span>[<span class='fl'>121</span>:<span class='fl'>150</span>, ]
+<span class='no'>tf</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/mmb/man/sampleToBayesFeatures.html'>sampleToBayesFeatures</a></span>(<span class='no'>dfValid</span>[<span class='fl'>1</span>,], <span class='st'>"Sepal.Length"</span>)
+<span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/mmb/man/bayesRegress.html'>bayesRegress</a></span>(<span class='no'>dfTrain</span>, <span class='no'>tf</span>, <span class='st'>"Sepal.Length"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Segmenting stopped prematurely.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Segmenting stopped prematurely.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Segmenting stopped prematurely.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Segmenting stopped prematurely.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Segmenting stopped prematurely.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Segmenting stopped prematurely.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Segmenting stopped prematurely.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Segmenting stopped prematurely.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Segmenting stopped prematurely.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Segmenting stopped prematurely.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Segmenting stopped prematurely.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Segmenting stopped prematurely.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Segmenting stopped prematurely.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Segmenting stopped prematurely.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Segmenting stopped prematurely.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Segmenting stopped prematurely.</span></div><div class='output co'>#&gt; [1] 6.500035</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#see-also">See also</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>

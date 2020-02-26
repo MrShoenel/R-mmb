@@ -18,7 +18,7 @@ test_that("conversion to latex-equations work", {
     mmb::createFeatureForBayes("C", round(mean(df$C), 2))
   )
 
-  tf <- mmb::createFeatureForBayes("A", df$A[1], isLabel = T)
+  tf <- mmb::createFeatureForBayes("A", df$A[1], isLabel = TRUE)
 
   w <- mmb::getWarnings()
   mmb::setWarnings(T)

@@ -8,12 +8,12 @@ each row corresponds to one feature (and its value) of the sample.
 This is done using @seealso \code{createFeatureForBayes}. This
 operation can be thought of transposing a matrix.}
 \usage{
-sampleToBayesFeatures(dfRow, labelCol)
+sampleToBayesFeatures(dfRow, targetCol)
 }
 \arguments{
 \item{dfRow}{a row of a data.frame with a value for each feature.}
 
-\item{labelCol}{the name of the feature (column in the data.frame)
+\item{targetCol}{the name of the feature (column in the data.frame)
 that is the target variable for classification or regression.}
 }
 \value{

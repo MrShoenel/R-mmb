@@ -1,4 +1,4 @@
-args <- commandArgs(trailingOnly = T)
+args <- commandArgs(trailingOnly = TRUE)
 print(args)
 
 setwd(paste(getwd(), "pkg", "mmb", sep = "/"))
@@ -15,8 +15,8 @@ cov <- function() {
 }
 
 
-check <- function(strict = T) {
-  temp <- devtools::check(manual = F, document = F)
+check <- function(strict = TRUE) {
+  temp <- devtools::check(manual = FALSE, document = FALSE)
 
   print(temp)
 
@@ -46,7 +46,7 @@ test <- function() {
 
 buildSite <- function() {
   if (file.exists("../../docs")) {
-    unlink("../../docs", recursive = T)
+    unlink("../../docs", recursive = TRUE)
   }
   devtools::build_site()
   file.rename("./docs", "../../docs")
@@ -55,10 +55,14 @@ buildSite <- function() {
 
 
 tryCatch({
+  doAll <- length(args) > 0 & args[1] == "all"
+
+  remove.mmb()
   devtools::document()
+
+  # Needs to go before check!
   install.mmb()
 
-  doAll <- length(args) > 0 & args[1] == "all"
   if (doAll) {
     check()
   }
@@ -69,9 +73,8 @@ tryCatch({
   if (doAll) {
     devtools::build_manual()
     buildSite()
+    devtools::build_readme()
   }
-
-  remove.mmb()
 }, finally = {
   base::Sys.unsetenv("IS_BUILD_COMMAND")
 })

@@ -6,7 +6,7 @@ varWarn <- make.varClosure(T)
 #' @param enable a boolean to indicate whether to enable warnings or not.
 #' @return void
 #' @export
-setWarnings <- function(enable = T) {
+setWarnings <- function(enable = TRUE) {
   varWarn$set(!!enable)
   varWarn$get()
 }
@@ -27,7 +27,7 @@ varMsg <- make.varClosure(F)
 #' @param enable a boolean to indicate whether to enable messages or not.
 #' @return void
 #' @export
-setMessages <- function(enable = T) {
+setMessages <- function(enable = TRUE) {
   varMsg$set(!!enable)
   varMsg$get()
 }

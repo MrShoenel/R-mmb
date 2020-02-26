@@ -4,7 +4,7 @@
 \alias{bayesToLatex}
 \title{Creates a string that can be used in Latex in an e.g. equation-environment.}
 \usage{
-bayesToLatex(conditionalFeatures, targetFeature, includeValues = F)
+bayesToLatex(conditionalFeatures, targetFeature, includeValues = FALSE)
 }
 \arguments{
 \item{conditionalFeatures}{data.frame of Bayesian features, the target-

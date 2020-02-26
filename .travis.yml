@@ -11,6 +11,8 @@ env:
   global:
   - MAKEFLAGS="-j 2"
   - IS_BUILD_COMMAND=TRUE
+  - R_BUILD_ARGS="--no-build-vignettes --no-manual"
+  - R_CHECK_ARGS="--no-build-vignettes --no-manual --timings"
 
 before_install:
   - cd pkg/mmb

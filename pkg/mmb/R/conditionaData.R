@@ -1,6 +1,7 @@
 #' Takes a data.frame and segments it, according to the selected variables.
 #' Only rows satisfying all conditions are kept. Supports discrete and con-
-#' tinuous variables.
+#' tinuous variables. Supports NA, NaN and NULL by using is.na, is.nan and
+#' is.null as comparator.
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @seealso \code{getValueKeyOfBayesFeatures()}
 #' @param df data.frame with data to segment. If it contains less than or
@@ -29,6 +30,8 @@ conditionalDataMin <- function(df, features, selectedFeatureNames = c(), retainM
     return(df)
   }
 
+  isEmpty <- function(x) is.na(x) || is.nan(x) || is.null(x)
+  whereEmpty <- function(vec) is.na(vec) | is.nan(vec)
   features <- features[features$name %in% selectedFeatureNames, ]
   filteredData <- df
 
@@ -38,11 +41,23 @@ conditionalDataMin <- function(df, features, selectedFeatureNames = c(), retainM
     op <- if (feature$isDiscrete) " == " else " <= "
     val <- paste(
       "features[", fIdx, ', "',
-      getValueKeyOfBayesFeatures(feature, feature$name),
+      mmb::getValueKeyOfBayesFeatures(feature, feature$name),
       '"]', sep = "")
 
+    # handling of NA, NaN and NULL require special handling
+    notEmptyOp <- ""
+    naOp <- ""
+    rawVal <- mmb::getValueOfBayesFeatures(feature, feature$name)
+    if (isEmpty(rawVal)) {
+      naOp <- if (is.null(rawVal)) "is.null(" else if (is.nan(rawVal)) "is.nan(" else "is.na("
+      op <- ")"
+      val <- ""
+    } else {
+       notEmptyOp <- paste('!whereEmpty(filteredData[["', feature$name, '"]]', ") & ", sep = "")
+    }
+
     temp <- filteredData[eval(parse(text =
-      paste('(filteredData[["', feature$name, '"]]', op, val, ")", sep = ""))), ]
+      paste(naOp, notEmptyOp, '(filteredData[["', feature$name, '"]]', op, val, ")", sep = ""))), ]
     if (nrow(temp) < retainMinValues) {
       # Premature stop, warn about this.
       if (mmb::getWarnings()) warning("Segmenting stopped prematurely.")

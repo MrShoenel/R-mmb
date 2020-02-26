@@ -5,7 +5,7 @@
 \title{Discretizes a continuous random variable into buckets (ranges). Each range
 is delimited by an exclusive minimum value and an inclusive maximum value.}
 \usage{
-discretizeVariableToRanges(data, openEndRanges = T, numRanges = NA,
+discretizeVariableToRanges(data, openEndRanges = TRUE, numRanges = NA,
   exclMinVal = NULL, inclMaxVal = NULL)
 }
 \arguments{

@@ -15,7 +15,7 @@ test_that("a zero numerator can happen", {
 
   feats <- rbind(
     mmb::createFeatureForBayes(
-      "A", factor(x = "2", levels = levels(df$A)), isLabel = T),
+      "A", factor(x = "2", levels = levels(df$A)), isLabel = TRUE),
     mmb::createFeatureForBayes("B", 10)
   )
 
@@ -56,7 +56,7 @@ test_that("a zero denominator can happen", {
   #)
 
   #feats <- rbind(
-  #  mmb::createFeatureForBayes("A", df$A[1], isLabel = T),
+  #  mmb::createFeatureForBayes("A", df$A[1], isLabel = TRUE),
   #  mmb::createFeatureForBayes("B", 2.5)
   #)
 })

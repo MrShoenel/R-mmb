@@ -18,6 +18,30 @@ bayesSimpleCheckData <- function(df, features, labelCol) {
 }
 
 
+#' Converts all columns in a data.frame that are factors to character,
+#' except for the target column.
+#' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @param df data.frame to be used for bayesian inferencing.
+#' @return the same data.frame with all factors converted to character.
+#' @export
+bayesConvertData <- function(df) {
+  if (!is.data.frame(df)) stop("Given object is not a data.frame")
+
+  cols <- colnames(df)
+
+  for (c in cols) {
+    if (is.factor(df[[c]])) {
+      if (is.ordered(df[[c]]) && mmb::getWarnings()) {
+        warning(paste("Data contains ordered factor ", c, ", but ordering is ignored. Maybe use orderable numeric instead.", sep = ""))
+      }
+      df[[c]] <- as.character(df[[c]])
+    }
+  }
+
+  return(df)
+}
+
+
 #' Uses simple Bayesian inference to determine the probability or relative
 #' likelihood of a given value. This function can also regress to the most
 #' likely value instead. Simple means that segmented data is used in a way
@@ -58,7 +82,7 @@ bayesSimpleCheckData <- function(df, features, labelCol) {
 #' @export
 bayesInferSimple <- function(
   df, features, targetCol, selectedFeatureNames = c(),
-  retainMinValues = 1, doRegress = F, doEcdf = F)
+  retainMinValues = 1, doRegress = FALSE, doEcdf = FALSE)
 {
   if (doRegress && doEcdf) {
     stop("doRegress and doEcdf are mutually exclusive, only one can be TRUE (or both be FALSE).")
@@ -69,13 +93,15 @@ bayesInferSimple <- function(
       # We allow this case and create a dummy feature.
       features <- rbind(
         features,
-        mmb::createFeatureForBayes(targetCol, 0, isLabel = T))
+        mmb::createFeatureForBayes(targetCol, 0, isLabel = TRUE))
     } else {
       stop("The target-column is not within the features.")
     }
   }
 
   bayesSimpleCheckData(df, features, targetCol)
+  # Make data compatible!
+  df <- mmb::bayesConvertData(df)
 
   targetFeature <- features[features$isLabel, ]
 
@@ -164,11 +190,11 @@ bayesInferSimple <- function(
 #' @export
 bayesProbabilitySimple <- function(
   df, features, targetCol,
-  selectedFeatureNames = c(), retainMinValues = 1, doEcdf = F)
+  selectedFeatureNames = c(), retainMinValues = 1, doEcdf = FALSE)
 {
   return(mmb::bayesInferSimple(
     df, features, targetCol, selectedFeatureNames,
-    retainMinValues = retainMinValues, doRegress = F, doEcdf = doEcdf))
+    retainMinValues = retainMinValues, doRegress = FALSE, doEcdf = doEcdf))
 }
 
 
@@ -200,7 +226,7 @@ bayesRegressSimple <- function(
 
   return(mmb::bayesInferSimple(
     df, features, targetCol, selectedFeatureNames,
-    retainMinValues = retainMinValues, doRegress = T))
+    retainMinValues = retainMinValues, doRegress = TRUE))
 }
 
 

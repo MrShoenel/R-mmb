@@ -5,7 +5,7 @@
 \title{Computes the probability (discrete feature) or relative likelihood
 (continuous feature) of one given feature and a concrete value for it.}
 \usage{
-bayesComputeMarginalFactor(df, feature, doEcdf = F)
+bayesComputeMarginalFactor(df, feature, doEcdf = FALSE)
 }
 \arguments{
 \item{df}{data.frame that contains all the feature's data}
@@ -16,7 +16,9 @@ by @seealso \code{mmb::createFeatureForBayes()}.}
 \item{doEcdf}{default FALSE a boolean to indicate whether to use the
 empirical CDF to return a probability when inferencing a continuous
 feature. If false, uses the empirical PDF to return the rel. likelihood.
-This parameter does not have any effect when inferring discrete values.}
+This parameter does not have any effect when inferring discrete values.
+Using the ECDF, a probability to find a value less than or equal to the
+given value is returned.}
 }
 \value{
 numeric the probability or likelihood of the given feature

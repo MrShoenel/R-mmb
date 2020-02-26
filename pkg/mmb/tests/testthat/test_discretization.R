@@ -5,7 +5,7 @@ source("../helpers.R")
 test_that("open-end ranges work", {
   ranges <- discretizeVariableToRanges(
     data = c(1,2,3,4,5,6,7,8,9),
-    openEndRanges = T,
+    openEndRanges = TRUE,
     numRanges = 3
   )
 
@@ -30,7 +30,7 @@ test_that("closed-end ranges work", {
 
   ranges <- discretizeVariableToRanges(
     data = c(1,2,3,4,5,6,7,8,9),
-    openEndRanges = F,
+    openEndRanges = FALSE,
     numRanges = 3,
   )
 
