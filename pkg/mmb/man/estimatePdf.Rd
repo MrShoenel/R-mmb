@@ -14,7 +14,8 @@ of the data.}
 
 \item{densFun}{function default \code{stats::density} with bandwith 'SJ'.
 Function to compute the empirical density of a non-empty vector of numerical
-data.}
+data. Note that this function needs to return the properties 'x' and 'y' as
+\code{stats::density} does, so that we can return the argmax.}
 }
 \value{
 list with a function that is the empirical PDF using KDE. The list

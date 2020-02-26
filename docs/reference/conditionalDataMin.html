@@ -8,7 +8,8 @@
 
 <title>Takes a data.frame and segments it, according to the selected variables.
 Only rows satisfying all conditions are kept. Supports discrete and con-
-tinuous variables. — conditionalDataMin • mmb</title>
+tinuous variables. Supports NA, NaN and NULL by using is.na, is.nan and
+is.null as comparator. — conditionalDataMin • mmb</title>
 
 
 <!-- jquery -->
@@ -39,10 +40,12 @@ tinuous variables. — conditionalDataMin • mmb</title>
 
 <meta property="og:title" content="Takes a data.frame and segments it, according to the selected variables.
 Only rows satisfying all conditions are kept. Supports discrete and con-
-tinuous variables. — conditionalDataMin" />
+tinuous variables. Supports NA, NaN and NULL by using is.na, is.nan and
+is.null as comparator. — conditionalDataMin" />
 <meta property="og:description" content="Takes a data.frame and segments it, according to the selected variables.
 Only rows satisfying all conditions are kept. Supports discrete and con-
-tinuous variables." />
+tinuous variables. Supports NA, NaN and NULL by using is.na, is.nan and
+is.null as comparator." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -75,7 +78,7 @@ tinuous variables." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -108,7 +111,8 @@ tinuous variables." />
     <div class="page-header">
     <h1>Takes a data.frame and segments it, according to the selected variables.
 Only rows satisfying all conditions are kept. Supports discrete and con-
-tinuous variables.</h1>
+tinuous variables. Supports NA, NaN and NULL by using is.na, is.nan and
+is.null as comparator.</h1>
     
     <div class="hidden name"><code>conditionalDataMin.Rd</code></div>
     </div>
@@ -116,7 +120,8 @@ tinuous variables.</h1>
     <div class="ref-description">
     <p>Takes a data.frame and segments it, according to the selected variables.
 Only rows satisfying all conditions are kept. Supports discrete and con-
-tinuous variables.</p>
+tinuous variables. Supports NA, NaN and NULL by using is.na, is.nan and
+is.null as comparator.</p>
     </div>
 
     <pre class="usage"><span class='fu'>conditionalDataMin</span>(<span class='no'>df</span>, <span class='no'>features</span>, <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),

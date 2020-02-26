@@ -1,10 +1,10 @@
-expect_does_throw <- function(expr, doExpect = T) {
+expect_does_throw <- function(expr, doExpect = TRUE) {
   doesThrow <- tryCatch({
     expr
-    return(F)
+    return(FALSE)
   }, error=function(cond) {
     if (interactive()) warning(paste("Caught:", cond))
-    return(T)
+    return(TRUE)
   })
 
   if (doExpect) {
@@ -13,8 +13,8 @@ expect_does_throw <- function(expr, doExpect = T) {
   return(doesThrow)
 }
 
-expect_does_not_throw <- function(expr, doExpect = T) {
-  threw <- expect_does_throw(expr, doExpect = F)
+expect_does_not_throw <- function(expr, doExpect = TRUE) {
+  threw <- expect_does_throw(expr, doExpect = FALSE)
 
   if (doExpect) {
     expect_false(threw)
@@ -29,7 +29,7 @@ install.mmb <- function() {
   }
 
   if (!("mmb" %in% rownames(installed.packages()))) {
-    buildPath <- base::normalizePath(devtools::build(), mustWork = T)
+    buildPath <- base::normalizePath(devtools::build(), mustWork = TRUE)
     install.packages(buildPath, repos = NULL, type = "source")
   }
 }
@@ -39,9 +39,11 @@ remove.mmb <- function() {
     return(0)
   }
 
-  remove.packages("mmb")
   tryCatch({
-    detach("package:mmb", unload = T, character.only = T)
+    remove.packages("mmb")
   }, error=function(cond) {})
-  base::Sys.unsetenv("IS_BUILD_COMMAND")
+
+  tryCatch({
+    detach("package:mmb", unload = TRUE, character.only = TRUE)
+  }, error=function(cond) {})
 }

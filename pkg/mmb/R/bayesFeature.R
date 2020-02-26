@@ -1,6 +1,7 @@
 #' Transforms a sample's feature's value into a dataframe, that holds
-#' its name, type and value. Currently supports numeric, factor, string
-#' and boolean values.
+#' its name, type and value. Currently supports numeric, factor, character
+#' and boolean values. Note that factor is internally converted to
+#' character.
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @seealso \code{sampleToBayesFeatures} that uses this function
 #' @param name the name of the feature or variable.
@@ -13,22 +14,22 @@
 #' @return A data.frame with one row holding all the feature's value's
 #' properties.
 #' @export
-createFeatureForBayes <- function(name, value, isLabel = F, isDiscrete = F) {
+createFeatureForBayes <- function(name, value, isLabel = FALSE, isDiscrete = FALSE) {
+  value <- if (is.factor(value)) as.character(value) else value
+
   df <- data.frame(
     name = name,
     valueNumeric = if (is.numeric(value)) value else NA,
-    valueFactor = if (is.factor(value)) value else NA,
-    valueString = if (is.character(value)) value else NA,
+    valueChar = if (is.character(value)) value else NA,
     valueBool = if (is.logical(value)) value else NA,
     isLabel = isLabel,
-    isDiscrete = is.character(value) || is.factor(value) || is.logical(value) || isDiscrete == T,
+    isDiscrete = is.character(value) || is.logical(value) || isDiscrete == TRUE,
+    isNumeric = is.numeric(value),
+    isCharacter = is.character(value),
+    isLogical = is.logical(value),
 
-    stringsAsFactors = F
+    stringsAsFactors = FALSE
   )
-
-  if (is.factor(value)) {
-    df$valueFactor <- factor(c(as.character(value)), levels = levels(value))
-  }
 
   return(df)
 }
@@ -48,7 +49,7 @@ checkBayesFeature <- function(dfFeature, featName) {
   }
 
   if (!is.character(featName) || nchar(featName) == 0) {
-    stop("The given featureName is not a string or it is empty.")
+    stop("The given featureName is not character or it is empty.")
   }
 
   row <- dfFeature[which(dfFeature$name == featName), ]
@@ -73,12 +74,11 @@ checkBayesFeature <- function(dfFeature, featName) {
 getValueOfBayesFeatures <- function(dfFeature, featName) {
   row <- checkBayesFeature(dfFeature, featName)
 
-  if (!is.na(row$valueNumeric)) { return(row$valueNumeric) }
-  if (!is.na(row$valueFactor)) { return(row$valueFactor) }
-  if (!is.na(row$valueString)) { return(row$valueString) }
-  if (!is.na(row$valueBool)) { return(row$valueBool) }
+  if (row$isNumeric) { return(row$valueNumeric) }
+  if (row$isCharacter) { return(row$valueChar) }
+  if (row$isLogical) { return(row$valueBool) }
 
-  stop("NA values are not supported.")
+  stop(paste("Corrupted feature without allowed value:", featName))
 }
 
 
@@ -96,12 +96,11 @@ getValueOfBayesFeatures <- function(dfFeature, featName) {
 getValueKeyOfBayesFeatures <- function(dfFeature, featName) {
   row <- checkBayesFeature(dfFeature, featName)
 
-  if (!is.na(row$valueNumeric)) { return("valueNumeric") }
-  if (!is.na(row$valueFactor)) { return("valueFactor") }
-  if (!is.na(row$valueString)) { return("valueString") }
-  if (!is.na(row$valueBool)) { return("valueBool") }
+  if (row$isNumeric) { return("valueNumeric") }
+  if (row$isCharacter) { return("valueChar") }
+  if (row$isLogical) { return("valueBool") }
 
-  stop(paste("Cannot determine type of feature:", featName))
+  stop(paste("Corrupted feature without discernible type:", featName))
 }
 
 
@@ -112,25 +111,27 @@ getValueKeyOfBayesFeatures <- function(dfFeature, featName) {
 #' operation can be thought of transposing a matrix.
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param dfRow a row of a data.frame with a value for each feature.
-#' @param labelCol the name of the feature (column in the data.frame)
+#' @param targetCol the name of the feature (column in the data.frame)
 #' that is the target variable for classification or regression.
 #' @return a data.frame where the first row is the feature that
 #' represents the label.
 #' @export
-sampleToBayesFeatures <- function(dfRow, labelCol) {
+sampleToBayesFeatures <- function(dfRow, targetCol) {
   if (!is.data.frame(dfRow) || nrow(dfRow) == 0) {
     stop("Attempted to transform a non- or empty data.frame to a sample.")
   }
-  if (!is.character(labelCol) || nchar(labelCol) == 0) {
-    stop("The given labelCol is not a string or empty.")
+  if (!is.character(targetCol) || nchar(targetCol) == 0) {
+    stop("The given targetCol is not character or empty.")
   }
-  if (!(labelCol %in% colnames(dfRow))) {
-    stop("The given labelCol is not contained in the data.frame.")
+  if (!(targetCol %in% colnames(dfRow))) {
+    stop("The given targetCol is not contained in the data.frame.")
   }
 
-  df <- createFeatureForBayes(labelCol, dfRow[[labelCol]], T, T)
+  # Ensure compat.
+  df <- mmb::bayesConvertData(dfRow)
+  df <- createFeatureForBayes(targetCol, dfRow[[targetCol]], T)
 
-  dfRow <- dfRow[!colnames(dfRow) %in% c(labelCol)]
+  dfRow <- dfRow[!colnames(dfRow) %in% c(targetCol)]
   for (c in colnames(dfRow)) {
     df <- rbind(df, createFeatureForBayes(c, dfRow[[c]]))
   }
@@ -139,8 +140,36 @@ sampleToBayesFeatures <- function(dfRow, labelCol) {
 }
 
 
+#' Counter operation to @seealso \code{mmb::sampleToBayesFeatures()}.
+#' Takes a Bayes-feature data.frame and transforms it back to a row.
+#' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @param dfOrg data.frame containing at least one row of the original
+#' format, so that we can rebuild the sample matching exactly the
+#' original column names.
+#' @param features data.frame of Bayes-features, as for example
+#' previously created using \code{mmb::sampleToBayesFeatures()}.
+#' @return data.frame the sample as 1-row data.frame.
+#' @export
+bayesFeaturesToSample <- function(dfOrg, features) {
+  if (!is.data.frame(dfOrg) || !is.data.frame(features)) {
+    stop("Reference data.frame or features is not a data.frame.")
+  }
+  if (nrow(dfOrg) == 0 || nrow(features) == 0) {
+    stop("Reference data.frame or features are empty.")
+  }
 
+  cols <- colnames(dfOrg)
+  sample <- data.frame(matrix(nrow = 1, ncol = length(cols)))
+  colnames(sample) <- cols
 
+  for (c in cols) {
+    val <- mmb::getValueOfBayesFeatures(features, c)
+    if (is.factor(dfOrg[[c]])) {
+      sample[, c] <- factor(val, levels = levels(dfOrg[[c]]))
+    } else {
+      sample[, c] <- val
+    }
+  }
 
-
-
+  return(sample)
+}

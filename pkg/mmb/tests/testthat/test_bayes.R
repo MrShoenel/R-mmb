@@ -31,26 +31,26 @@ test_that("the factors for products are built correctly", {
     mmb::createFeatureForBayes("C", mean(df$C))
   )
 
-  tf <- mmb::createFeatureForBayes("A", df$A[1], isLabel = T)
+  tf <- mmb::createFeatureForBayes("A", df$A[1], isLabel = TRUE)
 
   w <- mmb::getWarnings()
-  mmb::setWarnings(T)
+  mmb::setWarnings(TRUE)
   m <- mmb::getMessages()
-  mmb::setMessages(T)
+  mmb::setMessages(TRUE)
 
   expect_does_throw({
-    bayesComputeProductFactor(df, data.frame(), tf, computeNumerator = T)
+    bayesComputeProductFactor(df, data.frame(), tf, computeNumerator = TRUE)
   })
   expect_does_throw({
-    bayesComputeProductFactor(df, cf, data.frame(), computeNumerator = T)
+    bayesComputeProductFactor(df, cf, data.frame(), computeNumerator = TRUE)
   })
   expect_does_not_throw({
     expect_message({
-      bayesComputeProductFactor(df, cf, data.frame(), computeNumerator = F)
+      bayesComputeProductFactor(df, cf, data.frame(), computeNumerator = FALSE)
     })
   })
   expect_warning({
-    bayesComputeProductFactor(df, tf, cf, computeNumerator = T)
+    bayesComputeProductFactor(df, tf, cf, computeNumerator = TRUE)
   })
 
   # Let's filter iris and let B's dist. depend on C,A
@@ -58,14 +58,14 @@ test_that("the factors for products are built correctly", {
   # Emp. PDF of B, segmented on C=c, A=a
   dens <- approxfun(stats::density(filtered$B, bw = "SJ"))
   # Returns P(B|C,A)
-  bayesRegressVal <- bayesComputeProductFactor(df, cf, tf, computeNumerator = T)
+  bayesRegressVal <- bayesComputeProductFactor(df, cf, tf, computeNumerator = TRUE)
 
   expect_equal(bayesRegressVal, dens(cf$valueNumeric[1]), tolerance = 1e-15)
 
 
   # Ask for a value out of range for B:
   cf[1,]$valueNumeric <- 0.1
-  expect_equal(bayesComputeProductFactor(df, cf, tf, computeNumerator = T), 0)
+  expect_equal(bayesComputeProductFactor(df, cf, tf, computeNumerator = TRUE), 0)
 
   mmb::setWarnings(w)
   mmb::setMessages(m)
@@ -79,18 +79,19 @@ test_that("using the ecdf works as well", {
     C = iris$Petal.Width
   )
 
-  tf <- mmb::createFeatureForBayes("A", df$A[1], isLabel = T)
+  tf <- mmb::createFeatureForBayes("A", df$A[1], isLabel = TRUE)
   cf <- mmb::createFeatureForBayes("B", mean(df$B))
 
   temp <- df[df$A == df$A[1],]
-  res <- bayesComputeProductFactor(df, cf, tf, computeNumerator = T, doEcdf = T)
+  res <- bayesComputeProductFactor(df, cf, tf, computeNumerator = TRUE, doEcdf = TRUE)
   expect_equal(res, ecdf(temp$B)(cf$valueNumeric), tolerance = 1e-10)
 
   # Let's do too aggressive segmenting
   cf <- rbind(cf, mmb::createFeatureForBayes("C", min(df$C - 1e-10)))
   res <- expect_warning({
-    bayesComputeProductFactor(df, cf, tf, computeNumerator = T,
-                              doEcdf = T, retainMinValues = 0)
+    bayesComputeProductFactor(
+      df, cf, tf, computeNumerator = TRUE,
+      doEcdf = TRUE, retainMinValues = 0)
   })
   expect_equal(res, 0)
 })
@@ -106,13 +107,13 @@ test_that("marginal factors are calculated correctly", {
   expect_warning({
     # ecdf has no effect for discrete
     mmb::bayesComputeMarginalFactor(
-      iris, mmb::createFeatureForBayes("Species", iris$Species[1]), doEcdf = T)
+      iris, mmb::createFeatureForBayes("Species", iris$Species[1]), doEcdf = TRUE)
   })
 
   expect_warning({
     # no data
     mmb::bayesComputeMarginalFactor(
-      iris[0,], mmb::createFeatureForBayes("Petal.Length", 1337), doEcdf = T)
+      iris[0,], mmb::createFeatureForBayes("Petal.Length", 1337), doEcdf = TRUE)
   })
 
   mmb::setWarnings(w)
@@ -138,8 +139,9 @@ test_that("marginal factors are calculated correctly", {
 
 test_that("the full Bayesian works for discrete, serial and parallel", {
   if (base::Sys.getenv("IS_BUILD_COMMAND") != "TRUE") {
-    expect_true(T) # dummy
-    return(T) # skip test
+    # disable this test for cmd+shift+T
+    expect_true(TRUE) # dummy
+    return(TRUE) # skip test
   }
 
   # In this test, we are doing a fully-fledged example of
@@ -161,7 +163,7 @@ test_that("the full Bayesian works for discrete, serial and parallel", {
 
   df <- data.frame(A=A, B=B)
   feats <- rbind(
-    mmb::createFeatureForBayes("A", a, isLabel = T),
+    mmb::createFeatureForBayes("A", a, isLabel = TRUE),
     mmb::createFeatureForBayes("B", b)
   )
 
@@ -180,11 +182,11 @@ test_that("the full Bayesian works for discrete, serial and parallel", {
 
 
   res <- mmb::bayesProbability(
-    df, feats, "A", shiftAmount = 0, doEcdf = F, useParallel = F)
+    df, feats, "A", shiftAmount = 0, doEcdf = FALSE, useParallel = FALSE)
   expect_equal(res, p_AB_pdf, tolerance = 1e-15)
 
   res <- mmb::bayesProbability(
-    df, feats, "A", shiftAmount = 0, doEcdf = T, useParallel = F)
+    df, feats, "A", shiftAmount = 0, doEcdf = TRUE, useParallel = FALSE)
   expect_equal(res, p_AB_cdf, tolerance = 1e-15)
 
 
@@ -194,7 +196,7 @@ test_that("the full Bayesian works for discrete, serial and parallel", {
   p_AB_cdf_s <- (p_BA_cdf + s) * (p_A + s) / (p_B_cdf + s)
 
   res <- mmb::bayesProbability(
-    df, feats, "A", shiftAmount = s, doEcdf = F, useParallel = F)
+    df, feats, "A", shiftAmount = s, doEcdf = FALSE, useParallel = FALSE)
   expect_equal(res, p_AB_pdf_s, tolerance = 1e-15)
 
   m <- mmb::getMessages()
@@ -202,7 +204,7 @@ test_that("the full Bayesian works for discrete, serial and parallel", {
   res <- expect_message({
     # using seq. comp.
     mmb::bayesProbability(
-      df, feats, "A", shiftAmount = s, doEcdf = T, useParallel = F)
+      df, feats, "A", shiftAmount = s, doEcdf = TRUE, useParallel = FALSE)
   })
   expect_equal(res, p_AB_cdf_s, tolerance = 1e-15)
   mmb::setMessages(m)
@@ -215,7 +217,7 @@ test_that("the full Bayesian works for discrete, serial and parallel", {
 
   tryCatch({
     res <- mmb::bayesProbability(
-    df, feats, "A", shiftAmount = 0, doEcdf = F, useParallel = T)
+    df, feats, "A", shiftAmount = 0, doEcdf = FALSE, useParallel = TRUE)
     expect_equal(res, p_AB_pdf, tolerance = 1e-15)
 
     m <- mmb::getMessages()
@@ -223,9 +225,18 @@ test_that("the full Bayesian works for discrete, serial and parallel", {
     res <- expect_message({
       # no expl. feat. sel.
       mmb::bayesProbability(
-        df, feats, "A", shiftAmount = 0, doEcdf = T, useParallel = T)
-    })
+        df, feats, "A", shiftAmount = 0, doEcdf = TRUE, useParallel = TRUE)
+    }, "No explicit feature selection")
+
     expect_equal(res, p_AB_cdf, tolerance = 1e-15)
+
+    res <- expect_message({
+      # Using parallel
+      browser()
+      mmb::bayesProbability(
+        df, feats, "A", useParallel = TRUE, selectedFeatureNames = c("B"))
+    }, "Using registered parallel backend")
+
     mmb::setMessages(m)
   }, finally = {
     parallel::stopCluster(cl)
@@ -254,7 +265,7 @@ test_that("the full Bayesian works for continuous", {
 
   df <- data.frame(A=A, B=B)
   feats <- rbind(
-    mmb::createFeatureForBayes("A", a, isLabel = T),
+    mmb::createFeatureForBayes("A", a, isLabel = TRUE),
     mmb::createFeatureForBayes("B", b)
   )
 
@@ -275,11 +286,11 @@ test_that("the full Bayesian works for continuous", {
 
 
   res <- mmb::bayesProbability(
-    df, feats, "A", shiftAmount = 0, doEcdf = F, useParallel = F)
+    df, feats, "A", shiftAmount = 0, doEcdf = FALSE, useParallel = FALSE)
   expect_equal(res, p_AB_pdf, tolerance = 1e-15)
 
   res <- mmb::bayesProbability(
-    df, feats, "A", shiftAmount = 0, doEcdf = T, useParallel = F)
+    df, feats, "A", shiftAmount = 0, doEcdf = TRUE, useParallel = FALSE)
   expect_equal(res, p_AB_cdf, tolerance = 1e-15)
 
 
@@ -289,7 +300,7 @@ test_that("the full Bayesian works for continuous", {
   p_AB_cdf_s <- (p_BA + s) * (p_A_cdf + s) / (p_B + s)
 
   res <- mmb::bayesProbability(
-    df, feats, "A", shiftAmount = s, doEcdf = F, useParallel = F)
+    df, feats, "A", shiftAmount = s, doEcdf = FALSE, useParallel = FALSE)
   expect_equal(res, p_AB_pdf_s, tolerance = 1e-15)
 
   m <- mmb::getMessages()
@@ -297,9 +308,145 @@ test_that("the full Bayesian works for continuous", {
   res <- expect_message({
     # using seq. comp.
     mmb::bayesProbability(
-      df, feats, "A", shiftAmount = s, doEcdf = T, useParallel = F)
+      df, feats, "A", shiftAmount = s, doEcdf = TRUE, useParallel = FALSE)
   })
   expect_equal(res, p_AB_cdf_s, tolerance = 1e-15)
   mmb::setMessages(m)
 })
+
+
+test_that("the full Bayesian works with many variables", {
+  df <- mtcars[, ]
+  # It's all num. feats., let's transform some
+  df$cyl <- as.factor(df$cyl)
+  df$carb <- as.factor(df$carb)
+  tCol <- "cyl"
+
+  set.seed(84735)
+  rn <- base::sample(rownames(df), 32)
+  dfTrain <- df[1:25, ]
+  # Let's take it out just to make sure.
+  dfValid <- df[26:32, !(colnames(df) %in% tCol) ]
+
+  w <- mmb::getWarnings()
+  mmb::setWarnings(FALSE)
+
+  probs <- mmb::bayesProbabilityAssign(
+    dfTrain, dfValid, targetCol = tCol,
+    selectedFeatureNames = c("mpg", "hp", "carb"),
+    shiftAmount = 0, doEcdf = TRUE, simple = FALSE, returnProbabilityTable = FALSE)
+
+  expect_true(is.factor(probs))
+  expect_equal(levels(probs), levels(dfTrain$cyl))
+
+  mmb::setWarnings(w)
+
+  # This should work w/o probs.
+  cm <- caret::confusionMatrix(df[26:32,]$cyl, probs)
+})
+
+
+test_that("assigning probabilites for multiple values works", {
+  set.seed(84735)
+  rn <- base::sample(rownames(iris), 150)
+  dfTrain <- iris[1:120, ]
+  # Let's take it out just to make sure.
+  dfValid <- iris[121:150, !(colnames(iris) %in% "Species") ]
+
+  w <- mmb::getWarnings()
+  mmb::setWarnings(FALSE)
+
+  probTable <- mmb::bayesProbabilityAssign(
+    dfTrain, dfValid, targetCol = "Species", shiftAmount = 0,
+    doEcdf = TRUE, simple = FALSE, returnProbabilityTable = TRUE)
+
+  mmb::setWarnings(w)
+
+  # Since we use shift=0 and ecdf=T, each row in this table
+  # should sum up to one, i.e., actual probs are returned.
+  for (rn in rownames(probTable)) {
+    temp <- probTable[rn, levels(iris$Species)]
+    expect_equal(sum(temp), 1, tolerance = 1e-14)
+  }
+})
+
+
+test_that("assigning probability for numeric values works (also using simple)", {
+  set.seed(84735)
+  rn <- base::sample(rownames(iris), 150)
+  dfTrain <- iris[1:120, ]
+  dfValid <- iris[121:150, ]
+
+  w <- mmb::getWarnings()
+  mmb::setWarnings(F)
+
+  probs <- mmb::bayesProbabilityAssign(
+    dfTrain, dfValid, targetCol = "Sepal.Length", shiftAmount = 0,
+    doEcdf = TRUE, simple = FALSE, returnProbabilityTable = FALSE)
+
+  # Since we use shift=0 and ecdf=T, each value should be <= 1.
+  # Note that because of rounding errors, we need to check this
+  # using some tolerance.
+  sapply(probs, function(p) expect_lte(p, 1+1e-15))
+
+  probs <- mmb::bayesProbabilityAssign(
+    dfTrain, dfValid, targetCol = "Sepal.Length", shiftAmount = 0,
+    doEcdf = TRUE, simple = TRUE, returnProbabilityTable = FALSE)
+  sapply(probs, function(p) expect_lte(p, 1+1e-15))
+
+  mmb::setWarnings(w)
+})
+
+
+test_that("a numeric value is required for predicting its probability", {
+  set.seed(84735)
+  rn <- base::sample(rownames(iris), 150)
+  dfTrain <- iris[1:120, ]
+  # Let's take it out just to make sure.
+  dfValid <- iris[121:150, !(colnames(iris) %in% "Sepal.Length") ]
+
+  expect_does_throw({
+    mmb::bayesProbabilityAssign(dfTrain, dfValid, targetCol = "Sepal.Length")
+  })
+})
+
+
+test_that("we can do online learning and return factors", {
+  set.seed(84735)
+  rn <- base::sample(rownames(iris), 150)
+  dfTrain <- iris[1:140, ]
+  dfValid <- iris[141:150, ]
+
+  w <- mmb::getWarnings()
+  mmb::setWarnings(F)
+
+  pred <- mmb::bayesProbabilityAssign(
+    dfTrain, dfValid, targetCol = "Species",
+    online = TRUE, returnProbabilityTable = FALSE)
+
+  mmb::setWarnings(w)
+
+  expect_true(is.factor(pred))
+  expect_equal(levels(pred), levels(iris$Species))
+})
+
+
+test_that("we get a warning for sparse training data", {
+  dfTrain <- iris[1, ]
+  dfValid <- iris[150, ]
+  expect_true(dfTrain$Species != dfValid$Species)
+
+  w <- mmb::getWarnings()
+  mmb::setWarnings(TRUE)
+
+  probTable <- expect_warning({
+    mmb::bayesProbabilityAssign(
+      dfTrain, dfValid, targetCol = "Species", shiftAmount = 0,
+      doEcdf = TRUE, simple = FALSE, returnProbabilityTable = TRUE)
+  }, "Training data did not contain all possible labels")
+
+  mmb::setWarnings(w)
+})
+
+
 

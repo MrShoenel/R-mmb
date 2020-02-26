@@ -25,7 +25,7 @@ test_that("conditioning does nothing if called wrong", {
 test_that("conditioning on one variable works", {
   cntSetosa <- nrow(iris[iris$Species == iris[1,]$Species, ])
   fDf <- mmb::createFeatureForBayes(
-    "Species", iris[1,]$Species, isLabel = T, isDiscrete = T)
+    "Species", iris[1,]$Species, isLabel = TRUE, isDiscrete = TRUE)
 
   dfRes <- mmb::conditionalDataMin(iris, fDf, selectedFeatureNames = c("Species"))
 
@@ -89,6 +89,27 @@ test_that("conditioning stops early", {
   expect_equal(nrow(dfResMin), cntIrisNoSepal)
 
   mmb::setWarnings(w)
+})
+
+
+test_that("handling of empty values is proper", {
+  df <- data.frame(
+    na = c( T, T, F,   F,   NA, NA),
+    nan = c(1, 4, NaN, NaN, 3,  2)
+  )
+
+  feat <- mmb::createFeatureForBayes("nan", NaN)
+
+  # should retain rows 3,4
+  data <- mmb::conditionalDataMin(df, feat, selectedFeatureNames = "nan")
+  expect_equal(nrow(data), 2)
+  expect_equal(data$na, c(F,F))
+
+  feat <- mmb::createFeatureForBayes("na", NA)
+
+  data <- mmb::conditionalDataMin(df, feat, selectedFeatureNames = "na")
+  expect_equal(nrow(data), 2)
+  expect_equal(data$nan, c(3,2))
 })
 
 

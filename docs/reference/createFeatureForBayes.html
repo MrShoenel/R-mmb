@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, string
-and boolean values. — createFeatureForBayes • mmb</title>
+its name, type and value. Currently supports numeric, factor, character
+and boolean values. Note that factor is internally converted to
+character. — createFeatureForBayes • mmb</title>
 
 
 <!-- jquery -->
@@ -38,11 +39,13 @@ and boolean values. — createFeatureForBayes • mmb</title>
 
 
 <meta property="og:title" content="Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, string
-and boolean values. — createFeatureForBayes" />
+its name, type and value. Currently supports numeric, factor, character
+and boolean values. Note that factor is internally converted to
+character. — createFeatureForBayes" />
 <meta property="og:description" content="Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, string
-and boolean values." />
+its name, type and value. Currently supports numeric, factor, character
+and boolean values. Note that factor is internally converted to
+character." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -75,7 +78,7 @@ and boolean values." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -107,19 +110,21 @@ and boolean values." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, string
-and boolean values.</h1>
+its name, type and value. Currently supports numeric, factor, character
+and boolean values. Note that factor is internally converted to
+character.</h1>
     
     <div class="hidden name"><code>createFeatureForBayes.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, string
-and boolean values.</p>
+its name, type and value. Currently supports numeric, factor, character
+and boolean values. Note that factor is internally converted to
+character.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createFeatureForBayes</span>(<span class='no'>name</span>, <span class='no'>value</span>, <span class='kw'>isLabel</span> <span class='kw'>=</span> <span class='no'>F</span>, <span class='kw'>isDiscrete</span> <span class='kw'>=</span> <span class='no'>F</span>)</pre>
+    <pre class="usage"><span class='fu'>createFeatureForBayes</span>(<span class='no'>name</span>, <span class='no'>value</span>, <span class='kw'>isLabel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>isDiscrete</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

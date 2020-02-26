@@ -13,7 +13,7 @@ utils::globalVariables("featIdx", package = c("mmb"))
 #' @param conditionalFeatures data.frame with Bayesian features, as produced
 #' by @seealso \code{mmb::createFeatureForBayes()}. This data.frame must not
 #' be empty, as we need to depend on at least one feature.
-#' @param targetFeature data.frame with exact one Bayesian feature. Any ex-
+#' @param targetFeature data.frame with exactly one Bayesian feature. Any ex-
 #' cessive features are discarded and a warning is produced. If computing a
 #' factor for the denominator, this data.frame may be empty.
 #' @param computeNumerator boolean to indicate whether a factor for the
@@ -24,18 +24,24 @@ utils::globalVariables("featIdx", package = c("mmb"))
 #' empirical CDF to return a probability when inferencing a continuous
 #' feature. If false, uses the empirical PDF to return the rel. likelihood.
 #' This parameter does not have any effect when inferring discrete values.
+#' Using the ECDF, a probability to find a value less than or equal to the
+#' given value is returned. Setting this parameter to true in conjunction
+#' with a non-zero shiftAmount must be done with caution.
 #' @return numeric the factor as probability or relative likelihood. If the
 #' target feature is discrete, a probability is returned; a relative like-
 #' lihood, otherwise.
 #' @keywords internal
 bayesComputeProductFactor <- function(
   df, conditionalFeatures, targetFeature,
-  computeNumerator, retainMinValues = 1, doEcdf = F)
+  computeNumerator, retainMinValues = 1, doEcdf = FALSE)
 {
   if (nrow(conditionalFeatures) == 0) stop("At least one conditional feature is required.")
   if (nrow(targetFeature) > 1 && mmb::getWarnings()) {
     warning("More than one target feature given, taking first, ignoring rest.")
   }
+
+  # Ensure compat.
+  df <- mmb::bayesConvertData(df)
 
   probFeat <- utils::head(conditionalFeatures, 1) # Always the first conditional feature
   features <- NULL
@@ -74,15 +80,7 @@ bayesComputeProductFactor <- function(
               paste(features$name, collapse = ","), sep = ""))
 
       dataPdf <- mmb::estimatePdf(dataFeature)
-
-      # If the current value is out of range, then its density is zero anyway, because
-      # all of the other values evolve around another range, i.e., the current value
-      # is outside the support of the ePDF.
-      if (length(dataFeature) == 0 || featVal < dataPdf$min || featVal > dataPdf$max) {
-        fac <- 0
-      } else {
-        fac <- dataPdf$fun(featVal)
-      }
+      fac <- dataPdf$fun(featVal)
     }
   }
 
@@ -100,10 +98,12 @@ bayesComputeProductFactor <- function(
 #' empirical CDF to return a probability when inferencing a continuous
 #' feature. If false, uses the empirical PDF to return the rel. likelihood.
 #' This parameter does not have any effect when inferring discrete values.
+#' Using the ECDF, a probability to find a value less than or equal to the
+#' given value is returned.
 #' @return numeric the probability or likelihood of the given feature
 #' assuming its given value.
 #' @export
-bayesComputeMarginalFactor <- function(df, feature, doEcdf = F) {
+bayesComputeMarginalFactor <- function(df, feature, doEcdf = FALSE) {
   prob <- 0
   if (feature$isDiscrete) {
     if (doEcdf && mmb::getWarnings()) {
@@ -131,18 +131,19 @@ bayesComputeMarginalFactor <- function(df, feature, doEcdf = F) {
 
 
 
-#' Full Bayesian inferencing for determining the probability or relative
-#' likelihood of a given value. Uses the full extended theorem of Bayes,
-#' taking all selected features into account. Expands
-#' Bayes' theorem to accomodate all dependent features, then calculates
-#' each conditional probability (or relative likelihood) and returns a
-#' single result reflecting the probability or relative likelihood of
-#' the target feature assuming its given value, given that all the other
-#' dependent features assume their given value. The target feature
-#' (designated by 'labelCol') may be discrete or continuous.
+#' @title Full Bayesian inferencing for determining the probability or
+#' relative likelihood of a given value.
 #'
+#' @description
+#' Uses the full extended theorem of Bayes, taking all selected features
+#' into account. Expands Bayes' theorem to accomodate all dependent
+#' features, then calculates each conditional probability (or relative
+#' likelihood) and returns a single result reflecting the probability or
+#' relative likelihood of the target feature assuming its given value,
+#' given that all the other dependent features assume their given value.
+#' The target feature (designated by 'labelCol') may be discrete or continuous.
 #' If at least one of the depending features or the the target feature
-#' is continuous and the PDF ('doEcdf' = F) is built, the result of this
+#' is continuous and the PDF ('doEcdf' = FALSE) is built, the result of this
 #' function is a relative likelihood of the target feature's value. If
 #' all of the features are discrete or the empirical CDF is used instead
 #' of the PDF, the result of this function is a probability.
@@ -171,8 +172,13 @@ bayesComputeMarginalFactor <- function(df, feature, doEcdf = F) {
 #' @param doEcdf default FALSE a boolean to indicate whether to use the
 #' empirical CDF to return a probability when inferencing a continuous
 #' feature. If false, uses the empirical PDF to return the rel. likelihood.
-#' This parameter does not have any effect when inferring discrete values
-#' or when doing a regression.
+#' This parameter does not have any effect if all of the variables are
+#' discrete or when doing a regression. Otherwise, for each continuous
+#' variable, the probability to find a value less then or equal - given
+#' the conditions - is returned. Note that the interpretation of probability
+#' using the ECDF much deviates and must be used with care, especially
+#' since it affects each factor in Bayes equation that is continuous. This
+#' is especially true for the case where \code{shiftAmount > 0}.
 #' @param useParallel default NULL a boolean to indicate whether to use a
 #' previously registered parallel backend. If no explicit value was given,
 #' calls \code{foreach::getDoParRegistered()} to check for a parallel
@@ -185,9 +191,11 @@ bayesComputeMarginalFactor <- function(df, feature, doEcdf = F) {
 #' @export
 bayesProbability <- function(
   df, features, targetCol, selectedFeatureNames = c(),
-  shiftAmount = 0.1, retainMinValues = 1, doEcdf = F, useParallel = NULL)
+  shiftAmount = 0.1, retainMinValues = 1, doEcdf = FALSE, useParallel = NULL)
 {
   bayesSimpleCheckData(df, features, targetCol)
+  # Ensure compatibility
+  df <- mmb::bayesConvertData(df)
 
   # One row in features has 'isLabel' = T
   rowOfLabelFeature <- features[features$name == targetCol, ]
@@ -206,7 +214,8 @@ bayesProbability <- function(
   featuresWithoutLabel <- featuresWithoutLabel[
     match(selectedFeatureNames, featuresWithoutLabel$name), ]
 
-  useParallel <- if (is.logical(useParallel)) useParallel else foreach::getDoParRegistered()
+  isParRegistered <- foreach::getDoParRegistered()
+  useParallel <- if (is.logical(useParallel)) useParallel && isParRegistered else isParRegistered
   if (mmb::getMessages()) {
     if (useParallel) {
       message("Using registered parallel backend.")
@@ -239,7 +248,8 @@ bayesProbability <- function(
   # Add the marginal:
   numeratorFactors <- c(
     numeratorFactors,
-    mmb::bayesComputeMarginalFactor(df, rowOfLabelFeature, doEcdf = doEcdf))
+    mmb::bayesComputeMarginalFactor(
+      df, rowOfLabelFeature, doEcdf = doEcdf && !rowOfLabelFeature$isDiscrete))
 
   prodNumerator <- prod(numeratorFactors + shiftAmount)
   if (prodNumerator == 0) {
@@ -274,3 +284,159 @@ bayesProbability <- function(
   # OK, both numerator and denominator were > 0!
   return(prodNumerator / prodDenominator)
 }
+
+
+#' @title Assign probabilities to one or more samples, given some training data.
+#'
+#' @description This method uses full-dependency (\code{simple=F}) Bayesian
+#' inferencing to assign a probability to the target feature in all of the
+#' samples given in \code{dfValid}. Tests each sample using @seealso
+#' \code{mmb::bayesProbability()} or @seealso \code{mmb::bayesProbabilitySimple()}.
+#' It mostly forwards the given arguments to these functions, and you will find
+#' good documentation there. Passes \code{NULL} to underlying functions that can
+#' make use of parallelism, so that they can optionally compute in parallel.
+#'
+#' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @param dfTrain data.frame that holds the training data.
+#' @param dfValid data.frame that holds the validation samples, for each of which
+#' a probability is sought. The convention is, that if you attempt to assign a
+#' probability to a numeric value, it ought to be found in the target column of
+#' this data frame (otherwise, the target column is not required in it).
+#' @param targetCol character the name of targeted feature, i.e., the feature to
+#' assign a probability to.
+#' @param selectedFeatureNames character defaults to empty vector which defaults
+#' to using all available features. Use this to select subsets of features and to
+#' order features.
+#' @param shiftAmount numeric an offset value used to increase any one
+#' probability (factor) in the full built equation.
+#' @param retainMinValues integer to require a minimum amount of data points
+#' when segmenting the data feature by feature.
+#' @param doEcdf default FALSE a boolean to indicate whether to use the
+#' empirical CDF to return a probability when inferencing a continuous
+#' feature.
+#' @param online default 0 integer to indicate how many rows should be used to
+#' do inferencing. If zero, then only the initially given data.frame dfTrain is
+#' used. If > 0, then each inferenced sample will be attached to it and the
+#' resulting data.frame is truncated to this number. Use an integer large enough
+#' (i.e., sum of training and validation rows) to keep all samples during infer-
+#' encing. A smaller amount as, e.g., in dfTrain, will keep the amount of data
+#' restricted, discarding older rows. A larger amount than, e.g., in dfTrain is
+#' also fine; dfTrain will grow to it and then discard rows.
+#' @param simple default FALSE boolean to indicate whether or not to use simple
+#' Bayesian inferencing instead of full. This is faster but the results are less
+#' good. If true, uses \code{mmb::bayesProbabilitySimple()}. Otherwise, uses
+#' \code{mmb::bayesProbability()}.
+#' @param returnProbabilityTable default FALSE boolean to indicate whether to
+#' return only the probabilities for each validation sample or whether a table
+#' with a probability for each tested label should be returned. This has no
+#' effect when inferencing probabilities for numeric values, as the table then
+#' only has one column "probability". The first column of this table is always
+#' called "rowname" and corresponds to the rownames of dfValid.
+#' @examples
+#' set.seed(84735)
+#' rn <- base::sample(rownames(iris), 150)
+#' dfTrain <- iris[1:120, ]
+#' dfValid <- iris[121:150, !(colnames(iris) %in% "Species") ]
+#' mmb::bayesProbabilityAssign(dfTrain, dfValid, "Species")
+#' @export
+bayesProbabilityAssign <- function(
+  dfTrain, dfValid, targetCol, selectedFeatureNames = c(),
+  shiftAmount = 0.1, retainMinValues = 1, doEcdf = FALSE,
+  online = 0, simple = FALSE,
+  returnProbabilityTable = FALSE)
+{
+  # Either predict a discrete label -OR- a probability for a numeric value.
+  # In the latter case, dfValid needs to present a value in targetCol.
+  predictNumProb <- is.numeric(dfTrain[[targetCol]])
+  if (predictNumProb && !(targetCol %in% colnames(dfValid))) {
+    stop("Requested to predict a probability for numeric value, but not present in validation data.")
+  }
+
+  targetIsFactor <- is.factor(dfTrain[[targetCol]])
+  lvls <- if (targetIsFactor) levels(dfTrain[[targetCol]]) else unique(c(dfTrain[[targetCol]]))
+  # Ensure compat.
+  df <- mmb::bayesConvertData(dfTrain)
+  dfValid <- mmb::bayesConvertData(dfValid)
+
+  predicted <- c()
+  # We only test labels found in the training data.
+  targetLabels <- unique(c(df[[targetCol]]))
+  probTableCols <- c("rowname", if (predictNumProb) "probability" else targetLabels)
+  probTable <- data.frame(matrix(nrow = 0, ncol = length(probTableCols)))
+  colnames(probTable) <- c("rowname", if (predictNumProb) "probability" else targetLabels)
+  for (n in rownames(dfValid)) {
+    probRow <- data.frame(matrix(nrow = 1, ncol = length(probTableCols)))
+    colnames(probRow) <- colnames(probTable)
+    probRow$rowname <- n
+
+    # The values we will test for each validation row
+    testValues <- if (predictNumProb) dfValid[n, targetCol] else targetLabels
+    for (tv in testValues) {
+      dfValid[n, targetCol] <- tv
+      sample <- mmb::sampleToBayesFeatures(dfValid[n, ], targetCol)
+
+      predProb <- 0
+      if (simple) {
+        predProb <- mmb::bayesProbabilitySimple(
+          df = df, features = sample, targetCol = targetCol,
+          selectedFeatureNames = selectedFeatureNames,
+          retainMinValues = retainMinValues, doEcdf = doEcdf)
+      } else {
+        predProb <- mmb::bayesProbability(
+          df, sample, targetCol, selectedFeatureNames,
+          shiftAmount = shiftAmount, retainMinValues = retainMinValues,
+          doEcdf = doEcdf, useParallel = NULL)
+      }
+
+      probRow[1, if (predictNumProb) "probability" else tv] <- predProb
+    }
+
+    probTable <- rbind(probTable, probRow)
+
+    # If this is supposed to run online, then append to the
+    # training data what was just predicted.
+    if (online > 0) {
+      res <- if (predictNumProb) probRow[1, "probability"] else names(which.max(probRow[1, targetLabels]))[1]
+      tempRow <- dfValid[n, ]
+      tempRow[[targetCol]] <- res
+      df <- rbind(df, tempRow)
+      df <- utils::tail(df, online)
+    }
+  }
+
+  # Check if found target-labels were the same as the levels
+  # and fill probTable with zeros for those not computed.
+  if (targetIsFactor && length(lvls) > length(targetLabels)) {
+    notTested <- setdiff(lvls, targetLabels)
+    if (mmb::getWarnings()) warning(paste(
+      "Training data did not contain all possible labels. Setting labels",
+      paste(notTested, collapse = ", "),"to 0."))
+
+    for (fac in notTested) {
+      probTable[[fac]] <- 0
+    }
+  }
+
+  if (returnProbabilityTable) {
+    return(probTable)
+  }
+
+  # .. otherwise, return only the blank predictions:
+  if (predictNumProb) {
+    return(probTable[["probability"]])
+  }
+  # .. Ok, return only predictions of discrete label,
+  # and only those with highest probability:
+  predicted <- c()
+  for (rn in rownames(probTable)) {
+    predicted <- c(predicted, names(which.max(probTable[rn, targetLabels]))[1])
+  }
+
+  # Transform back to factor if needed:
+  if (targetIsFactor) {
+    predicted <- factor(predicted, levels = lvls)
+  }
+
+  return(predicted)
+}
+

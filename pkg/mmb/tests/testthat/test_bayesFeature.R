@@ -21,7 +21,22 @@ test_that("transformation to sample fails for invalid data", {
 })
 
 
-test_that("a sample can be transformed to a bayesian feature", {
+test_that("corrupted features lead to errors", {
+  feat <- mmb::createFeatureForBayes("foo", NA)
+  # Erroneous manipulation (NA is logical)
+  feat$isLogical <- F
+
+  expect_does_throw({
+    mmb::getValueOfBayesFeatures(feat, feat$name)
+  })
+
+  expect_does_throw({
+    mmb::getValueKeyOfBayesFeatures(feat, feat$name)
+  })
+})
+
+
+test_that("a sample can be transformed to a bayesian feature (and back)", {
   df <- iris
 
   s <- mmb::sampleToBayesFeatures(df[1,], "Species")
@@ -29,9 +44,8 @@ test_that("a sample can be transformed to a bayesian feature", {
   expect_equal(s1$name, "Species")
   expect_true(s1$isLabel)
   expect_true(s1$isDiscrete)
-  expect_true(is.factor(s1$valueFactor))
+  expect_true(is.character(s1$valueChar))
   expect_true(is.na(s1$valueNumeric))
-  expect_true(is.na(s1$valueString))
   expect_true(is.na(s1$valueBool))
 
   featNames <- s$name[2:5]
@@ -41,6 +55,21 @@ test_that("a sample can be transformed to a bayesian feature", {
   for (fn in featNames) {
     expect_equal(mmb::getValueKeyOfBayesFeatures(s, fn), "valueNumeric")
   }
+
+  bf <- mmb::bayesFeaturesToSample(iris[1, ], s)
+})
+
+
+test_that("invalid arguments for back-transformation will throw", {
+  expect_does_throw({
+    mmb::bayesFeaturesToSample(dfOrg = NULL, data.frame())
+  })
+  expect_does_throw({
+    mmb::bayesFeaturesToSample(dfOrg = data.frame(), features = NULL)
+  })
+  expect_does_throw({
+    mmb::bayesFeaturesToSample(dfOrg = data.frame(), data.frame())
+  })
 })
 
 
@@ -56,12 +85,12 @@ test_that("a sample can have numeric, string, factor and bool features", {
   s <- mmb::sampleToBayesFeatures(df[2,], "fac")
 
   expect_equal(mmb::getValueKeyOfBayesFeatures(s, "num"), "valueNumeric")
-  expect_equal(mmb::getValueKeyOfBayesFeatures(s, "fac"), "valueFactor")
-  expect_equal(mmb::getValueKeyOfBayesFeatures(s, "str"), "valueString")
+  expect_equal(mmb::getValueKeyOfBayesFeatures(s, "fac"), "valueChar")
+  expect_equal(mmb::getValueKeyOfBayesFeatures(s, "str"), "valueChar")
   expect_equal(mmb::getValueKeyOfBayesFeatures(s, "bol"), "valueBool")
 
   expect_equal(mmb::getValueOfBayesFeatures(s, "num"), 1337)
-  expect_equal(as.character(mmb::getValueOfBayesFeatures(s, "fac")), "X2")
+  expect_equal(mmb::getValueOfBayesFeatures(s, "fac"), "X2")
   expect_equal(mmb::getValueOfBayesFeatures(s, "str"), "bar")
   expect_equal(mmb::getValueOfBayesFeatures(s, "bol"), F)
 })

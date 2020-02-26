@@ -5,7 +5,7 @@
 \title{Setter for enabling or disabling messages. Messages are disabled by default.
 Use these to enable high verbosity.}
 \usage{
-setMessages(enable = T)
+setMessages(enable = TRUE)
 }
 \arguments{
 \item{enable}{a boolean to indicate whether to enable messages or not.}

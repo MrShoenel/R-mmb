@@ -3,10 +3,11 @@
 \name{createFeatureForBayes}
 \alias{createFeatureForBayes}
 \title{Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, string
-and boolean values.}
+its name, type and value. Currently supports numeric, factor, character
+and boolean values. Note that factor is internally converted to
+character.}
 \usage{
-createFeatureForBayes(name, value, isLabel = F, isDiscrete = F)
+createFeatureForBayes(name, value, isLabel = FALSE, isDiscrete = FALSE)
 }
 \arguments{
 \item{name}{the name of the feature or variable.}
@@ -26,8 +27,9 @@ properties.
 }
 \description{
 Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, string
-and boolean values.
+its name, type and value. Currently supports numeric, factor, character
+and boolean values. Note that factor is internally converted to
+character.
 }
 \seealso{
 \code{sampleToBayesFeatures} that uses this function

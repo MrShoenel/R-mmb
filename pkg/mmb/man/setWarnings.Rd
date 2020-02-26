@@ -4,7 +4,7 @@
 \alias{setWarnings}
 \title{Setter for enabling or disabling warnings. Warnings are enabled by default.}
 \usage{
-setWarnings(enable = T)
+setWarnings(enable = TRUE)
 }
 \arguments{
 \item{enable}{a boolean to indicate whether to enable warnings or not.}

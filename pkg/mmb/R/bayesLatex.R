@@ -9,7 +9,7 @@
 #' the features' values or not, i.e. "A" vs. "A = setosa".
 #' @return a string that can be used in Latex documents.
 #' @export
-bayesToLatex <- function(conditionalFeatures, targetFeature, includeValues = F) {
+bayesToLatex <- function(conditionalFeatures, targetFeature, includeValues = FALSE) {
   if (nrow(conditionalFeatures) == 0 || nrow(targetFeature) == 0) {
     stop("Need exactly one target-feature and one or more conditional features.")
   }

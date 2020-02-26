@@ -72,7 +72,7 @@ approximation of the PDF as a function." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -129,7 +129,8 @@ of the data.</p></td>
       <th>densFun</th>
       <td><p>function default <code><a href='https://rdrr.io/r/stats/density.html'>stats::density</a></code> with bandwith 'SJ'.
 Function to compute the empirical density of a non-empty vector of numerical
-data.</p></td>
+data. Note that this function needs to return the properties 'x' and 'y' as
+<code><a href='https://rdrr.io/r/stats/density.html'>stats::density</a></code> does, so that we can return the argmax.</p></td>
     </tr>
     </table>
 

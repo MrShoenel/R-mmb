@@ -20,7 +20,7 @@
 #' inclusive maximum value of the range. The list will be as long as the number
 #' of buckets requested.
 #' @export
-discretizeVariableToRanges <- function(data, openEndRanges = T, numRanges = NA,
+discretizeVariableToRanges <- function(data, openEndRanges = TRUE, numRanges = NA,
                                        exclMinVal = NULL, inclMaxVal = NULL) {
   # Now we either need data or ranges.
   hasData <- is.numeric(data) && length(data) > 0

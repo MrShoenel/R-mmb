@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Getter for the state of warnings. Returns true if enabled. — getWarnings • mmb</title>
+<title>Counter operation to @seealso <code>mmb::sampleToBayesFeatures()</code>.
+Takes a Bayes-feature data.frame and transforms it back to a row. — bayesFeaturesToSample • mmb</title>
 
 
 <!-- jquery -->
@@ -35,8 +36,10 @@
 
 
 
-<meta property="og:title" content="Getter for the state of warnings. Returns true if enabled. — getWarnings" />
-<meta property="og:description" content="Getter for the state of warnings. Returns true if enabled." />
+<meta property="og:title" content="Counter operation to @seealso <code>mmb::sampleToBayesFeatures()</code>.
+Takes a Bayes-feature data.frame and transforms it back to a row. — bayesFeaturesToSample" />
+<meta property="og:description" content="Counter operation to @seealso mmb::sampleToBayesFeatures().
+Takes a Bayes-feature data.frame and transforms it back to a row." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -100,26 +103,44 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Getter for the state of warnings. Returns true if enabled.</h1>
+    <h1>Counter operation to @seealso <code>mmb::sampleToBayesFeatures()</code>.
+Takes a Bayes-feature data.frame and transforms it back to a row.</h1>
     
-    <div class="hidden name"><code>getWarnings.Rd</code></div>
+    <div class="hidden name"><code>bayesFeaturesToSample.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Getter for the state of warnings. Returns true if enabled.</p>
+    <p>Counter operation to @seealso <code><a href='sampleToBayesFeatures.html'>mmb::sampleToBayesFeatures()</a></code>.
+Takes a Bayes-feature data.frame and transforms it back to a row.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>getWarnings</span>()</pre>
+    <pre class="usage"><span class='fu'>bayesFeaturesToSample</span>(<span class='no'>dfOrg</span>, <span class='no'>features</span>)</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>dfOrg</th>
+      <td><p>data.frame containing at least one row of the original
+format, so that we can rebuild the sample matching exactly the
+original column names.</p></td>
+    </tr>
+    <tr>
+      <th>features</th>
+      <td><p>data.frame of Bayes-features, as for example
+previously created using <code><a href='sampleToBayesFeatures.html'>mmb::sampleToBayesFeatures()</a></code>.</p></td>
+    </tr>
+    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Boolean to indicate whether warnings are enabled or not.</p>
+    <p>data.frame the sample as 1-row data.frame.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
     </ul>
 
