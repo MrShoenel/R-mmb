@@ -15,12 +15,15 @@ Description: This package supports Bayesian models with full and partial (hence 
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
+VignetteBuilder: knitr
 Suggests: 
     devtools,
     testthat,
     covr,
     e1071,
-    caret
+    caret,
+    knitr,
+    rmarkdown
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
 Imports: 

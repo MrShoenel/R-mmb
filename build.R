@@ -73,7 +73,8 @@ tryCatch({
   if (doAll) {
     devtools::build_manual()
     buildSite()
-    devtools::build_readme()
+    devtools::build_readme() # only applies if we have a readme.rmd in the package
+    devtools::build_vignettes()
   }
 }, finally = {
   base::Sys.unsetenv("IS_BUILD_COMMAND")
