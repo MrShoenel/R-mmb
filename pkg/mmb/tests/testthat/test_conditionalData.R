@@ -113,4 +113,20 @@ test_that("handling of empty values is proper", {
 })
 
 
+test_that("rownames are preserved", {
+  df <- mmb::bayesConvertData(iris)
+  temp <- df[(df$Species %in% df$Species[2]) &
+               df$Sepal.Length <= mean(df$Sepal.Length), ]
+
+  tempCdm <- mmb::conditionalDataMin(df, rbind(
+    mmb::createFeatureForBayes("Species", df$Species[2]),
+    mmb::createFeatureForBayes("Sepal.Length", mean(df$Sepal.Length))
+  ), selectedFeatureNames = c("Species", "Sepal.Length"))
+
+  res <- setdiff(rownames(temp), rownames(tempCdm))
+  expect_true(is.character(res))
+  expect_equal(length(res), 0)
+})
+
+
 
