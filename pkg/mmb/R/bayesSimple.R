@@ -76,13 +76,20 @@ bayesConvertData <- function(df) {
 #' feature. If false, uses the empirical PDF to return the rel. likelihood.
 #' This parameter does not have any effect when inferring discrete values
 #' or when doing a regression.
+#' @param regressor Function that is given the collected values for
+#' regression and thus finally used to select a most likely value. Defaults
+#' to the built-in estimator for the empirical PDF and returns its argmax.
+#' However, any other function can be used, too, such as min, max, median,
+#' average etc. You may also use this function to obtain the raw values
+#' for further processing. This function is ignored if not doing regression.
 #' @return numeric probability (inferring discrete labels) or relative
 #' likelihood (regression, inferring likelihood of continuous value) or most
 #' likely value given the conditional features.
 #' @export
 bayesInferSimple <- function(
   df, features, targetCol, selectedFeatureNames = c(),
-  retainMinValues = 1, doRegress = FALSE, doEcdf = FALSE)
+  retainMinValues = 1, doRegress = FALSE, doEcdf = FALSE,
+  regressor = function(data) mmb::estimatePdf(data)$argmax)
 {
   if (doRegress && doEcdf) {
     stop("doRegress and doEcdf are mutually exclusive, only one can be TRUE (or both be FALSE).")
@@ -147,8 +154,7 @@ bayesInferSimple <- function(
   } else {
     if (doRegress) {
       # return most likely value
-      pdf <- mmb::estimatePdf(data[[targetCol]])
-      estimate <- pdf$argmax
+      estimate <- regressor(data[[targetCol]])
     } else {
       featVal <- mmb::getValueOfBayesFeatures(targetFeature, targetCol)
 
@@ -215,10 +221,17 @@ bayesProbabilitySimple <- function(
 #' order then depends on the features' order.
 #' @param retainMinValues integer to require a minimum amount of data points
 #' when segmenting the data feature by feature.
+#' @param regressor Function that is given the collected values for
+#' regression and thus finally used to select a most likely value. Defaults
+#' to the built-in estimator for the empirical PDF and returns its argmax.
+#' However, any other function can be used, too, such as min, max, median,
+#' average etc. You may also use this function to obtain the raw values
+#' for further processing.
 #' @export
 bayesRegressSimple <- function(
   df, features, targetCol,
-  selectedFeatureNames = c(), retainMinValues = 2)
+  selectedFeatureNames = c(), retainMinValues = 2,
+  regressor = function(data) mmb::estimatePdf(data)$argmax)
 {
   if (retainMinValues < 2) {
     stop("For regression, retainMinValues must be greater than or equal to 2.")
