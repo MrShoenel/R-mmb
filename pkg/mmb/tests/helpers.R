@@ -29,8 +29,9 @@ install.mmb <- function() {
   }
 
   if (!("mmb" %in% rownames(installed.packages()))) {
-    buildPath <- base::normalizePath(devtools::build(), mustWork = TRUE)
+    buildPath <- base::normalizePath(devtools::build(vignettes = FALSE), mustWork = TRUE)
     install.packages(buildPath, repos = NULL, type = "source")
+    devtools::load_all()
   }
 }
 
