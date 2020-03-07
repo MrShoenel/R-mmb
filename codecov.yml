@@ -1,5 +1,8 @@
 comment: false
 
+fixes:
+  - "::pkg/mmb/" # move root, "/" => "pkg/mmb/"
+
 coverage:
   status:
     project:
