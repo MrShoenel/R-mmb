@@ -1,0 +1,18 @@
+---
+title: "Hyperparameter Evaluation"
+output:
+  md_document:
+    df_print: paged
+  html_document:
+    df_print: paged
+    number_sections: true
+    toc: true
+    toc_depth: 6
+    toc_float: true
+  pdf_document:
+    number_sections: true
+    toc: true
+    toc_depth: 6
+  word_document: default
+---
+

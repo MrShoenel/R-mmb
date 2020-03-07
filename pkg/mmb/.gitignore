@@ -1,2 +1,6 @@
 doc
 Meta
+
+# These are built:
+vignettes/Hyperparameter-Evaluation.rmd
+vignettes/hyperparameters_files/
