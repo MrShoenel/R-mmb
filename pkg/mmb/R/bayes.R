@@ -293,8 +293,7 @@ bayesProbability <- function(
 #' samples given in \code{dfValid}. Tests each sample using @seealso
 #' \code{mmb::bayesProbability()} or @seealso \code{mmb::bayesProbabilitySimple()}.
 #' It mostly forwards the given arguments to these functions, and you will find
-#' good documentation there. Passes \code{NULL} to underlying functions that can
-#' make use of parallelism, so that they can optionally compute in parallel.
+#' good documentation there.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param dfTrain data.frame that holds the training data.
@@ -326,6 +325,8 @@ bayesProbability <- function(
 #' Bayesian inferencing instead of full. This is faster but the results are less
 #' good. If true, uses \code{mmb::bayesProbabilitySimple()}. Otherwise, uses
 #' \code{mmb::bayesProbability()}.
+#' @param useParallel boolean DEFAULT NULL this is forwarded to the underlying
+#' function \code{mmb::bayesProbability()} (only in simple=FALSE mode).
 #' @param returnProbabilityTable default FALSE boolean to indicate whether to
 #' return only the probabilities for each validation sample or whether a table
 #' with a probability for each tested label should be returned. This has no
@@ -342,7 +343,9 @@ bayesProbability <- function(
 bayesProbabilityAssign <- function(
   dfTrain, dfValid, targetCol, selectedFeatureNames = c(),
   shiftAmount = 0.1, retainMinValues = 1, doEcdf = FALSE,
-  online = 0, simple = FALSE,
+  online = 0,
+  simple = FALSE,
+  useParallel = NULL,
   returnProbabilityTable = FALSE)
 {
   # Either predict a discrete label -OR- a probability for a numeric value.
@@ -385,7 +388,7 @@ bayesProbabilityAssign <- function(
         predProb <- mmb::bayesProbability(
           df, sample, targetCol, selectedFeatureNames,
           shiftAmount = shiftAmount, retainMinValues = retainMinValues,
-          doEcdf = doEcdf, useParallel = NULL)
+          doEcdf = doEcdf, useParallel)
       }
 
       probRow[1, if (predictNumProb) "probability" else tv] <- predProb

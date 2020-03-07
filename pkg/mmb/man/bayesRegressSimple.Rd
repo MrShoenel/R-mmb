@@ -8,7 +8,8 @@ feature and returns the most likely value using a maximum a posteriori
 estimate of the kernel (returning its mode).}
 \usage{
 bayesRegressSimple(df, features, targetCol, selectedFeatureNames = c(),
-  retainMinValues = 2)
+  retainMinValues = 2, regressor = function(data)
+  mmb::estimatePdf(data)$argmax)
 }
 \arguments{
 \item{df}{data.frame}
@@ -26,6 +27,13 @@ order then depends on the features' order.}
 
 \item{retainMinValues}{integer to require a minimum amount of data points
 when segmenting the data feature by feature.}
+
+\item{regressor}{Function that is given the collected values for
+regression and thus finally used to select a most likely value. Defaults
+to the built-in estimator for the empirical PDF and returns its argmax.
+However, any other function can be used, too, such as min, max, median,
+average etc. You may also use this function to obtain the raw values
+for further processing.}
 }
 \description{
 Uses simple Bayesian inferencing to segment the data given the conditional

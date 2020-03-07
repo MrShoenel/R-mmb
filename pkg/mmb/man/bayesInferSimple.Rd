@@ -17,7 +17,8 @@ regression, set \code{doRegress = T} to obtain the most likely value of
 the target feature, instead of obtaining its relative likelihood.}
 \usage{
 bayesInferSimple(df, features, targetCol, selectedFeatureNames = c(),
-  retainMinValues = 1, doRegress = FALSE, doEcdf = FALSE)
+  retainMinValues = 1, doRegress = FALSE, doEcdf = FALSE,
+  regressor = function(data) mmb::estimatePdf(data)$argmax)
 }
 \arguments{
 \item{df}{data.frame}
@@ -46,6 +47,13 @@ empirical CDF to return a probability when inferencing a continuous
 feature. If false, uses the empirical PDF to return the rel. likelihood.
 This parameter does not have any effect when inferring discrete values
 or when doing a regression.}
+
+\item{regressor}{Function that is given the collected values for
+regression and thus finally used to select a most likely value. Defaults
+to the built-in estimator for the empirical PDF and returns its argmax.
+However, any other function can be used, too, such as min, max, median,
+average etc. You may also use this function to obtain the raw values
+for further processing. This function is ignored if not doing regression.}
 }
 \value{
 numeric probability (inferring discrete labels) or relative

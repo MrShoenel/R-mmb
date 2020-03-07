@@ -1,0 +1,28 @@
+---
+title: "Hyperparameter Evaluation"
+author: "Sebastian Hönel"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    df_print: paged
+toc: true
+toc_depth: 6
+vignette: >
+  %\VignetteIndexEntry{Hyperparameter Evaluation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+> This vignette only embeds a rendered version of another `R` notebook, that evaluates the effect of hyperparameters of all functions used for inferencing in the package __`mmb`__. It should be displayed right below this paragraph. If you have trouble viewing it, check out the latest version on Github:  [Hyperparameter Evaluation](https://mrshoenel.github.io/R-mmb/articles/hyperparameters.html). Additional formats are available here: [Additional Formats](https://github.com/MrShoenel/R-mmb/tree/master/eval/).
+
+
+---
+

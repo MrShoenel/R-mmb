@@ -78,7 +78,7 @@ estimate of the kernel (returning its mode)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.0</span>
       </span>
     </div>
 
@@ -92,6 +92,18 @@ estimate of the kernel (returning its mode)." />
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/Hyperparameter-Evaluation.html">Hyperparameter Evaluation</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -125,7 +137,8 @@ estimate of the kernel (returning its mode).</p>
     </div>
 
     <pre class="usage"><span class='fu'>bayesRegressSimple</span>(<span class='no'>df</span>, <span class='no'>features</span>, <span class='no'>targetCol</span>, <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>2</span>)</pre>
+  <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>regressor</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>data</span>)
+  <span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/mmb/man/estimatePdf.html'>estimatePdf</a></span>(<span class='no'>data</span>)$<span class='no'>argmax</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -155,6 +168,15 @@ order then depends on the features' order.</p></td>
       <th>retainMinValues</th>
       <td><p>integer to require a minimum amount of data points
 when segmenting the data feature by feature.</p></td>
+    </tr>
+    <tr>
+      <th>regressor</th>
+      <td><p>Function that is given the collected values for
+regression and thus finally used to select a most likely value. Defaults
+to the built-in estimator for the empirical PDF and returns its argmax.
+However, any other function can be used, too, such as min, max, median,
+average etc. You may also use this function to obtain the raw values
+for further processing.</p></td>
     </tr>
     </table>
 

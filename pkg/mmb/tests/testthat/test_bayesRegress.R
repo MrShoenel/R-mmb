@@ -37,7 +37,7 @@ test_that("we can also sample from the most likely range only", {
       df = iris[1:100, ],
       features = mmb::sampleToBayesFeatures(iris[101, ], "Petal.Width"),
       targetCol = "Petal.Width", selectedFeatureNames = c("Species", "Sepal.Length"),
-      sampleFromAllBuckets = FALSE)
+      sampleFromAllBuckets = FALSE, numBuckets = NA)
   }, "Segmenting stopped prematurely") # don't matter here
 
   expect_false(is.nan(res))
@@ -106,7 +106,7 @@ test_that("regression for multiple values works in simple and online, too", {
 
   res <- mmb::bayesRegressAssign(
     dfTrain, dfValid[, !(colnames(dfValid) %in% "Sepal.Length")],
-    "Sepal.Length", sampleFromAllBuckets = FALSE, doEcdf = FALSE, online = 100)
+    "Sepal.Length", sampleFromAllBuckets = FALSE, doEcdf = FALSE, online = 100, numBuckets = NA)
 
   c <- cov(res, iris[121:150,]$Sepal.Length)^2
   expect_true(all(c >= 0) && all(c <= 1))

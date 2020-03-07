@@ -72,6 +72,9 @@ bayesRegress <- function(
   sampleFromAllBuckets = TRUE,
   regressor = function(data) mmb::estimatePdf(data)$argmax)
 {
+  if (is.na(numBuckets)) {
+    numBuckets <- ceiling(log2(nrow(df)))
+  }
   if (numBuckets < 2) {
     stop("At least two buckets or more are required.")
   }
@@ -79,6 +82,10 @@ bayesRegress <- function(
   if (length(selectedFeatureNames) == 0) {
     if (mmb::getMessages()) message("No explicit feature selection, using all.")
     selectedFeatureNames <- features$name[!(features$name %in% targetCol)]
+  }
+
+  if (missing(regressor) || !is.function(regressor)) {
+    regressor <- function(data) mmb::estimatePdf(data)$argmax
   }
 
   # Ensure compatibility
@@ -185,9 +192,7 @@ bayesRegress <- function(
 #' samples given in \code{dfValid}. Assigns a regression value using either
 #' @seealso \code{mmb::bayesRegress()} (full) or @seealso \code{mmb::bayesRegressSimple()}
 #' if \code{simple=T}. It mostly forwards the given arguments to these functions,
-#' and you will find good documentation there. Passes \code{NULL} to underlying
-#' functions that can make use of parallelism, so that they can optionally compute
-#' in parallel.
+#' and you will find good documentation there.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param dfTrain data.frame that holds the training data.
@@ -219,6 +224,8 @@ bayesRegress <- function(
 #' Bayesian inferencing instead of full. This is faster but the results are less
 #' good. If true, uses \code{mmb::bayesRegressSimple()}. Otherwise, uses
 #' \code{mmb::bayesRegress()}.
+#' @param useParallel boolean DEFAULT NULL this is forwarded to the underlying
+#' function \code{mmb::bayesRegress()} (only in simple=FALSE mode).
 #' @param numBuckets integer the amount of buckets to for discretization.
 #' Buckets are built in an equidistant manner, not as quantiles (i.e., one
 #' bucket has likely a different amount of values than another).
@@ -233,7 +240,7 @@ bayesRegress <- function(
 #' However, any other function can be used, too, such as min, max, median,
 #' average etc. You may also use this function to obtain the raw values
 #' for further processing.#'
-#' @examples
+#' @examples \dontrun{
 #' df <- iris[, ]
 #' set.seed(84735)
 #' rn <- base::sample(rownames(df), 150)
@@ -243,11 +250,14 @@ bayesRegress <- function(
 #'   dfTrain, dfValid[, !(colnames(dfValid) %in% "Sepal.Length")],
 #'   "Sepal.Length", sampleFromAllBuckets = TRUE, doEcdf = TRUE)
 #' cov(res, iris[121:150,]$Sepal.Length)^2
+#' }
 #' @export
 bayesRegressAssign <- function(
   dfTrain, dfValid, targetCol, selectedFeatureNames = c(),
   shiftAmount = 0.1, retainMinValues = 2, doEcdf = FALSE,
-  online = 0, simple = FALSE,
+  online = 0,
+  simple = FALSE,
+  useParallel = NULL,
   numBuckets = ceiling(log2(nrow(df))),
   sampleFromAllBuckets = TRUE,
   regressor = function(data) mmb::estimatePdf(data)$argmax)
@@ -256,9 +266,17 @@ bayesRegressAssign <- function(
   df <- mmb::bayesConvertData(dfTrain)
   dfValid <- mmb::bayesConvertData(dfValid)
 
+  if (is.na(numBuckets)) {
+    numBuckets <- ceiling(log2(nrow(df)))
+  }
+
   if (!(targetCol %in% colnames(dfValid))) {
     # Needs to be present for sampleToBayesFeatures(..)
     dfValid[[targetCol]] <- 0
+  }
+
+  if (missing(regressor) || !is.function(regressor)) {
+    regressor <- function(data) mmb::estimatePdf(data)$argmax
   }
 
   predicted <- c()
@@ -277,7 +295,7 @@ bayesRegressAssign <- function(
         df = df, features = tf, targetCol = targetCol,
         selectedFeatureNames = selectedFeatureNames,
         shiftAmount = shiftAmount, retainMinValues = retainMinValues,
-        doEcdf = doEcdf, useParallel = NULL, numBuckets = numBuckets,
+        doEcdf = doEcdf, useParallel = useParallel, numBuckets = numBuckets,
         sampleFromAllBuckets = sampleFromAllBuckets,
         regressor = regressor)
     }
