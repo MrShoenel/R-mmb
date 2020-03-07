@@ -320,6 +320,11 @@ get_other_models_results <- function(modelsAndDatasets = data.frame()) {
     typeShort <- if (isRegress) "r" else "c"
     isMMB <- length(grep("bayesCaret", permRow$model)) > 0
     
+    dataName <- paste(permRow$model, "_", permRow$dataset, "_", typeShort, ".csv", sep = "")
+    if (file.exists(dataName)) {
+      return(read.csv(dataName))
+    }
+    
     x <- dsList$ds[, !(colnames(dsList$ds) %in% c(dsList$label))]
     y <- dsList$ds[, dsList$label]
     
