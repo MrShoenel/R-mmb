@@ -45,7 +45,8 @@ packages_required <- c(
   "Metrics", "kernlab", "C50", "plyr", "fastAdaboost",
   "gbm", "xgboost", "klaR", "randomForest", "import",
   "pls", "kohonen", "brnn", "RSNNS", "bartMachine", "arm",
-  "rpart", "pamr", "gam", "dplyr", "ggridges", "caret", "ranger", "mmb", "rJava")
+  "rpart", "pamr", "gam", "dplyr", "ggridges", "caret", "ranger",
+  "mmb", "rJava", "naivebayes")
 
 for (pr in packages_required) {
   install.packages_cond(pr)
