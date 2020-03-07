@@ -140,17 +140,19 @@ buildSite <- function() {
   file.rename("./docs", "../../docs")
 
 
+  # Copy the MD's files over:
+  fileDir <- normalizePath(paste(
+    pkgWd, "eval/hyperparameters_files", sep = "/"), mustWork = FALSE)
+  artDir <- normalizePath(paste(
+    pkgWd, "docs", "articles", sep = "/"), mustWork = FALSE)
+
+  file.copy(fileDir, artDir, recursive = TRUE)
+
+
   # Last, copy the hyperparameters.html to the articles:
   tryCatch({
-    targetDir <- normalizePath(
-      paste(pkgWd, "docs", "articles", sep = "/"), mustWork = FALSE)
-    if (!dir.exists(targetDir)) {
-      dir.create(targetDir, recursive = TRUE)
-    }
-
     temp <- normalizePath(paste(
-      pkgWd, "docs", "articles", "hyperparameters.html", sep = "/"),
-      mustWork = FALSE)
+      artDir, "hyperparameters.html", sep = "/"), mustWork = FALSE)
     if (file.exists(temp)) {
       file.remove(temp)
     }
