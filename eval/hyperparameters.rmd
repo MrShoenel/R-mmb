@@ -27,6 +27,7 @@ Let's first install all the needed packages:
 ```{r warning=FALSE, echo=FALSE, results='hide',message=FALSE}
 # Install/Load all required libraries:
 options(repos="https://cran.rstudio.com")
+options(java.parameters = "-Xmx2g")
 
 install.packages_cond <- function(name) {
   if (name %in% rownames(installed.packages()) == FALSE) {
@@ -44,7 +45,7 @@ packages_required <- c(
   "Metrics", "kernlab", "C50", "plyr", "fastAdaboost",
   "gbm", "xgboost", "klaR", "randomForest", "import",
   "pls", "kohonen", "brnn", "RSNNS", "bartMachine", "arm",
-  "rpart", "pamr", "gam", "dplyr", "ggridges", "caret", "ranger", "mmb")
+  "rpart", "pamr", "gam", "dplyr", "ggridges", "caret", "ranger", "mmb", "rJava")
 
 for (pr in packages_required) {
   install.packages_cond(pr)
@@ -296,7 +297,9 @@ get_other_models_results <- function(modelsAndDatasets = data.frame()) {
   perms <- perms[sample(rownames(perms)), ]
   
   
-  cl <- parallel::makeCluster(detectCores(), outfile = "")
+  numCores <- parallel::detectCores()
+  numCoresNested <- if (nrow(perms) < numCores) numCores else max(2, numCores / 4)
+  cl <- parallel::makeCluster(max(2, numCores / 2), outfile = "")
   clusterExport(cl, as.list(names(.GlobalEnv)))
   registerDoSNOW(cl)
   pb <- txtProgressBar(min = 0, max = nrow(perms), style = 3)
@@ -341,13 +344,8 @@ get_other_models_results <- function(modelsAndDatasets = data.frame()) {
       p = trP, savePredictions = "all", returnResamp = "all",
       seeds = get_seeds(numHypers, rcvNumber * rcvRepeats, seed = idx * 23))
     
-    clNested <- NULL
-    useNestedParallelism <- detectCores() < nrow(perms)
-    if (useNestedParallelism) {
-      clNested <- parallel::makePSOCKcluster(
-        max(2, ceiling(detectCores() / nrow(perms))))
-      doParallel::registerDoParallel(clNested)
-    }
+    clNested <- makePSOCKcluster(numCoresNested)
+    registerDoParallel(clNested)
     
     set.seed(idx * 371)
     timeStart <- proc.time()[["elapsed"]]
@@ -356,9 +354,7 @@ get_other_models_results <- function(modelsAndDatasets = data.frame()) {
     model <- caret::train(x = x, y = y, method = modelObj, trControl = trControl)
     timeEnd <- proc.time()[["elapsed"]]
     
-    if (useNestedParallelism) {
-      stopCluster(clNested)
-    }
+    stopCluster(clNested)
     
     # Now we store 2 things:
     # - The full resample
@@ -406,10 +402,11 @@ get_other_models_results <- function(modelsAndDatasets = data.frame()) {
 Here, we use the full grid as provided by `bayesCaret`. Please note that the grid and its size depends on whether we are doing classification or not.
 
 ```{r}
-datasets_c <- c("iris", "chick", "credit", "glass", "breast", "sonar")
+datasets_c <- c("iris")#, "chick", "credit", "glass", "breast", "sonar")
+caret_models_c <- ("bayesCaret")
 modelAndData_c <- expand.grid(model = caret_models_c, dataset = datasets_c, stringsAsFactors = FALSE)
 
-#get_other_models_results(modelAndData_c)
+get_other_models_results(modelAndData_c)
 ```
 
 
