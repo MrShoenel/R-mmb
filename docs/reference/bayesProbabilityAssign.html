@@ -41,8 +41,7 @@ inferencing to assign a probability to the target feature in all of the
 samples given in dfValid. Tests each sample using @seealso
 mmb::bayesProbability() or @seealso mmb::bayesProbabilitySimple().
 It mostly forwards the given arguments to these functions, and you will find
-good documentation there. Passes NULL to underlying functions that can
-make use of parallelism, so that they can optionally compute in parallel." />
+good documentation there." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -75,7 +74,7 @@ make use of parallelism, so that they can optionally compute in parallel." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.0</span>
       </span>
     </div>
 
@@ -98,7 +97,7 @@ make use of parallelism, so that they can optionally compute in parallel." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/test.html">Vignette Title</a>
+      <a href="../articles/Hyperparameter-Evaluation.html">Hyperparameter Evaluation</a>
     </li>
   </ul>
 </li>
@@ -129,13 +128,12 @@ inferencing to assign a probability to the target feature in all of the
 samples given in <code>dfValid</code>. Tests each sample using @seealso
 <code><a href='bayesProbability.html'>mmb::bayesProbability()</a></code> or @seealso <code><a href='bayesProbabilitySimple.html'>mmb::bayesProbabilitySimple()</a></code>.
 It mostly forwards the given arguments to these functions, and you will find
-good documentation there. Passes <code>NULL</code> to underlying functions that can
-make use of parallelism, so that they can optionally compute in parallel.</p>
+good documentation there.</p>
     </div>
 
     <pre class="usage"><span class='fu'>bayesProbabilityAssign</span>(<span class='no'>dfTrain</span>, <span class='no'>dfValid</span>, <span class='no'>targetCol</span>,
   <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(), <span class='kw'>shiftAmount</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>simple</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>online</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>simple</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useParallel</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>returnProbabilityTable</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -196,6 +194,11 @@ also fine; dfTrain will grow to it and then discard rows.</p></td>
 Bayesian inferencing instead of full. This is faster but the results are less
 good. If true, uses <code><a href='bayesProbabilitySimple.html'>mmb::bayesProbabilitySimple()</a></code>. Otherwise, uses
 <code><a href='bayesProbability.html'>mmb::bayesProbability()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>useParallel</th>
+      <td><p>boolean DEFAULT NULL this is forwarded to the underlying
+function <code><a href='bayesProbability.html'>mmb::bayesProbability()</a></code> (only in simple=FALSE mode).</p></td>
     </tr>
     <tr>
       <th>returnProbabilityTable</th>

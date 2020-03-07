@@ -6,7 +6,7 @@
 \usage{
 bayesRegressAssign(dfTrain, dfValid, targetCol,
   selectedFeatureNames = c(), shiftAmount = 0.1, retainMinValues = 2,
-  doEcdf = FALSE, online = 0, simple = FALSE,
+  doEcdf = FALSE, online = 0, simple = FALSE, useParallel = NULL,
   numBuckets = ceiling(log2(nrow(df))), sampleFromAllBuckets = TRUE,
   regressor = function(data) mmb::estimatePdf(data)$argmax)
 }
@@ -49,6 +49,9 @@ Bayesian inferencing instead of full. This is faster but the results are less
 good. If true, uses \code{mmb::bayesRegressSimple()}. Otherwise, uses
 \code{mmb::bayesRegress()}.}
 
+\item{useParallel}{boolean DEFAULT NULL this is forwarded to the underlying
+function \code{mmb::bayesRegress()} (only in simple=FALSE mode).}
+
 \item{numBuckets}{integer the amount of buckets to for discretization.
 Buckets are built in an equidistant manner, not as quantiles (i.e., one
 bucket has likely a different amount of values than another).}
@@ -72,6 +75,7 @@ inferencing to to a regression for the target features for all of the
 samples given in \code{dfValid}. Assigns a regression value using either
 }
 \examples{
+\dontrun{
 df <- iris[, ]
 set.seed(84735)
 rn <- base::sample(rownames(df), 150)
@@ -82,12 +86,11 @@ res <- mmb::bayesRegressAssign(
   "Sepal.Length", sampleFromAllBuckets = TRUE, doEcdf = TRUE)
 cov(res, iris[121:150,]$Sepal.Length)^2
 }
+}
 \seealso{
 \code{mmb::bayesRegress()} (full) or @seealso \code{mmb::bayesRegressSimple()}
 if \code{simple=T}. It mostly forwards the given arguments to these functions,
-and you will find good documentation there. Passes \code{NULL} to underlying
-functions that can make use of parallelism, so that they can optionally compute
-in parallel.
+and you will find good documentation there.
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
