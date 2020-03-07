@@ -403,8 +403,7 @@ get_other_models_results <- function(modelsAndDatasets = data.frame()) {
 Here, we use the full grid as provided by `bayesCaret`. Please note that the grid and its size depends on whether we are doing classification or not.
 
 ```{r}
-datasets_c <- c("iris")#, "chick", "credit", "glass", "breast", "sonar")
-caret_models_c <- ("bayesCaret")
+datasets_c <- c("iris", "chick", "credit", "glass", "breast", "sonar")
 modelAndData_c <- expand.grid(model = caret_models_c, dataset = datasets_c, stringsAsFactors = FALSE)
 
 get_other_models_results(modelAndData_c)
@@ -416,7 +415,7 @@ get_other_models_results(modelAndData_c)
 datasets_r <- c("mortality", "sacramento", "boston", "seals", "faithful", "diamonds")
 modelAndData_r <- expand.grid(model = caret_models_r, dataset = datasets_r, stringsAsFactors = FALSE)
 
-#get_other_models_results(modelAndData_r)
+get_other_models_results(modelAndData_r)
 ```
 
 ```{r}
