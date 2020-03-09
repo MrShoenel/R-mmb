@@ -1,5 +1,3 @@
-source("./make.varClosure.R")
-
 varWarn <- make.varClosure(T)
 
 

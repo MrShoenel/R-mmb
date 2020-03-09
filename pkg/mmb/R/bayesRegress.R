@@ -1,6 +1,4 @@
-source("./make.varClosure.R")
-
-defaultRegressor <- make.varClosure(function(data) mmb::estimatePdf(data)$argmax)
+#defaultRegressor <- make.varClosure(function(data) mmb::estimatePdf(data)$argmax)
 
 
 #' @title Set a system-wide default regressor.

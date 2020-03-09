@@ -8,7 +8,7 @@ bayesRegressAssign(dfTrain, dfValid, targetCol,
   selectedFeatureNames = c(), shiftAmount = 0.1, retainMinValues = 2,
   doEcdf = FALSE, online = 0, simple = FALSE, useParallel = NULL,
   numBuckets = ceiling(log2(nrow(df))), sampleFromAllBuckets = TRUE,
-  regressor = function(data) mmb::estimatePdf(data)$argmax)
+  regressor = mmb::getDefaultRegressor())
 }
 \arguments{
 \item{dfTrain}{data.frame that holds the training data.}
