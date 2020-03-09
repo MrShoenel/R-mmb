@@ -1,3 +1,7 @@
+# This is required for the foreach::foreach loops.
+utils::globalVariables("fn", package = c("mmb"))
+
+
 #' @title Naive Bayesian inferencing for determining the probability or
 #' relative likelihood of a given value.
 #'
