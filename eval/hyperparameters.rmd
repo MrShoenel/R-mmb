@@ -22,6 +22,13 @@ Functions implemented in __`mmb`__ support some hyperparameters. This notebook e
 # Grid search
 In the first section, we are evaluating our new classifier and regressor for some well known datasets, using a grid-search approach and `caret`. We start with classification, then continue with regression. Those best parameters will then be used in further comparisons against other models.
 
+In the following block, we can globally disable attempts to compute results. If the resulting files are present, then the related evaluations are skipped anyway. However, setting the following to `r FALSE`, will prevent the actual attempt.
+
+```{r}
+DISABLE_COMPUTATIONS <- TRUE
+```
+
+
 Let's first install all the needed packages:
 
 ```{r warning=FALSE, echo=FALSE, results='hide',message=FALSE}
@@ -75,6 +82,20 @@ We define a couple of helper-functions:
 # appropriate resampling!
 max_rows_dataset <- 2000
 
+
+#' Unifies the way we retrieve a dataset. Already splits the dataset
+#' into training- and validation partitions. The split is 0.7, if the
+#' amount of rows is less than 800; 0.85, otherwise.
+#' @param name a short-cut name of the dataset to obtain, e.g. "iris"
+#' @param seedMult an integer used for \code{set.seed()}
+#' @param useDs an optional data.frame of a 3rd party dataset. Use this
+#' to use your own dataset but still obtain a list as produced by this
+#' function.
+#' @param useLabel character the name of the label to use when passing
+#' in an own dataset using 'useDs'.
+#' @return list with the entries 'ds' (the entire dataset as data.frame),
+#' 'label' (name of column to be the label/target), 'train' and 'valid'
+#' (data.frames with training and validation data; train+valid = ds)
 get_dataset <- function(name, seedMult, useDs = NULL, useLabel = NULL) {
   set.seed((0xceed * seedMult * max_rows_dataset) %% .Machine$integer.max)
   
@@ -245,7 +266,17 @@ get_dataset <- function(name, seedMult, useDs = NULL, useLabel = NULL) {
 }
 
 
-# Extracts the best fit from every fold
+#' Uses caret's 'bestTune', i.e., the best found hyperparameters from the
+#' grid-search, and extracts the results from each fold/repeat that uses
+#' these. The result is a table with the results obtained using the best
+#' set of hyperparameters.
+#' @param resample data.frame as obtained from a fitted model trained
+#' with caret (model$resample). This should ideally be obtained using a
+#' train-configuration where resample="all".
+#' @param bestTune data.frame as obtained from a fitted model trained
+#' with caret (model$bestTune).
+#' @return data.frame a subset of 'resample', where the rows use the hyper-
+#' parameters from 'bestTune'.
 aggregate_caret_results <- function(resample, bestTune) {
   conds <- c()
   for (cName in colnames(bestTune)) {
@@ -275,6 +306,16 @@ aggregate_caret_results <- function(resample, bestTune) {
   return(resample[eval(parse(text = paste(conds, collapse = " & "))), ])
 }
 
+
+#' Returns a list of seeds used in parallel training with caret. For
+#' repeatability, we need deterministic seeds. The amount depends on
+#' the amounts of hyperparamenters, and number of folds/repeats.
+#' @param nh integer, the number of hyperparameters
+#' @param amount integer, the number of seeds, usually this is number
+#' of folds * number of repeats.
+#' @param seed integer used in \code{set.seed()}. Given an identical
+#' seed, this function produces the same seeds (idempotent).
+#' @return list with seeds that can be used in caret's trainControl
 get_seeds <- function(nh, amount, seed = 42) {
   set.seed(seed)
   
@@ -289,10 +330,19 @@ get_seeds <- function(nh, amount, seed = 42) {
 Let's define a function to perform grid search.
 
 ```{r}
-# modelsAndDatasets is a data.frame with columns 'model' and 'dataset'.
-# It should already match each model with the right dataset, i.e., it
-# should not have a row {nb,diamonds}, as Naive Bayes cannot regress.
+#' modelsAndDatasets is a data.frame with columns 'model' and 'dataset'.
+#' It should already match each model with the right dataset, i.e., it
+#' should not have a row {nb,diamonds}, as Naive Bayes cannot regress.
+#' This function does not return anything, but stores the result of each
+#' model/dataset combination as CSV.
+#' @param modelsAndDatasets data.frame, with the columns 'model' and
+#' 'dataset'. Model needs to be acceptable for caret, and dataset needs
+#' to be acceptable by @seealso \code{get_dataset()}.
+#' @return void
 get_other_models_results <- function(modelsAndDatasets = data.frame()) {
+  if (DISABLE_COMPUTATIONS) {
+    return(0)
+  }
   perms <- modelsAndDatasets[order(modelsAndDatasets$model, modelsAndDatasets$dataset), ]
   set.seed(0xbeef42)
   perms <- perms[sample(rownames(perms)), ]
@@ -327,6 +377,14 @@ get_other_models_results <- function(modelsAndDatasets = data.frame()) {
     dataName <- paste(permRow$model, "_", permRow$dataset, "_", typeShort, ".csv", sep = "")
     if (file.exists(dataName)) {
       return(read.csv(dataName))
+    }
+    
+    # Workaround: The models mlpML, pam, rda do not support ordered factors
+    # in the chick dataset and will fail, but we can convert them to numeric.
+    if (permRow$model %in% c("mlpML", "pam", "rda") && permRow$dataset == "chick") {
+      dsList$ds$Chick <- as.numeric(dsList$ds$Chick)
+      dsList$train$Chick <- as.numeric(dsList$train$Chick)
+      dsList$valid$Chick <- as.numeric(dsList$valid$Chick)
     }
     
     x <- dsList$ds[, !(colnames(dsList$ds) %in% c(dsList$label))]
@@ -404,7 +462,10 @@ Here, we use the full grid as provided by `bayesCaret`. Please note that the gri
 
 ```{r}
 datasets_c <- c("iris", "chick", "credit", "glass", "breast", "sonar")
-modelAndData_c <- expand.grid(model = caret_models_c, dataset = datasets_c, stringsAsFactors = FALSE)
+modelAndData_c <- expand.grid(
+  model = caret_models_c,
+  dataset = datasets_c,
+  stringsAsFactors = FALSE)
 
 get_other_models_results(modelAndData_c)
 ```
@@ -412,25 +473,131 @@ get_other_models_results(modelAndData_c)
 
 ## Regression
 ```{r}
+# We set a new default regressor, to avoid NaN in sparse predictions.
+mmb::setDefaultRegressor(function(data) {
+  res <- mmb::estimatePdf(data)$argmax
+  if (is.na(res)) {
+    res <- median(data)
+  }
+  return(res)
+})
+
 datasets_r <- c("mortality", "sacramento", "boston", "seals", "faithful", "diamonds")
-modelAndData_r <- expand.grid(model = caret_models_r, dataset = datasets_r, stringsAsFactors = FALSE)
+modelAndData_r <- expand.grid(
+  model = caret_models_r,
+  dataset = datasets_r,
+  stringsAsFactors = FALSE)
 
 get_other_models_results(modelAndData_r)
 ```
 
+
+# Evaluation
+In this section, we will load the results and aggregate all data, so that we can then continue with visualizations and statistical analyses. We begin by first loading the results for all other models, before continuing with our Bayesian results.
+
 ```{r}
-plot(cars)
+install.packages_cond("extrafont")
+windowsFonts(Times = windowsFont("Times"))
+windowsFonts(Consolas = windowsFont("Consolas"))
+# Was overridden by RandomForest
+margin <- ggplot2::margin
+
+
+#' Given a ggplot2 instance, saves the plot as EPS in the figures-directory,
+#' and then returns it for further processing.
+#' @param ggplotInstance a gg plot
+#' @param fileName character the name of the file, without the extension.
+#' @param width in inches, defaults to the width of a portrait A4 (210mm)
+#' @param height in inches, defaults to 10cm (~3.93in)
+#' @return ggplot the instance as given, unchanged
+saveAndPlotAsEPS <- function(ggplotInstance, fileName, width = 2100/254, height = 1000/254) {
+  f <- "figures"
+  if (!dir.exists(f)) {
+    dir.create(f)
+  }
+  
+  fileName <- paste(f, paste(fileName, ".eps", sep = ""), sep = "/")
+  ggsave(fileName, ggplotInstance,
+         width = floor(width * 100) / 100,
+         height = floor(height * 100) / 100,
+         limitsize = F, device = cairo_pdf)
+  return(ggplotInstance)
+}
 ```
 
 
 
-# Other models
+## Evaluation of the Bayes-only models
+In this section, we will outline the effects of various hyperparameters in our Bayesian models.
+
+### Load and aggregate the data
+We need to aggregate the results from each model, both for classification and regression.
+
+```{r}
+# bc means bayesCaret, c=classification
+results_bc_c <- do.call(rbind, lapply(datasets_c, function(d) {
+  csv <- read.csv(paste("results_c/bayesCaret_", d, "_c.csv", sep = ""))
+  csv$X <- NULL
+  csv$Model <- NULL
+  return(csv)
+}))
+```
+
+```{r}
+(ggplot(results_bc_c, aes(x=Dataset, y=Accuracy)) +
+  labs(subtitle = "Accuracy of full and simple classification.") +
+  geom_boxplot(color="black") +
+  facet_wrap(hyper.simple ~ ., labeller = label_both) +
+  theme_bw() +
+  theme(
+    text = element_text(family="Consolas"),
+    axis.text.x = element_text(angle = 45, margin = margin(t=10), hjust = .66),
+    axis.title.x = element_blank(), strip.background = element_rect(fill="#dfdfdf"),
+    axis.title.y = element_text(margin = margin(r=10)),
+    legend.text = element_text(size = 8),
+    strip.text = element_text(color="black"))
+) %>% saveAndPlotAsEPS("Bayes-all-datasets_Acc")
+
+# Now let's do the same, for Kappa
+(ggplot(results_bc_c, aes(x=Dataset, y=Kappa)) +
+  labs(subtitle = "Kappa of full and simple classification.") +
+  geom_boxplot(color="black") +
+  facet_wrap(hyper.simple ~ ., labeller = label_both) +
+  theme_bw() +
+  ylim(-.1, 1) + # For some reason, some results have a negative Kappa..
+  theme(
+    text = element_text(family="Consolas"),
+    axis.text.x = element_text(angle = 45, margin = margin(t=10), hjust = .66),
+    axis.title.x = element_blank(), strip.background = element_rect(fill="#dfdfdf"),
+    axis.title.y = element_text(margin = margin(r=10)),
+    legend.text = element_text(size = 8),
+    strip.text = element_text(color="black"))
+) %>% saveAndPlotAsEPS("Bayes-all-datasets_Kappa")
+```
 
 
-# Evaluation
 
-## Load and aggregate the data
-
-### Evaluation of the Bayes-only models
 
 ### Evaluation and comparison to other models
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
