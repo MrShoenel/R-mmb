@@ -24,13 +24,13 @@ discretizeVariableToRanges <- function(
   data, openEndRanges = TRUE, numRanges = NA,
   exclMinVal = NULL, inclMaxVal = NULL)
 {
-  dataNaNs <- is.na(data)
-  hasNaNs <- sum(dataNaNs) > 0
-  if (hasNaNs) {
+  dataNAs <- is.na(data) | is.nan(data)
+  hasNAs <- sum(dataNAs) > 0
+  if (hasNAs) {
     if (mmb::getWarnings()) {
-      warning("Data contains NaNs, removing them.")
+      warning("Data contains NAs, removing them.")
     }
-    data <- data[!dataNaNs]
+    data <- data[!dataNAs]
   }
 
   # Now we either need data or ranges.

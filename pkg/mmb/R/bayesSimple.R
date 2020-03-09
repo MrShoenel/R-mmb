@@ -89,7 +89,7 @@ bayesConvertData <- function(df) {
 bayesInferSimple <- function(
   df, features, targetCol, selectedFeatureNames = c(),
   retainMinValues = 1, doRegress = FALSE, doEcdf = FALSE,
-  regressor = function(data) mmb::estimatePdf(data)$argmax)
+  regressor = NULL)
 {
   if (doRegress && doEcdf) {
     stop("doRegress and doEcdf are mutually exclusive, only one can be TRUE (or both be FALSE).")
@@ -104,6 +104,10 @@ bayesInferSimple <- function(
     } else {
       stop("The target-column is not within the features.")
     }
+  }
+
+  if (missing(regressor) || !is.function(regressor)) {
+    regressor <- mmb::getDefaultRegressor()
   }
 
   bayesSimpleCheckData(df, features, targetCol)
@@ -199,8 +203,10 @@ bayesProbabilitySimple <- function(
   selectedFeatureNames = c(), retainMinValues = 1, doEcdf = FALSE)
 {
   return(mmb::bayesInferSimple(
-    df, features, targetCol, selectedFeatureNames,
-    retainMinValues = retainMinValues, doRegress = FALSE, doEcdf = doEcdf))
+    df = df, features = features, targetCol = targetCol,
+    selectedFeatureNames = selectedFeatureNames,
+    retainMinValues = retainMinValues,
+    doRegress = FALSE, doEcdf = doEcdf))
 }
 
 
@@ -231,15 +237,17 @@ bayesProbabilitySimple <- function(
 bayesRegressSimple <- function(
   df, features, targetCol,
   selectedFeatureNames = c(), retainMinValues = 2,
-  regressor = function(data) mmb::estimatePdf(data)$argmax)
+  regressor = NULL)
 {
   if (retainMinValues < 2) {
     stop("For regression, retainMinValues must be greater than or equal to 2.")
   }
 
   return(mmb::bayesInferSimple(
-    df, features, targetCol, selectedFeatureNames,
-    retainMinValues = retainMinValues, doRegress = TRUE))
+    df = df, features = features, targetCol = targetCol,
+    selectedFeatureNames = selectedFeatureNames,
+    retainMinValues = retainMinValues,
+    doRegress = TRUE, doEcdf = FALSE, regressor = regressor))
 }
 
 

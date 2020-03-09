@@ -70,6 +70,19 @@ test_that("custom regressor errors are handled properly", {
 
   expect_true(is.nan(res))
 
+  # Get the default regressor:
+  rd <- mmb::getDefaultRegressor()
+  mmb::setDefaultRegressor(function(data) paste(ceiling(data), collapse = "-"))
+  res <- expect_warning({
+    mmb::bayesRegress(
+      df = iris[1:100, ],
+      features = mmb::sampleToBayesFeatures(iris[101, ], "Petal.Width"),
+      targetCol = "Petal.Width", selectedFeatureNames = c("Species", "Sepal.Length"),
+      sampleFromAllBuckets = FALSE)
+  }, "Segmenting stopped")
+  expect_equal(grep("^\\d+?(\\-\\d+?)*?$", res), 1) # 42 or 42-1 or 54-4-12 and so on
+  mmb::setDefaultRegressor(rd)
+
   mmb::setWarnings(w)
 })
 

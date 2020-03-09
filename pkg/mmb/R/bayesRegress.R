@@ -99,7 +99,7 @@ bayesRegress <- function(
   shiftAmount = 0.1, retainMinValues = 2, doEcdf = FALSE, useParallel = NULL,
   numBuckets = ceiling(log2(nrow(df))),
   sampleFromAllBuckets = TRUE,
-  regressor = mmb::getDefaultRegressor())
+  regressor = NULL)
 {
   if (is.na(numBuckets)) {
     numBuckets <- ceiling(log2(nrow(df)))
@@ -114,7 +114,7 @@ bayesRegress <- function(
   }
 
   if (missing(regressor) || !is.function(regressor)) {
-    regressor <- function(data) mmb::estimatePdf(data)$argmax
+    regressor <- mmb::getDefaultRegressor()
   }
 
   # Ensure compatibility
@@ -290,7 +290,7 @@ bayesRegressAssign <- function(
   useParallel = NULL,
   numBuckets = ceiling(log2(nrow(df))),
   sampleFromAllBuckets = TRUE,
-  regressor = mmb::getDefaultRegressor())
+  regressor = NULL)
 {
   # Ensure compat.
   df <- mmb::bayesConvertData(dfTrain)
@@ -306,7 +306,7 @@ bayesRegressAssign <- function(
   }
 
   if (missing(regressor) || !is.function(regressor)) {
-    regressor <- function(data) mmb::estimatePdf(data)$argmax
+    regressor <- mmb::getDefaultRegressor()
   }
 
   predicted <- c()

@@ -155,7 +155,7 @@ bayesCaret$predict <- function(modelFit, newdata, submodels) {
     simple = FALSE,
     numBuckets = ceiling(log2(nrow(modelFit$train))),
     sampleFromAllBuckets = TRUE,
-    regressor = function(data) mmb::estimatePdf(data)$argmax
+    regressor = NA
   )
 
   dfParams <- if (classify) default_classification else default_regression
