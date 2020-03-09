@@ -20,8 +20,19 @@
 #' inclusive maximum value of the range. The list will be as long as the number
 #' of buckets requested.
 #' @export
-discretizeVariableToRanges <- function(data, openEndRanges = TRUE, numRanges = NA,
-                                       exclMinVal = NULL, inclMaxVal = NULL) {
+discretizeVariableToRanges <- function(
+  data, openEndRanges = TRUE, numRanges = NA,
+  exclMinVal = NULL, inclMaxVal = NULL)
+{
+  dataNaNs <- is.na(data)
+  hasNaNs <- sum(dataNaNs) > 0
+  if (hasNaNs) {
+    if (mmb::getWarnings()) {
+      warning("Data contains NaNs, removing them.")
+    }
+    data <- data[!dataNaNs]
+  }
+
   # Now we either need data or ranges.
   hasData <- is.numeric(data) && length(data) > 0
   hasLimits <- is.numeric(exclMinVal) && is.numeric(inclMaxVal) && exclMinVal < inclMaxVal
@@ -49,7 +60,6 @@ discretizeVariableToRanges <- function(data, openEndRanges = TRUE, numRanges = N
   if (!is.numeric(inclMaxVal) || is.na(inclMaxVal)) {
     inclMaxVal <- max(data)
   }
-
 
 
   dataCut <- data[data > exclMinVal & data <= inclMaxVal]

@@ -1,3 +1,32 @@
+defaultRegressor <- make.varClosure(function(data) mmb::estimatePdf(data)$argmax)
+
+
+#' @title Set a system-wide default regressor.
+#' @description Getting and setting the default regressor affects all functions
+#' that have an overridable regressor. If this is not given, the default has
+#' defined here will be obtained.
+#'
+#' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @param func a Function to use a regressor, should accept one argument,
+#' which is a vector of numeric, and return one value, the regression.
+#' @return void
+#' @export
+setDefaultRegressor <- function(func) {
+  defaultRegressor$set(func)
+}
+
+
+#' @title Get the system-wide default regressor.
+#' @description Getting and setting the default regressor affects all functions
+#' that have an overridable regressor. If this is not given, the default has
+#' defined here will be obtained.
+#' @return Function the function used as the regressor. Defaults to
+#' \code{function(data) mmb::estimatePdf(data)$argmax}.
+#' @export
+getDefaultRegressor <- function() defaultRegressor$get()
+
+
+
 #' @title Perform full-dependency Bayesian regression for a sample.
 #'
 #' @description This method performs full-dependency regression by
@@ -70,7 +99,7 @@ bayesRegress <- function(
   shiftAmount = 0.1, retainMinValues = 2, doEcdf = FALSE, useParallel = NULL,
   numBuckets = ceiling(log2(nrow(df))),
   sampleFromAllBuckets = TRUE,
-  regressor = function(data) mmb::estimatePdf(data)$argmax)
+  regressor = mmb::getDefaultRegressor())
 {
   if (is.na(numBuckets)) {
     numBuckets <- ceiling(log2(nrow(df)))
@@ -124,7 +153,8 @@ bayesRegress <- function(
     dfTrain = df, dfValid = targetRow, targetCol = rangeColName,
     selectedFeatureNames = selectedFeatureNames, shiftAmount = shiftAmount,
     retainMinValues = retainMinValues, doEcdf = doEcdf,
-    simple = FALSE, online = 0, returnProbabilityTable = TRUE)
+    simple = FALSE, online = 0, returnProbabilityTable = TRUE,
+    useParallel = useParallel)
 
   # Also, there are 2 modes now:
   # sampleFromAllBuckets = F: Take the bucket with the highest probability,
@@ -260,7 +290,7 @@ bayesRegressAssign <- function(
   useParallel = NULL,
   numBuckets = ceiling(log2(nrow(df))),
   sampleFromAllBuckets = TRUE,
-  regressor = function(data) mmb::estimatePdf(data)$argmax)
+  regressor = mmb::getDefaultRegressor())
 {
   # Ensure compat.
   df <- mmb::bayesConvertData(dfTrain)
@@ -302,7 +332,7 @@ bayesRegressAssign <- function(
 
     predicted <- c(predicted, pred)
 
-    if (online) {
+    if (online > 0 && !is.nan(pred)) {
       tempRow <- dfValid[n, ]
       tempRow[[targetCol]] <- pred
       df <- rbind(df, tempRow)

@@ -386,9 +386,10 @@ bayesProbabilityAssign <- function(
           retainMinValues = retainMinValues, doEcdf = doEcdf)
       } else {
         predProb <- mmb::bayesProbability(
-          df, sample, targetCol, selectedFeatureNames,
+          df = df, features = sample, targetCol = targetCol,
+          selectedFeatureNames = selectedFeatureNames,
           shiftAmount = shiftAmount, retainMinValues = retainMinValues,
-          doEcdf = doEcdf, useParallel)
+          doEcdf = doEcdf, useParallel = useParallel)
       }
 
       probRow[1, if (predictNumProb) "probability" else tv] <- predProb

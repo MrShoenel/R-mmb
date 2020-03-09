@@ -11,7 +11,7 @@ setMessages(enable = TRUE)
 \item{enable}{a boolean to indicate whether to enable messages or not.}
 }
 \value{
-void
+Boolean the state of enabled
 }
 \description{
 Setter for enabling or disabling messages. Messages are disabled by default.
