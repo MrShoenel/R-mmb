@@ -78,11 +78,16 @@ bayesCaret$grid <- function(x = NULL, y = NULL, len = NULL, search = "grid") {
     cOnline <- c(cOnline, round(1.2 * numTrain))
   }
 
+  modes <- c("full", "simple")
+  if (isClassification) {
+    modes <- c(modes, "naive") # Naive is only supported in cls.
+  }
+
   gridList <- list(
     shiftAmount = c(0, 0.1),
     doEcdf = c(TRUE, FALSE),
     online = sort(c(cOnline, .Machine$integer.max)),
-    mode = c("full", "simple", "naive"),
+    mode = modes,
     regressor = NA # is not a function, so will fall back to default for regression
   )
 
