@@ -1,4 +1,4 @@
-#defaultRegressor <- make.varClosure(function(data) mmb::estimatePdf(data)$argmax)
+varDefaultRegressor <- make.varClosure(function(data) mmb::estimatePdf(data)$argmax)
 
 
 #' @title Set a system-wide default regressor.
@@ -12,7 +12,7 @@
 #' @return void
 #' @export
 setDefaultRegressor <- function(func) {
-  defaultRegressor$set(func)
+  varDefaultRegressor$set(func)
 }
 
 
@@ -23,7 +23,7 @@ setDefaultRegressor <- function(func) {
 #' @return Function the function used as the regressor. Defaults to
 #' \code{function(data) mmb::estimatePdf(data)$argmax}.
 #' @export
-getDefaultRegressor <- function() defaultRegressor$get()
+getDefaultRegressor <- function() varDefaultRegressor$get()
 
 
 

@@ -1,4 +1,4 @@
-varWarn <- make.varClosure(T)
+varWarn <- make.varClosure(TRUE)
 
 
 #' Setter for enabling or disabling warnings. Warnings are enabled by default.
@@ -18,7 +18,7 @@ setWarnings <- function(enable = TRUE) {
 getWarnings <- function() varWarn$get()
 
 
-varMsg <- make.varClosure(F)
+varMsg <- make.varClosure(FALSE)
 
 
 #' Setter for enabling or disabling messages. Messages are disabled by default.
