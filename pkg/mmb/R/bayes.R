@@ -231,7 +231,7 @@ bayesProbability <- function(
     condFeats <- featuresWithoutLabel[
       rownames(featuresWithoutLabel) >= featIdx, ]
 
-    return(bayesComputeProductFactor(
+    return(mmb::bayesComputeProductFactor(
       df, condFeats, targetFeat, computeNumerator = compNum,
       retainMinValues = retainMinValues, doEcdf = doEcdf))
   }
@@ -325,6 +325,8 @@ bayesProbability <- function(
 #' Bayesian inferencing instead of full. This is faster but the results are less
 #' good. If true, uses \code{mmb::bayesProbabilitySimple()}. Otherwise, uses
 #' \code{mmb::bayesProbability()}.
+#' @param naive default FALSE boolean to indicate whether or not to use naive
+#' Bayesian inferencing instead of full or simple.
 #' @param useParallel boolean DEFAULT NULL this is forwarded to the underlying
 #' function \code{mmb::bayesProbability()} (only in simple=FALSE mode).
 #' @param returnProbabilityTable default FALSE boolean to indicate whether to
@@ -345,6 +347,7 @@ bayesProbabilityAssign <- function(
   shiftAmount = 0.1, retainMinValues = 1, doEcdf = FALSE,
   online = 0,
   simple = FALSE,
+  naive = FALSE,
   useParallel = NULL,
   returnProbabilityTable = FALSE)
 {
@@ -353,6 +356,10 @@ bayesProbabilityAssign <- function(
   predictNumProb <- is.numeric(dfTrain[[targetCol]])
   if (predictNumProb && !(targetCol %in% colnames(dfValid))) {
     stop("Requested to predict a probability for numeric value, but not present in validation data.")
+  }
+
+  if (simple && naive) {
+    stop("Can only either do full, simple or naive.")
   }
 
   targetIsFactor <- is.factor(dfTrain[[targetCol]])
@@ -384,6 +391,12 @@ bayesProbabilityAssign <- function(
           df = df, features = sample, targetCol = targetCol,
           selectedFeatureNames = selectedFeatureNames,
           retainMinValues = retainMinValues, doEcdf = doEcdf)
+      } else if (naive) {
+        predProb <- mmb::bayesProbabilityNaive(
+          df = df, features = sample, targetCol = targetCol,
+          selectedFeatureNames = selectedFeatureNames,
+          shiftAmount = shiftAmount, retainMinValues = retainMinValues,
+          doEcdf = doEcdf, useParallel = useParallel)
       } else {
         predProb <- mmb::bayesProbability(
           df = df, features = sample, targetCol = targetCol,

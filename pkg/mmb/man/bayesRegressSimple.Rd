@@ -8,8 +8,7 @@ feature and returns the most likely value using a maximum a posteriori
 estimate of the kernel (returning its mode).}
 \usage{
 bayesRegressSimple(df, features, targetCol, selectedFeatureNames = c(),
-  retainMinValues = 2, regressor = function(data)
-  mmb::estimatePdf(data)$argmax)
+  retainMinValues = 2, regressor = NULL)
 }
 \arguments{
 \item{df}{data.frame}
