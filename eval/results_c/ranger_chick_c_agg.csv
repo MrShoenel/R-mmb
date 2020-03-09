@@ -1,0 +1,16 @@
+"","Accuracy","Kappa","Resample","Model","Dataset","Runtime","hyper.mtry","hyper.splitrule","hyper.min.node.size"
+"1",1,1,"Fold1.Rep1","ranger","chick",1.2126,2,"gini",1
+"5",1,1,"Fold2.Rep1","ranger","chick",1.2126,2,"gini",1
+"9",1,1,"Fold3.Rep1","ranger","chick",1.2126,2,"gini",1
+"13",1,1,"Fold4.Rep1","ranger","chick",1.2126,2,"gini",1
+"17",1,1,"Fold5.Rep1","ranger","chick",1.2126,2,"gini",1
+"21",1,1,"Fold1.Rep2","ranger","chick",1.2126,2,"gini",1
+"25",1,1,"Fold2.Rep2","ranger","chick",1.2126,2,"gini",1
+"29",1,1,"Fold3.Rep2","ranger","chick",1.2126,2,"gini",1
+"33",1,1,"Fold4.Rep2","ranger","chick",1.2126,2,"gini",1
+"37",1,1,"Fold5.Rep2","ranger","chick",1.2126,2,"gini",1
+"41",1,1,"Fold1.Rep3","ranger","chick",1.2126,2,"gini",1
+"45",1,1,"Fold2.Rep3","ranger","chick",1.2126,2,"gini",1
+"49",1,1,"Fold3.Rep3","ranger","chick",1.2126,2,"gini",1
+"53",1,1,"Fold4.Rep3","ranger","chick",1.2126,2,"gini",1
+"57",1,1,"Fold5.Rep3","ranger","chick",1.2126,2,"gini",1

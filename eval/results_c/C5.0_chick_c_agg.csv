@@ -1,0 +1,16 @@
+"","Accuracy","Kappa","Resample","Model","Dataset","Runtime","hyper.trials","hyper.model","hyper.winnow"
+"11",1,1,"Fold1.Rep1","C5.0","chick",1.42246666666667,1,"rules",TRUE
+"23",1,1,"Fold2.Rep1","C5.0","chick",1.42246666666667,1,"rules",TRUE
+"35",1,1,"Fold3.Rep1","C5.0","chick",1.42246666666667,1,"rules",TRUE
+"47",1,1,"Fold4.Rep1","C5.0","chick",1.42246666666667,1,"rules",TRUE
+"59",1,1,"Fold5.Rep1","C5.0","chick",1.42246666666667,1,"rules",TRUE
+"71",1,1,"Fold1.Rep2","C5.0","chick",1.42246666666667,1,"rules",TRUE
+"83",1,1,"Fold2.Rep2","C5.0","chick",1.42246666666667,1,"rules",TRUE
+"95",1,1,"Fold3.Rep2","C5.0","chick",1.42246666666667,1,"rules",TRUE
+"107",1,1,"Fold4.Rep2","C5.0","chick",1.42246666666667,1,"rules",TRUE
+"119",1,1,"Fold5.Rep2","C5.0","chick",1.42246666666667,1,"rules",TRUE
+"131",1,1,"Fold1.Rep3","C5.0","chick",1.42246666666667,1,"rules",TRUE
+"143",1,1,"Fold2.Rep3","C5.0","chick",1.42246666666667,1,"rules",TRUE
+"155",1,1,"Fold3.Rep3","C5.0","chick",1.42246666666667,1,"rules",TRUE
+"167",1,1,"Fold4.Rep3","C5.0","chick",1.42246666666667,1,"rules",TRUE
+"179",1,1,"Fold5.Rep3","C5.0","chick",1.42246666666667,1,"rules",TRUE

@@ -1,0 +1,16 @@
+"","Accuracy","Kappa","Resample","Model","Dataset","Runtime","hyper.trials","hyper.model","hyper.winnow"
+"2",0.755,0.283625730994152,"Fold1.Rep1","C5.0","credit",1.6822,1,"tree",FALSE
+"14",0.71,0.228723404255319,"Fold2.Rep1","C5.0","credit",1.6822,1,"tree",FALSE
+"26",0.73,0.215116279069767,"Fold3.Rep1","C5.0","credit",1.6822,1,"tree",FALSE
+"38",0.65,0.0691489361702131,"Fold4.Rep1","C5.0","credit",1.6822,1,"tree",FALSE
+"50",0.7,0.242424242424243,"Fold5.Rep1","C5.0","credit",1.6822,1,"tree",FALSE
+"62",0.705,0.227748691099476,"Fold1.Rep2","C5.0","credit",1.6822,1,"tree",FALSE
+"74",0.715,0.22972972972973,"Fold2.Rep2","C5.0","credit",1.6822,1,"tree",FALSE
+"86",0.665,0.174876847290641,"Fold3.Rep2","C5.0","credit",1.6822,1,"tree",FALSE
+"98",0.74,0.216867469879518,"Fold4.Rep2","C5.0","credit",1.6822,1,"tree",FALSE
+"110",0.72,0.222222222222222,"Fold5.Rep2","C5.0","credit",1.6822,1,"tree",FALSE
+"122",0.735,0.234104046242775,"Fold1.Rep3","C5.0","credit",1.6822,1,"tree",FALSE
+"134",0.725,0.280104712041885,"Fold2.Rep3","C5.0","credit",1.6822,1,"tree",FALSE
+"146",0.695,0.128571428571429,"Fold3.Rep3","C5.0","credit",1.6822,1,"tree",FALSE
+"158",0.7,0.22680412371134,"Fold4.Rep3","C5.0","credit",1.6822,1,"tree",FALSE
+"170",0.68,0.111111111111111,"Fold5.Rep3","C5.0","credit",1.6822,1,"tree",FALSE
