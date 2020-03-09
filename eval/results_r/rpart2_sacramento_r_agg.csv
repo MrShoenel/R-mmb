@@ -1,0 +1,16 @@
+"","RMSE","Rsquared","MAE","Resample","Model","Dataset","Runtime","hyper.maxdepth"
+"1",NA,NA,NA,"Fold1.Rep1","rpart2","sacramento",1.52653333333333,3
+"4",83092.1459939221,0.665740327130854,62028.6246566829,"Fold2.Rep1","rpart2","sacramento",1.52653333333333,3
+"7",NA,NA,NA,"Fold3.Rep1","rpart2","sacramento",1.52653333333333,3
+"10",NA,NA,NA,"Fold4.Rep1","rpart2","sacramento",1.52653333333333,3
+"13",NA,NA,NA,"Fold5.Rep1","rpart2","sacramento",1.52653333333333,3
+"16",NA,NA,NA,"Fold1.Rep2","rpart2","sacramento",1.52653333333333,3
+"19",NA,NA,NA,"Fold2.Rep2","rpart2","sacramento",1.52653333333333,3
+"22",NA,NA,NA,"Fold3.Rep2","rpart2","sacramento",1.52653333333333,3
+"25",NA,NA,NA,"Fold4.Rep2","rpart2","sacramento",1.52653333333333,3
+"28",NA,NA,NA,"Fold5.Rep2","rpart2","sacramento",1.52653333333333,3
+"31",NA,NA,NA,"Fold1.Rep3","rpart2","sacramento",1.52653333333333,3
+"34",NA,NA,NA,"Fold2.Rep3","rpart2","sacramento",1.52653333333333,3
+"37",87385.6162728504,0.519817064706416,64969.04103807,"Fold3.Rep3","rpart2","sacramento",1.52653333333333,3
+"40",NA,NA,NA,"Fold4.Rep3","rpart2","sacramento",1.52653333333333,3
+"43",NA,NA,NA,"Fold5.Rep3","rpart2","sacramento",1.52653333333333,3

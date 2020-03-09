@@ -1,10 +1,10 @@
-varWarn <- make.varClosure(T)
+varWarn <- make.varClosure(TRUE)
 
 
 #' Setter for enabling or disabling warnings. Warnings are enabled by default.
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param enable a boolean to indicate whether to enable warnings or not.
-#' @return void
+#' @return Boolean the state of enabled
 #' @export
 setWarnings <- function(enable = TRUE) {
   varWarn$set(!!enable)
@@ -18,14 +18,14 @@ setWarnings <- function(enable = TRUE) {
 getWarnings <- function() varWarn$get()
 
 
-varMsg <- make.varClosure(F)
+varMsg <- make.varClosure(FALSE)
 
 
 #' Setter for enabling or disabling messages. Messages are disabled by default.
 #' Use these to enable high verbosity.
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param enable a boolean to indicate whether to enable messages or not.
-#' @return void
+#' @return Boolean the state of enabled
 #' @export
 setMessages <- function(enable = TRUE) {
   varMsg$set(!!enable)

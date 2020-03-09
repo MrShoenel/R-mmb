@@ -10,7 +10,7 @@ setWarnings(enable = TRUE)
 \item{enable}{a boolean to indicate whether to enable warnings or not.}
 }
 \value{
-void
+Boolean the state of enabled
 }
 \description{
 Setter for enabling or disabling warnings. Warnings are enabled by default.
