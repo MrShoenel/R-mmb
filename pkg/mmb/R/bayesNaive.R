@@ -1,5 +1,3 @@
-
-
 #' @title Naive Bayesian inferencing for determining the probability or
 #' relative likelihood of a given value.
 #'
@@ -51,7 +49,6 @@ bayesProbabilityNaive <- function(
   df, features, targetCol, selectedFeatureNames = c(),
   shiftAmount = 0.1, retainMinValues = 1, doEcdf = FALSE, useParallel = NULL)
 {
-
   bayesSimpleCheckData(df, features, targetCol)
   # Ensure compatibility
   df <- mmb::bayesConvertData(df)
@@ -81,25 +78,26 @@ bayesProbabilityNaive <- function(
   }
 
   foreachOpFun <- if (useParallel) foreach::`%dopar%` else foreach::`%do%`
-  computeFac <- function(targetFeat, labelFeat) {
-    return(mmb::bayesComputeProductFactor(
-      df = df, conditionalFeatures = labelFeat,
-      targetFeature = targetFeat,
-      computeNumerator = TRUE,
-      retainMinValues = retainMinValues,
-      doEcdf = doEcdf))
-  }
 
   numeratorFactors <- c(
     mmb::bayesComputeMarginalFactor(
       df = df, feature = rowOfLabelFeature, doEcdf = doEcdf))
-  numeratorFactors <- foreachOpFun(foreach::foreach(
-    featIdx = rownames(featuresWithoutLabel),
+
+  # Now the other conditional probabilities depends only
+  # on the label given.
+  df <- mmb::conditionalDataMin(
+    df = df, features = rowOfLabelFeature,
+    selectedFeatureNames = targetCol,
+    retainMinValues = retainMinValues)
+
+  numeratorFactors <- c(numeratorFactors, foreachOpFun(foreach::foreach(
+    fn = featuresWithoutLabel$name,
     .packages = c("mmb", "utils"),
     .combine = c
   ), {
-    return(computeFac(featuresWithoutLabel[featIdx, ], rowOfLabelFeature))
-  })
+    feat <- featuresWithoutLabel[featuresWithoutLabel$name == fn, ]
+    return(mmb::bayesComputeMarginalFactor(df, feat, doEcdf = doEcdf))
+  }))
 
   return(prod(numeratorFactors + shiftAmount))
 }
