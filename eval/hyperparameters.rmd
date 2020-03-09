@@ -53,7 +53,7 @@ packages_required <- c(
   "gbm", "xgboost", "klaR", "randomForest", "import",
   "pls", "kohonen", "brnn", "RSNNS", "bartMachine", "arm",
   "rpart", "pamr", "gam", "dplyr", "ggridges", "caret", "ranger",
-  "mmb", "rJava", "naivebayes")
+  "mmb", "rJava", "naivebayes", "Cairo")
 
 for (pr in packages_required) {
   install.packages_cond(pr)
@@ -374,7 +374,7 @@ get_other_models_results <- function(modelsAndDatasets = data.frame()) {
     typeShort <- if (isRegress) "r" else "c"
     isMMB <- length(grep("bayesCaret", permRow$model)) > 0
     
-    dataName <- paste(permRow$model, "_", permRow$dataset, "_", typeShort, ".csv", sep = "")
+    dataName <- paste("results_", typeShort, "/", permRow$model, "_", permRow$dataset, "_", typeShort, ".csv", sep = "")
     if (file.exists(dataName)) {
       return(read.csv(dataName))
     }
@@ -442,9 +442,9 @@ get_other_models_results <- function(modelsAndDatasets = data.frame()) {
     }
     
     
-    dataName <- paste(permRow$model, "_", permRow$dataset, "_", typeShort, ".csv", sep = "")
+    dataName <- paste("results_", typeShort, "/", permRow$model, "_", permRow$dataset, "_", typeShort, ".csv", sep = "")
     utils::write.csv(dataFull, dataName)
-    dataName <- paste(permRow$model, "_", permRow$dataset, "_", typeShort, "_agg.csv", sep = "")
+    dataName <- paste("results_", typeShort, "/", permRow$model, "_", permRow$dataset, "_", typeShort, "_agg.csv", sep = "")
     utils::write.csv(dataAgg, dataName)
     
     
@@ -497,8 +497,10 @@ In this section, we will load the results and aggregate all data, so that we can
 
 ```{r}
 install.packages_cond("extrafont")
-windowsFonts(Times = windowsFont("Times"))
-windowsFonts(Consolas = windowsFont("Consolas"))
+if (.Platform$OS.type == "windows") {
+  windowsFonts(Times = windowsFont("Times"))
+  windowsFonts(Consolas = windowsFont("Consolas"))
+}
 # Was overridden by RandomForest
 margin <- ggplot2::margin
 
