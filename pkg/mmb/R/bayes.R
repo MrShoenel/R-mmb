@@ -231,7 +231,7 @@ bayesProbability <- function(
     condFeats <- featuresWithoutLabel[
       rownames(featuresWithoutLabel) >= featIdx, ]
 
-    return(mmb::bayesComputeProductFactor(
+    return(bayesComputeProductFactor(
       df, condFeats, targetFeat, computeNumerator = compNum,
       retainMinValues = retainMinValues, doEcdf = doEcdf))
   }

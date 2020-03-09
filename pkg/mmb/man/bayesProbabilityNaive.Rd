@@ -61,7 +61,10 @@ likely value given the conditional features. If using a positive
 \code{shiftAmount}, the result is a 'probability score'.
 }
 \description{
-TODO
+A complementary implementation using methods common in mmb,
+such as computing factors or segmenting data. Supports Laplacian smoothing
+and early-stopping segmenting, as well as PDF and CDF and selecting any
+subset of features for dependency.
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}

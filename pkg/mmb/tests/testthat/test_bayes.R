@@ -19,6 +19,15 @@ getNumCores <- function() {
 }
 
 
+test_that("it fails for invalid arguments", {
+  expect_does_throw({
+    mmb::bayesProbabilityAssign(
+      dfTrain = iris, dfValid = iris, targetCol = "Species",
+      simple = TRUE, naive = TRUE) # can't do both
+  })
+})
+
+
 test_that("the factors for products are built correctly", {
   df <- data.frame(
     A = iris$Species,
@@ -324,9 +333,9 @@ test_that("the full Bayesian works with many variables", {
 
   set.seed(84735)
   rn <- base::sample(rownames(df), 32)
-  dfTrain <- df[1:25, ]
+  dfTrain <- df[rn[1:25], ]
   # Let's take it out just to make sure.
-  dfValid <- df[26:32, !(colnames(df) %in% tCol) ]
+  dfValid <- df[rn[26:32], !(colnames(df) %in% tCol) ]
 
   w <- mmb::getWarnings()
   mmb::setWarnings(FALSE)
@@ -349,9 +358,9 @@ test_that("the full Bayesian works with many variables", {
 test_that("assigning probabilites for multiple values works", {
   set.seed(84735)
   rn <- base::sample(rownames(iris), 150)
-  dfTrain <- iris[1:120, ]
+  dfTrain <- iris[rn[1:120], ]
   # Let's take it out just to make sure.
-  dfValid <- iris[121:150, !(colnames(iris) %in% "Species") ]
+  dfValid <- iris[rn[121:150], !(colnames(iris) %in% "Species") ]
 
   w <- mmb::getWarnings()
   mmb::setWarnings(FALSE)
@@ -364,9 +373,17 @@ test_that("assigning probabilites for multiple values works", {
 
   # Since we use shift=0 and ecdf=T, each row in this table
   # should sum up to one, i.e., actual probs are returned.
+  # For some corner cases, a row can also be zero; this happens
+  # for when no other row (<=) can be found and we do not use
+  # a positive shift.
   for (rn in rownames(probTable)) {
     temp <- probTable[rn, levels(iris$Species)]
-    expect_equal(sum(temp), 1, tolerance = 1e-14)
+    s <- sum(temp)
+    if (s == 0) {
+      expect_equal(s, 0)
+    } else {
+      expect_equal(s, 1, tolerance = 1e-14)
+    }
   }
 })
 
@@ -374,8 +391,8 @@ test_that("assigning probabilites for multiple values works", {
 test_that("assigning probability for numeric values works (also using simple)", {
   set.seed(84735)
   rn <- base::sample(rownames(iris), 150)
-  dfTrain <- iris[1:120, ]
-  dfValid <- iris[121:150, ]
+  dfTrain <- iris[rn[1:120], ]
+  dfValid <- iris[rn[121:150], ]
 
   w <- mmb::getWarnings()
   mmb::setWarnings(F)
@@ -393,6 +410,26 @@ test_that("assigning probability for numeric values works (also using simple)", 
     dfTrain, dfValid, targetCol = "Sepal.Length", shiftAmount = 0,
     doEcdf = TRUE, simple = TRUE, returnProbabilityTable = FALSE)
   sapply(probs, function(p) expect_lte(p, 1+1e-15))
+
+  mmb::setWarnings(w)
+})
+
+
+test_that("assigning for multiple works using naive Bayes", {
+  set.seed(84735)
+  rn <- base::sample(rownames(iris), 150)
+  dfTrain <- iris[rn[1:120], ]
+  dfValid <- iris[rn[121:150], ]
+
+  w <- mmb::getWarnings()
+  mmb::setWarnings(F)
+
+  probs <- mmb::bayesProbabilityAssign(
+    dfTrain, dfValid, targetCol = "Species",
+    doEcdf = TRUE, naive = TRUE, returnProbabilityTable = FALSE)
+
+  cm <- caret::confusionMatrix(probs, dfValid$Species)
+  expect_gt(cm[["overall"]][[1]], .5)
 
   mmb::setWarnings(w)
 })

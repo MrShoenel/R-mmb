@@ -5,7 +5,10 @@ utils::globalVariables("fn", package = c("mmb"))
 #' @title Naive Bayesian inferencing for determining the probability or
 #' relative likelihood of a given value.
 #'
-#' @description TODO
+#' @description A complementary implementation using methods common in mmb,
+#' such as computing factors or segmenting data. Supports Laplacian smoothing
+#' and early-stopping segmenting, as well as PDF and CDF and selecting any
+#' subset of features for dependency.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param df data.frame that contains all the feature's data
