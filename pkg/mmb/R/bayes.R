@@ -338,8 +338,8 @@ bayesProbability <- function(
 #' @examples
 #' set.seed(84735)
 #' rn <- base::sample(rownames(iris), 150)
-#' dfTrain <- iris[1:120, ]
-#' dfValid <- iris[121:150, !(colnames(iris) %in% "Species") ]
+#' dfTrain <- iris[rn[1:120], ]
+#' dfValid <- iris[rn[121:150], !(colnames(iris) %in% "Species") ]
 #' mmb::bayesProbabilityAssign(dfTrain, dfValid, "Species")
 #' @export
 bayesProbabilityAssign <- function(
