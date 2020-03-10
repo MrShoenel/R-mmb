@@ -7,8 +7,7 @@
 bayesRegress(df, features, targetCol, selectedFeatureNames = c(),
   shiftAmount = 0.1, retainMinValues = 2, doEcdf = FALSE,
   useParallel = NULL, numBuckets = ceiling(log2(nrow(df))),
-  sampleFromAllBuckets = TRUE, regressor = function(data)
-  mmb::estimatePdf(data)$argmax)
+  sampleFromAllBuckets = TRUE, regressor = NULL)
 }
 \arguments{
 \item{df}{data.frame that contains all the feature's data}

@@ -1,0 +1,16 @@
+"","Accuracy","Kappa","Resample","Model","Dataset","Runtime","hyper.shiftAmount","hyper.retainMinValues","hyper.doEcdf","hyper.online","hyper.simple","hyper.numBuckets","hyper.sampleFromAllBuckets","hyper.regressor"
+"103",0.69,-0.0197368421052632,"Fold1.Rep1","bayesCaret","credit",419.4704,0,11,FALSE,1200,TRUE,NA,FALSE,NA
+"247",0.7,0,"Fold2.Rep1","bayesCaret","credit",419.4704,0,11,FALSE,1200,TRUE,NA,FALSE,NA
+"391",0.7,0,"Fold3.Rep1","bayesCaret","credit",419.4704,0,11,FALSE,1200,TRUE,NA,FALSE,NA
+"535",0.7,0,"Fold4.Rep1","bayesCaret","credit",419.4704,0,11,FALSE,1200,TRUE,NA,FALSE,NA
+"679",0.715,0.0686274509803922,"Fold5.Rep1","bayesCaret","credit",419.4704,0,11,FALSE,1200,TRUE,NA,FALSE,NA
+"823",0.695,-0.00993377483443709,"Fold1.Rep2","bayesCaret","credit",419.4704,0,11,FALSE,1200,TRUE,NA,FALSE,NA
+"967",0.705,0.0231788079470199,"Fold2.Rep2","bayesCaret","credit",419.4704,0,11,FALSE,1200,TRUE,NA,FALSE,NA
+"1111",0.7,0,"Fold3.Rep2","bayesCaret","credit",419.4704,0,11,FALSE,1200,TRUE,NA,FALSE,NA
+"1255",0.695,-0.00993377483443709,"Fold4.Rep2","bayesCaret","credit",419.4704,0,11,FALSE,1200,TRUE,NA,FALSE,NA
+"1399",0.7,0,"Fold5.Rep2","bayesCaret","credit",419.4704,0,11,FALSE,1200,TRUE,NA,FALSE,NA
+"1543",0.7,0,"Fold1.Rep3","bayesCaret","credit",419.4704,0,11,FALSE,1200,TRUE,NA,FALSE,NA
+"1687",0.71,0.0460526315789474,"Fold2.Rep3","bayesCaret","credit",419.4704,0,11,FALSE,1200,TRUE,NA,FALSE,NA
+"1831",0.705,0.0231788079470199,"Fold3.Rep3","bayesCaret","credit",419.4704,0,11,FALSE,1200,TRUE,NA,FALSE,NA
+"1975",0.7,0,"Fold4.Rep3","bayesCaret","credit",419.4704,0,11,FALSE,1200,TRUE,NA,FALSE,NA
+"2119",0.695,-0.00993377483443709,"Fold5.Rep3","bayesCaret","credit",419.4704,0,11,FALSE,1200,TRUE,NA,FALSE,NA

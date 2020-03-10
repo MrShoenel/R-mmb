@@ -2,6 +2,18 @@ library(testthat)
 
 source("../helpers.R")
 
+test_that("we get warnings for NaN data", {
+  w <- mmb::getWarnings()
+  mmb::setWarnings(TRUE)
+
+  expect_warning({
+    mmb::discretizeVariableToRanges(c(1,5,3,NA, 3,NA,5))
+  }, "Data contains NAs")
+
+  mmb::setWarnings(w)
+})
+
+
 test_that("open-end ranges work", {
   ranges <- discretizeVariableToRanges(
     data = c(1,2,3,4,5,6,7,8,9),

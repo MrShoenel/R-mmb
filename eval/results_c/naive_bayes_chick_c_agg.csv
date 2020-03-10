@@ -1,0 +1,16 @@
+"","Accuracy","Kappa","Resample","Model","Dataset","Runtime","hyper.laplace","hyper.usekernel","hyper.adjust"
+"2",1,1,"Fold1.Rep1","naive_bayes","chick",1.19486666666667,0,FALSE,1
+"4",1,1,"Fold2.Rep1","naive_bayes","chick",1.19486666666667,0,FALSE,1
+"6",1,1,"Fold3.Rep1","naive_bayes","chick",1.19486666666667,0,FALSE,1
+"8",1,1,"Fold4.Rep1","naive_bayes","chick",1.19486666666667,0,FALSE,1
+"10",1,1,"Fold5.Rep1","naive_bayes","chick",1.19486666666667,0,FALSE,1
+"12",1,1,"Fold1.Rep2","naive_bayes","chick",1.19486666666667,0,FALSE,1
+"14",1,1,"Fold2.Rep2","naive_bayes","chick",1.19486666666667,0,FALSE,1
+"16",1,1,"Fold3.Rep2","naive_bayes","chick",1.19486666666667,0,FALSE,1
+"18",1,1,"Fold4.Rep2","naive_bayes","chick",1.19486666666667,0,FALSE,1
+"20",1,1,"Fold5.Rep2","naive_bayes","chick",1.19486666666667,0,FALSE,1
+"22",1,1,"Fold1.Rep3","naive_bayes","chick",1.19486666666667,0,FALSE,1
+"24",1,1,"Fold2.Rep3","naive_bayes","chick",1.19486666666667,0,FALSE,1
+"26",1,1,"Fold3.Rep3","naive_bayes","chick",1.19486666666667,0,FALSE,1
+"28",1,1,"Fold4.Rep3","naive_bayes","chick",1.19486666666667,0,FALSE,1
+"30",1,1,"Fold5.Rep3","naive_bayes","chick",1.19486666666667,0,FALSE,1

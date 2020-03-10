@@ -1,0 +1,16 @@
+"","Accuracy","Kappa","Resample","Model","Dataset","Runtime","hyper.mtry","hyper.splitrule","hyper.min.node.size"
+"1",0.933333333333333,0.9,"Fold1.Rep1","ranger","iris",1.4822,2,"gini",1
+"7",1,1,"Fold2.Rep1","ranger","iris",1.4822,2,"gini",1
+"13",1,1,"Fold3.Rep1","ranger","iris",1.4822,2,"gini",1
+"19",0.933333333333333,0.9,"Fold4.Rep1","ranger","iris",1.4822,2,"gini",1
+"25",0.966666666666667,0.95,"Fold5.Rep1","ranger","iris",1.4822,2,"gini",1
+"31",0.9,0.85,"Fold1.Rep2","ranger","iris",1.4822,2,"gini",1
+"37",0.933333333333333,0.9,"Fold2.Rep2","ranger","iris",1.4822,2,"gini",1
+"43",0.966666666666667,0.95,"Fold3.Rep2","ranger","iris",1.4822,2,"gini",1
+"49",1,1,"Fold4.Rep2","ranger","iris",1.4822,2,"gini",1
+"55",1,1,"Fold5.Rep2","ranger","iris",1.4822,2,"gini",1
+"61",1,1,"Fold1.Rep3","ranger","iris",1.4822,2,"gini",1
+"67",0.966666666666667,0.95,"Fold2.Rep3","ranger","iris",1.4822,2,"gini",1
+"73",0.966666666666667,0.95,"Fold3.Rep3","ranger","iris",1.4822,2,"gini",1
+"79",0.866666666666667,0.8,"Fold4.Rep3","ranger","iris",1.4822,2,"gini",1
+"85",0.966666666666667,0.95,"Fold5.Rep3","ranger","iris",1.4822,2,"gini",1

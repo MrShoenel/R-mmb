@@ -30,7 +30,7 @@ bayesCaret <- list(
       "retainMinValues",
       "doEcdf",
       "online",
-      "simple",
+      "mode",
       "numBuckets",
       "sampleFromAllBuckets",
       "regressor"
@@ -40,7 +40,7 @@ bayesCaret <- list(
       "integer",
       "boolean",
       "integer", # Online is an integer with default 0
-      "boolean",
+      "character",
       "integer",
       "boolean",
       "function"
@@ -50,7 +50,7 @@ bayesCaret <- list(
       "retainMinValues",
       "doEcdf",
       "online",
-      "simple",
+      "mode",
       "numBuckets",
       "sampleFromAllBuckets",
       "regressor"
@@ -78,11 +78,16 @@ bayesCaret$grid <- function(x = NULL, y = NULL, len = NULL, search = "grid") {
     cOnline <- c(cOnline, round(1.2 * numTrain))
   }
 
+  modes <- c("full", "simple")
+  if (isClassification) {
+    modes <- c(modes, "naive") # Naive is only supported in cls.
+  }
+
   gridList <- list(
     shiftAmount = c(0, 0.1),
     doEcdf = c(TRUE, FALSE),
     online = sort(c(cOnline, .Machine$integer.max)),
-    simple = c(TRUE, FALSE),
+    mode = modes,
     regressor = NA # is not a function, so will fall back to default for regression
   )
 
@@ -144,7 +149,8 @@ bayesCaret$predict <- function(modelFit, newdata, submodels) {
     retainMinValues = 1,
     doEcdf = FALSE,
     online = 0,
-    simple = FALSE
+    simple = FALSE,
+    naive = FALSE
   )
 
   default_regression <- list(
@@ -155,11 +161,16 @@ bayesCaret$predict <- function(modelFit, newdata, submodels) {
     simple = FALSE,
     numBuckets = ceiling(log2(nrow(modelFit$train))),
     sampleFromAllBuckets = TRUE,
-    regressor = function(data) mmb::estimatePdf(data)$argmax
+    regressor = NA
   )
 
   dfParams <- if (classify) default_classification else default_regression
   dfTune <- modelFit$tuneValue
+
+  # Handle the mode:
+  dfTune$simple <- dfTune$mode == "simple"
+  dfTune$naive <- dfTune$mode == "naive"
+  dfTune$mode <- NULL
 
   # Now let's override everything if/as specified:
   for (n in names(dfParams)) {
