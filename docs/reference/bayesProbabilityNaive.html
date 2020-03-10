@@ -6,8 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Full Bayesian inferencing for determining the probability or
-relative likelihood of a given value. — bayesProbability • mmb</title>
+<title>Naive Bayesian inferencing for determining the probability or
+relative likelihood of a given value. — bayesProbabilityNaive • mmb</title>
 
 
 <!-- jquery -->
@@ -36,20 +36,12 @@ relative likelihood of a given value. — bayesProbability • mmb</title>
 
 
 
-<meta property="og:title" content="Full Bayesian inferencing for determining the probability or
-relative likelihood of a given value. — bayesProbability" />
-<meta property="og:description" content="Uses the full extended theorem of Bayes, taking all selected features
-into account. Expands Bayes' theorem to accomodate all dependent
-features, then calculates each conditional probability (or relative
-likelihood) and returns a single result reflecting the probability or
-relative likelihood of the target feature assuming its given value,
-given that all the other dependent features assume their given value.
-The target feature (designated by 'labelCol') may be discrete or continuous.
-If at least one of the depending features or the the target feature
-is continuous and the PDF ('doEcdf' = FALSE) is built, the result of this
-function is a relative likelihood of the target feature's value. If
-all of the features are discrete or the empirical CDF is used instead
-of the PDF, the result of this function is a probability." />
+<meta property="og:title" content="Naive Bayesian inferencing for determining the probability or
+relative likelihood of a given value. — bayesProbabilityNaive" />
+<meta property="og:description" content="A complementary implementation using methods common in mmb,
+such as computing factors or segmenting data. Supports Laplacian smoothing
+and early-stopping segmenting, as well as PDF and CDF and selecting any
+subset of features for dependency." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -125,30 +117,22 @@ of the PDF, the result of this function is a probability." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Full Bayesian inferencing for determining the probability or
+    <h1>Naive Bayesian inferencing for determining the probability or
 relative likelihood of a given value.</h1>
     
-    <div class="hidden name"><code>bayesProbability.Rd</code></div>
+    <div class="hidden name"><code>bayesProbabilityNaive.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Uses the full extended theorem of Bayes, taking all selected features
-into account. Expands Bayes' theorem to accomodate all dependent
-features, then calculates each conditional probability (or relative
-likelihood) and returns a single result reflecting the probability or
-relative likelihood of the target feature assuming its given value,
-given that all the other dependent features assume their given value.
-The target feature (designated by 'labelCol') may be discrete or continuous.
-If at least one of the depending features or the the target feature
-is continuous and the PDF ('doEcdf' = FALSE) is built, the result of this
-function is a relative likelihood of the target feature's value. If
-all of the features are discrete or the empirical CDF is used instead
-of the PDF, the result of this function is a probability.</p>
+    <p>A complementary implementation using methods common in mmb,
+such as computing factors or segmenting data. Supports Laplacian smoothing
+and early-stopping segmenting, as well as PDF and CDF and selecting any
+subset of features for dependency.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>bayesProbability</span>(<span class='no'>df</span>, <span class='no'>features</span>, <span class='no'>targetCol</span>, <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>shiftAmount</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useParallel</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>bayesProbabilityNaive</span>(<span class='no'>df</span>, <span class='no'>features</span>, <span class='no'>targetCol</span>,
+  <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(), <span class='kw'>shiftAmount</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>useParallel</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -221,9 +205,6 @@ in the numerator and denominator of the final equation in parallel.</p></td>
 likelihood (regression, inferring likelihood of continuous value) or most
 likely value given the conditional features. If using a positive
 <code>shiftAmount</code>, the result is a 'probability score'.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>test-case "a zero denominator can happen"</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -231,7 +212,6 @@ likely value given the conditional features. If using a positive
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
-      <li><a href="#see-also">See also</a></li>
     </ul>
 
     <h2>Author</h2>

@@ -5,8 +5,8 @@ date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
     df_print: paged
-toc: true
-toc_depth: 6
+    toc: true
+    toc_depth: 6
 vignette: >
   %\VignetteIndexEntry{Hyperparameter Evaluation}
   %\VignetteEngine{knitr::rmarkdown}

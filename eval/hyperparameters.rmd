@@ -37,7 +37,10 @@ options(repos="https://cran.rstudio.com")
 options(java.parameters = "-Xmx2g")
 
 install.packages_cond <- function(name) {
-  if (name %in% rownames(installed.packages()) == FALSE) {
+  if (DISABLE_COMPUTATIONS) {
+    return(0)
+  }
+  if (!(name %in% rownames(installed.packages()))) {
     install.packages(name)
   }
   if (!(name %in% .packages())) {

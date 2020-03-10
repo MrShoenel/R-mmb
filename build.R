@@ -16,21 +16,20 @@ buildEvalVignette <- function(compute = FALSE) {
 
   md <- normalizePath(
     paste("./eval/hyperparameters.md", sep = ""), mustWork = FALSE)
-  if (!file.exists(md)) {
-    if (compute) {
-      warning("Computing notebook, this may take a long time!")
 
-      rmd <- normalizePath(
-        paste("./eval/hyperparameters.rmd", sep = ""), mustWork = FALSE)
-      rmarkdown::render(
-        rmd, output_format = "md_document", clean = TRUE)
-    } else {
-      # The Notebook is very very heavy and should be rendered outside
-      # on some many-core system, it should then be placed here. If this
-      # is not yet done, we only create a new, empty markdown, so that
-      # the entire process works.
-      base::writeLines("", file(md))
-    }
+  if (compute) {
+    warning("Computing notebook, this may take a long time if computation within the vignette is not disabled!")
+
+    rmd <- normalizePath(
+      paste("./eval/hyperparameters.rmd", sep = ""), mustWork = FALSE)
+    rmarkdown::render(
+      rmd, output_format = "md_document", clean = TRUE)
+  } else {
+    # The Notebook is very very heavy and should be rendered outside
+    # on some many-core system, it should then be placed here. If this
+    # is not yet done, we only create a new, empty markdown, so that
+    # the entire process works.
+    base::writeLines("", file(md))
   }
 
   # The next step is to take the ready-rendered MD-version of the
@@ -105,8 +104,6 @@ cov <- function() {
 
 check <- function(strict = TRUE) {
   temp <- devtools::check(manual = FALSE, document = FALSE)
-
-  print(temp)
 
   cnt <- data.frame(
     err = length(temp$errors),
@@ -187,7 +184,7 @@ tryCatch({
 
   if (doAll) {
     devtools::build_readme() # only applies if we have a readme.rmd in the package
-    buildEvalVignette()
+    buildEvalVignette(compute = TRUE)
     devtools::build_vignettes()
 
     buildSite()
