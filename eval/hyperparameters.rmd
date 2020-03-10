@@ -755,13 +755,14 @@ tempDs$Rsquared.mean <- tempDs$Rsquared.mean + 1e-2
 # Next, we want to order the models:
 modelsFirst <- c("ZeroR", "Simple", "Full")
 modelsFirst <- c(modelsFirst, sort(setdiff(unique(as.character(tempDs$Model)), modelsFirst)))
-tempDs$Model <- factor(as.character(tempDs$Model), levels = modelsFirst)
+tempDs$Model <- factor(as.character(tempDs$Model), levels = rev(modelsFirst))
 ```
 
 ```{r}
 (ggplot(tempDs, aes(y = RMSE.mean, x = Model, fill = Model)) +
   labs(subtitle = "Comparison of RMSE against the baseline (ZeroR).") +
   geom_bar(position = "dodge", stat = "identity") +
+  coord_flip() +
   facet_wrap(Dataset ~., scales = "free", nrow = 2) +
   theme_light() +
   theme(text = element_text(family="Consolas"),
@@ -770,11 +771,12 @@ tempDs$Model <- factor(as.character(tempDs$Model), levels = modelsFirst)
     axis.title.y = element_text(margin = margin(r=10)),
     legend.text = element_text(size = 8),
     strip.text = element_text(color="black")) + labs(fill = "Method")
-)
+) %>% saveAndPlotAsEPS("Bayes-all-datasets_RMSE")
 
 (ggplot(tempDs, aes(y = MAE.mean, x = Model, fill = Model)) +
   labs(subtitle = "Comparison of MAE against the baseline (ZeroR).") +
   geom_bar(position = "dodge", stat = "identity") +
+  coord_flip() +
   facet_wrap(Dataset ~., scales = "free", nrow = 2) +
   theme_light() +
   theme(text = element_text(family="Consolas"),
@@ -783,7 +785,7 @@ tempDs$Model <- factor(as.character(tempDs$Model), levels = modelsFirst)
     axis.title.y = element_text(margin = margin(r=10)),
     legend.text = element_text(size = 8),
     strip.text = element_text(color="black")) + labs(fill = "Method")
-)
+) %>% saveAndPlotAsEPS("Bayes-all-datasets_MAE")
 
 (ggplot(tempDs, aes(y = Rsquared.mean, x = Model, fill = Model)) +
   labs(subtitle = "Comparison of R^2 against the baseline (ZeroR).") +
@@ -799,23 +801,7 @@ tempDs$Model <- factor(as.character(tempDs$Model), levels = modelsFirst)
     axis.title.y = element_text(margin = margin(r=10)),
     legend.text = element_text(size = 8),
     strip.text = element_text(color="black")) + labs(fill = "Method")
-)
-```
-
-
-```{r}
-(ggplot(tempDs, aes(y = Rsquared, x = method, fill = method)) +
-  labs(subtitle = "Comparison of RMSE against the baseline (ZeroR).") +
-  geom_bar(position = "dodge", stat = "identity") +
-  facet_wrap(Dataset ~., scales = "free", nrow = 2) +
-  theme_light() +
-  theme(text = element_text(family="Consolas"),
-    axis.text.x = element_text(angle = 45, margin = margin(t=10), hjust = .66),
-    axis.title.x = element_blank(), strip.background = element_rect(fill="#dfdfdf"),
-    axis.title.y = element_text(margin = margin(r=10)),
-    legend.text = element_text(size = 8),
-    strip.text = element_text(color="black")) + labs(fill = "Method")
-) %>% saveAndPlotAsEPS("Bayes-all-datasets_RMSE")
+) %>% saveAndPlotAsEPS("Bayes-all-datasets_RSQ")
 ```
 
 
@@ -824,25 +810,4 @@ tempDs$Model <- factor(as.character(tempDs$Model), levels = modelsFirst)
 
 
 ### Evaluation and comparison to other models
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
