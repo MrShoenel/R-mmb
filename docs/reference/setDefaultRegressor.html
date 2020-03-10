@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Provides a caret-compatible wrapper around functionality for classification
-and regression, as implemented by mmb. — bayesCaret • mmb</title>
+<title>Set a system-wide default regressor. — setDefaultRegressor • mmb</title>
 
 
 <!-- jquery -->
@@ -36,10 +35,10 @@ and regression, as implemented by mmb. — bayesCaret • mmb</title>
 
 
 
-<meta property="og:title" content="Provides a caret-compatible wrapper around functionality for classification
-and regression, as implemented by mmb. — bayesCaret" />
-<meta property="og:description" content="A wrapper to be used with the package/function caret::train().
-Supports regression and classification and an extensive default grid." />
+<meta property="og:title" content="Set a system-wide default regressor. — setDefaultRegressor" />
+<meta property="og:description" content="Getting and setting the default regressor affects all functions
+that have an overridable regressor. If this is not given, the default has
+defined here will be obtained." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -115,44 +114,39 @@ Supports regression and classification and an extensive default grid." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Provides a caret-compatible wrapper around functionality for classification
-and regression, as implemented by mmb.</h1>
+    <h1>Set a system-wide default regressor.</h1>
     
-    <div class="hidden name"><code>bayesCaret.Rd</code></div>
+    <div class="hidden name"><code>setDefaultRegressor.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A wrapper to be used with the package/function <code><a href='https://rdrr.io/pkg/caret/man/train.html'>caret::train()</a></code>.
-Supports regression and classification and an extensive default grid.</p>
+    <p>Getting and setting the default regressor affects all functions
+that have an overridable regressor. If this is not given, the default has
+defined here will be obtained.</p>
     </div>
 
-    <pre class="usage"><span class='no'>bayesCaret</span></pre>
+    <pre class="usage"><span class='fu'>setDefaultRegressor</span>(<span class='no'>func</span>)</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>func</th>
+      <td><p>a Function to use a regressor, should accept one argument,
+which is a vector of numeric, and return one value, the regression.</p></td>
+    </tr>
+    </table>
 
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>list</code> of length 7.</p>
+    <p>void</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>trainIndex</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>caret</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/caret/man/createDataPartition.html'>createDataPartition</a></span>(
-  <span class='no'>iris</span>$<span class='no'>Species</span>, <span class='kw'>p</span> <span class='kw'>=</span> <span class='fl'>.8</span>, <span class='kw'>list</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fl'>1</span>)
-<span class='no'>train</span> <span class='kw'>&lt;-</span> <span class='no'>iris</span>[ <span class='no'>trainIndex</span>, ]
-<span class='no'>test</span>  <span class='kw'>&lt;-</span> <span class='no'>iris</span>[-<span class='no'>trainIndex</span>,]
-
-<span class='no'>fitControl</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>caret</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/caret/man/trainControl.html'>trainControl</a></span>(
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"repeatedcv"</span>, <span class='kw'>number</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>repeats</span> <span class='kw'>=</span> <span class='fl'>2</span>)
-
-<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>caret</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/caret/man/train.html'>train</a></span>(
-  <span class='no'>Species</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>train</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/mmb/man/bayesCaret.html'>bayesCaret</a></span>,
-  <span class='kw'>trControl</span> <span class='kw'>=</span> <span class='no'>fitControl</span>)
-}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#format">Format</a></li>
-      <li><a href="#examples">Examples</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
     </ul>
 
     <h2>Author</h2>

@@ -6,8 +6,8 @@
 \usage{
 bayesProbabilityAssign(dfTrain, dfValid, targetCol,
   selectedFeatureNames = c(), shiftAmount = 0.1, retainMinValues = 1,
-  doEcdf = FALSE, online = 0, simple = FALSE, useParallel = NULL,
-  returnProbabilityTable = FALSE)
+  doEcdf = FALSE, online = 0, simple = FALSE, naive = FALSE,
+  useParallel = NULL, returnProbabilityTable = FALSE)
 }
 \arguments{
 \item{dfTrain}{data.frame that holds the training data.}
@@ -48,6 +48,9 @@ Bayesian inferencing instead of full. This is faster but the results are less
 good. If true, uses \code{mmb::bayesProbabilitySimple()}. Otherwise, uses
 \code{mmb::bayesProbability()}.}
 
+\item{naive}{default FALSE boolean to indicate whether or not to use naive
+Bayesian inferencing instead of full or simple.}
+
 \item{useParallel}{boolean DEFAULT NULL this is forwarded to the underlying
 function \code{mmb::bayesProbability()} (only in simple=FALSE mode).}
 
@@ -69,8 +72,8 @@ good documentation there.
 \examples{
 set.seed(84735)
 rn <- base::sample(rownames(iris), 150)
-dfTrain <- iris[1:120, ]
-dfValid <- iris[121:150, !(colnames(iris) \%in\% "Species") ]
+dfTrain <- iris[rn[1:120], ]
+dfValid <- iris[rn[121:150], !(colnames(iris) \%in\% "Species") ]
 mmb::bayesProbabilityAssign(dfTrain, dfValid, "Species")
 }
 \author{

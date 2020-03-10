@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.11.0</span>
       </span>
     </div>
 
@@ -75,7 +75,7 @@
       <h1>Hyperparameter Evaluation</h1>
                         <h4 class="author">Sebastian Hönel</h4>
             
-            <h4 class="date">2020-03-07</h4>
+            <h4 class="date">2020-03-10</h4>
       
       
       <div class="hidden name"><code>Hyperparameter-Evaluation.rmd</code></div>
@@ -93,6 +93,8 @@
 <h1 class="hasAnchor">
 <a href="#grid-search" class="anchor"></a>Grid search</h1>
 <p>In the first section, we are evaluating our new classifier and regressor for some well known datasets, using a grid-search approach and <code>caret</code>. We start with classification, then continue with regression. Those best parameters will then be used in further comparisons against other models.</p>
+<p>In the following block, we can globally disable attempts to compute results. If the resulting files are present, then the related evaluations are skipped anyway. However, setting the following to FALSE, will prevent the actual attempt.</p>
+<pre><code>DISABLE_COMPUTATIONS &lt;- TRUE</code></pre>
 <p>Let’s first install all the needed packages:</p>
 <p>First, define the models we want to test:</p>
 <pre><code># Used by both regression and classification!
@@ -109,6 +111,20 @@ caret_models_r &lt;- c(caret_models,
 # appropriate resampling!
 max_rows_dataset &lt;- 2000
 
+
+#' Unifies the way we retrieve a dataset. Already splits the dataset
+#' into training- and validation partitions. The split is 0.7, if the
+#' amount of rows is less than 800; 0.85, otherwise.
+#' @param name a short-cut name of the dataset to obtain, e.g. "iris"
+#' @param seedMult an integer used for \code{set.seed()}
+#' @param useDs an optional data.frame of a 3rd party dataset. Use this
+#' to use your own dataset but still obtain a list as produced by this
+#' function.
+#' @param useLabel character the name of the label to use when passing
+#' in an own dataset using 'useDs'.
+#' @return list with the entries 'ds' (the entire dataset as data.frame),
+#' 'label' (name of column to be the label/target), 'train' and 'valid'
+#' (data.frames with training and validation data; train+valid = ds)
 get_dataset &lt;- function(name, seedMult, useDs = NULL, useLabel = NULL) {
   set.seed((0xceed * seedMult * max_rows_dataset) %% .Machine$integer.max)
   
@@ -279,7 +295,17 @@ get_dataset &lt;- function(name, seedMult, useDs = NULL, useLabel = NULL) {
 }
 
 
-# Extracts the best fit from every fold
+#' Uses caret's 'bestTune', i.e., the best found hyperparameters from the
+#' grid-search, and extracts the results from each fold/repeat that uses
+#' these. The result is a table with the results obtained using the best
+#' set of hyperparameters.
+#' @param resample data.frame as obtained from a fitted model trained
+#' with caret (model$resample). This should ideally be obtained using a
+#' train-configuration where resample="all".
+#' @param bestTune data.frame as obtained from a fitted model trained
+#' with caret (model$bestTune).
+#' @return data.frame a subset of 'resample', where the rows use the hyper-
+#' parameters from 'bestTune'.
 aggregate_caret_results &lt;- function(resample, bestTune) {
   conds &lt;- c()
   for (cName in colnames(bestTune)) {
@@ -309,6 +335,16 @@ aggregate_caret_results &lt;- function(resample, bestTune) {
   return(resample[eval(parse(text = paste(conds, collapse = " &amp; "))), ])
 }
 
+
+#' Returns a list of seeds used in parallel training with caret. For
+#' repeatability, we need deterministic seeds. The amount depends on
+#' the amounts of hyperparamenters, and number of folds/repeats.
+#' @param nh integer, the number of hyperparameters
+#' @param amount integer, the number of seeds, usually this is number
+#' of folds * number of repeats.
+#' @param seed integer used in \code{set.seed()}. Given an identical
+#' seed, this function produces the same seeds (idempotent).
+#' @return list with seeds that can be used in caret's trainControl
 get_seeds &lt;- function(nh, amount, seed = 42) {
   set.seed(seed)
   
@@ -319,16 +355,27 @@ get_seeds &lt;- function(nh, amount, seed = 42) {
   return(seeds)
 }</code></pre>
 <p>Let’s define a function to perform grid search.</p>
-<pre><code># modelsAndDatasets is a data.frame with columns 'model' and 'dataset'.
-# It should already match each model with the right dataset, i.e., it
-# should not have a row {nb,diamonds}, as Naive Bayes cannot regress.
+<pre><code>#' modelsAndDatasets is a data.frame with columns 'model' and 'dataset'.
+#' It should already match each model with the right dataset, i.e., it
+#' should not have a row {nb,diamonds}, as Naive Bayes cannot regress.
+#' This function does not return anything, but stores the result of each
+#' model/dataset combination as CSV.
+#' @param modelsAndDatasets data.frame, with the columns 'model' and
+#' 'dataset'. Model needs to be acceptable for caret, and dataset needs
+#' to be acceptable by @seealso \code{get_dataset()}.
+#' @return void
 get_other_models_results &lt;- function(modelsAndDatasets = data.frame()) {
+  if (DISABLE_COMPUTATIONS) {
+    return(0)
+  }
   perms &lt;- modelsAndDatasets[order(modelsAndDatasets$model, modelsAndDatasets$dataset), ]
   set.seed(0xbeef42)
   perms &lt;- perms[sample(rownames(perms)), ]
   
   
-  cl &lt;- parallel::makeCluster(detectCores(), outfile = "")
+  numCores &lt;- parallel::detectCores()
+  numCoresNested &lt;- if (nrow(perms) &lt; numCores) numCores else max(2, numCores / 4)
+  cl &lt;- parallel::makeCluster(max(2, numCores / 2), outfile = "")
   clusterExport(cl, as.list(names(.GlobalEnv)))
   registerDoSNOW(cl)
   pb &lt;- txtProgressBar(min = 0, max = nrow(perms), style = 3)
@@ -352,6 +399,19 @@ get_other_models_results &lt;- function(modelsAndDatasets = data.frame()) {
     typeShort &lt;- if (isRegress) "r" else "c"
     isMMB &lt;- length(grep("bayesCaret", permRow$model)) &gt; 0
     
+    dataName &lt;- paste("results_", typeShort, "/", permRow$model, "_", permRow$dataset, "_", typeShort, ".csv", sep = "")
+    if (file.exists(dataName)) {
+      return(read.csv(dataName))
+    }
+    
+    # Workaround: The models mlpML, pam, rda do not support ordered factors
+    # in the chick dataset and will fail, but we can convert them to numeric.
+    if (permRow$model %in% c("mlpML", "pam", "rda") &amp;&amp; permRow$dataset == "chick") {
+      dsList$ds$Chick &lt;- as.numeric(dsList$ds$Chick)
+      dsList$train$Chick &lt;- as.numeric(dsList$train$Chick)
+      dsList$valid$Chick &lt;- as.numeric(dsList$valid$Chick)
+    }
+    
     x &lt;- dsList$ds[, !(colnames(dsList$ds) %in% c(dsList$label))]
     y &lt;- dsList$ds[, dsList$label]
     
@@ -368,13 +428,8 @@ get_other_models_results &lt;- function(modelsAndDatasets = data.frame()) {
       p = trP, savePredictions = "all", returnResamp = "all",
       seeds = get_seeds(numHypers, rcvNumber * rcvRepeats, seed = idx * 23))
     
-    clNested &lt;- NULL
-    useNestedParallelism &lt;- detectCores() &lt; nrow(perms)
-    if (useNestedParallelism) {
-      clNested &lt;- parallel::makePSOCKcluster(
-        max(2, ceiling(detectCores() / nrow(perms))))
-      doParallel::registerDoParallel(clNested)
-    }
+    clNested &lt;- makePSOCKcluster(numCoresNested)
+    registerDoParallel(clNested)
     
     set.seed(idx * 371)
     timeStart &lt;- proc.time()[["elapsed"]]
@@ -383,9 +438,7 @@ get_other_models_results &lt;- function(modelsAndDatasets = data.frame()) {
     model &lt;- caret::train(x = x, y = y, method = modelObj, trControl = trControl)
     timeEnd &lt;- proc.time()[["elapsed"]]
     
-    if (useNestedParallelism) {
-      stopCluster(clNested)
-    }
+    stopCluster(clNested)
     
     # Now we store 2 things:
     # - The full resample
@@ -414,9 +467,9 @@ get_other_models_results &lt;- function(modelsAndDatasets = data.frame()) {
     }
     
     
-    dataName &lt;- paste(permRow$model, "_", permRow$dataset, "_", typeShort, ".csv", sep = "")
+    dataName &lt;- paste("results_", typeShort, "/", permRow$model, "_", permRow$dataset, "_", typeShort, ".csv", sep = "")
     utils::write.csv(dataFull, dataName)
-    dataName &lt;- paste(permRow$model, "_", permRow$dataset, "_", typeShort, "_agg.csv", sep = "")
+    dataName &lt;- paste("results_", typeShort, "/", permRow$model, "_", permRow$dataset, "_", typeShort, "_agg.csv", sep = "")
     utils::write.csv(dataAgg, dataName)
     
     
@@ -431,35 +484,124 @@ get_other_models_results &lt;- function(modelsAndDatasets = data.frame()) {
 <a href="#classification" class="anchor"></a>Classification</h2>
 <p>Here, we use the full grid as provided by <code>bayesCaret</code>. Please note that the grid and its size depends on whether we are doing classification or not.</p>
 <pre><code>datasets_c &lt;- c("iris", "chick", "credit", "glass", "breast", "sonar")
-modelAndData_c &lt;- expand.grid(model = caret_models_c, dataset = datasets_c, stringsAsFactors = FALSE)
+modelAndData_c &lt;- expand.grid(
+  model = caret_models_c,
+  dataset = datasets_c,
+  stringsAsFactors = FALSE)
 
-#get_other_models_results(modelAndData_c)</code></pre>
+get_other_models_results(modelAndData_c)
+
+## [1] 0</code></pre>
 </div>
 <div id="regression" class="section level2">
 <h2 class="hasAnchor">
 <a href="#regression" class="anchor"></a>Regression</h2>
-<pre><code>datasets_r &lt;- c("mortality", "sacramento", "boston", "seals", "faithful", "diamonds")
-modelAndData_r &lt;- expand.grid(model = caret_models_r, dataset = datasets_r, stringsAsFactors = FALSE)
+<pre><code># We set a new default regressor, to avoid NaN in sparse predictions.
+mmb::setDefaultRegressor(function(data) {
+  res &lt;- mmb::estimatePdf(data)$argmax
+  if (is.na(res)) {
+    res &lt;- median(data)
+  }
+  return(res)
+})
 
-#get_other_models_results(modelAndData_r)
+datasets_r &lt;- c("mortality", "sacramento", "boston", "seals", "faithful", "diamonds")
+modelAndData_r &lt;- expand.grid(
+  model = caret_models_r,
+  dataset = datasets_r,
+  stringsAsFactors = FALSE)
 
-plot(cars)</code></pre>
-<p><img src="hyperparameters_files/figure-markdown_strict/unnamed-chunk-7-1.png"></p>
+get_other_models_results(modelAndData_r)
+
+## [1] 0</code></pre>
 </div>
-</div>
-<div id="other-models" class="section level1">
-<h1 class="hasAnchor">
-<a href="#other-models" class="anchor"></a>Other models</h1>
 </div>
 <div id="evaluation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#evaluation" class="anchor"></a>Evaluation</h1>
-<div id="load-and-aggregate-the-data" class="section level2">
+<p>In this section, we will load the results and aggregate all data, so that we can then continue with visualizations and statistical analyses. We begin by first loading the results for all other models, before continuing with our Bayesian results.</p>
+<pre><code>install.packages_cond("extrafont")
+
+## Registering fonts with R
+
+if (.Platform$OS.type == "windows") {
+  windowsFonts(Times = windowsFont("Times"))
+  windowsFonts(Consolas = windowsFont("Consolas"))
+}
+# Was overridden by RandomForest
+margin &lt;- ggplot2::margin
+
+
+#' Given a ggplot2 instance, saves the plot as EPS in the figures-directory,
+#' and then returns it for further processing.
+#' @param ggplotInstance a gg plot
+#' @param fileName character the name of the file, without the extension.
+#' @param width in inches, defaults to the width of a portrait A4 (210mm)
+#' @param height in inches, defaults to 10cm (~3.93in)
+#' @return ggplot the instance as given, unchanged
+saveAndPlotAsEPS &lt;- function(ggplotInstance, fileName, width = 2100/254, height = 1000/254) {
+  f &lt;- "figures"
+  if (!dir.exists(f)) {
+    dir.create(f)
+  }
+  
+  fileName &lt;- paste(f, paste(fileName, ".eps", sep = ""), sep = "/")
+  ggsave(fileName, ggplotInstance,
+         width = floor(width * 100) / 100,
+         height = floor(height * 100) / 100,
+         limitsize = F, device = cairo_pdf)
+  return(ggplotInstance)
+}</code></pre>
+<div id="evaluation-of-the-bayes-only-models" class="section level2">
 <h2 class="hasAnchor">
-<a href="#load-and-aggregate-the-data" class="anchor"></a>Load and aggregate the data</h2>
-<div id="evaluation-of-the-bayes-only-models" class="section level3">
+<a href="#evaluation-of-the-bayes-only-models" class="anchor"></a>Evaluation of the Bayes-only models</h2>
+<p>In this section, we will outline the effects of various hyperparameters in our Bayesian models.</p>
+<div id="load-and-aggregate-the-data" class="section level3">
 <h3 class="hasAnchor">
-<a href="#evaluation-of-the-bayes-only-models" class="anchor"></a>Evaluation of the Bayes-only models</h3>
+<a href="#load-and-aggregate-the-data" class="anchor"></a>Load and aggregate the data</h3>
+<p>We need to aggregate the results from each model, both for classification and regression.</p>
+<pre><code># bc means bayesCaret, c=classification
+results_bc_c &lt;- do.call(rbind, lapply(datasets_c, function(d) {
+  csv &lt;- read.csv(paste("results_c/bayesCaret_", d, "_c.csv", sep = ""))
+  csv$X &lt;- NULL
+  csv$Model &lt;- NULL
+  return(csv)
+}))
+
+(ggplot(results_bc_c, aes(x=Dataset, y=Accuracy)) +
+  labs(subtitle = "Accuracy of full and simple classification.") +
+  geom_boxplot(color="black") +
+  facet_wrap(hyper.simple ~ ., labeller = label_both) +
+  theme_bw() +
+  theme(
+    text = element_text(family="Consolas"),
+    axis.text.x = element_text(angle = 45, margin = margin(t=10), hjust = .66),
+    axis.title.x = element_blank(), strip.background = element_rect(fill="#dfdfdf"),
+    axis.title.y = element_text(margin = margin(r=10)),
+    legend.text = element_text(size = 8),
+    strip.text = element_text(color="black"))
+) %&gt;% saveAndPlotAsEPS("Bayes-all-datasets_Acc")</code></pre>
+<p><img src="hyperparameters_files/figure-markdown_strict/unnamed-chunk-10-1.png"></p>
+<pre><code># Now let's do the same, for Kappa
+(ggplot(results_bc_c, aes(x=Dataset, y=Kappa)) +
+  labs(subtitle = "Kappa of full and simple classification.") +
+  geom_boxplot(color="black") +
+  facet_wrap(hyper.simple ~ ., labeller = label_both) +
+  theme_bw() +
+  ylim(-.1, 1) + # For some reason, some results have a negative Kappa..
+  theme(
+    text = element_text(family="Consolas"),
+    axis.text.x = element_text(angle = 45, margin = margin(t=10), hjust = .66),
+    axis.title.x = element_blank(), strip.background = element_rect(fill="#dfdfdf"),
+    axis.title.y = element_text(margin = margin(r=10)),
+    legend.text = element_text(size = 8),
+    strip.text = element_text(color="black"))
+) %&gt;% saveAndPlotAsEPS("Bayes-all-datasets_Kappa")
+
+## Warning: Removed 226 rows containing non-finite values (stat_boxplot).
+
+## Warning: Removed 226 rows containing non-finite values (stat_boxplot).</code></pre>
+<p><img src="hyperparameters_files/figure-markdown_strict/unnamed-chunk-10-2.png"></p>
 </div>
 <div id="evaluation-and-comparison-to-other-models" class="section level3">
 <h3 class="hasAnchor">
@@ -474,8 +616,20 @@ plot(cars)</code></pre>
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
-      true
-    </div>
+      <ul class="nav nav-pills nav-stacked">
+<li>
+<a href="#grid-search">Grid search</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#classification">Classification</a></li>
+      <li><a href="#regression">Regression</a></li>
+      </ul>
+</li>
+      <li>
+<a href="#evaluation">Evaluation</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#evaluation-of-the-bayes-only-models">Evaluation of the Bayes-only models</a></li>
+      </ul>
+</li>
+      </ul>
+</div>
       </div>
 
 </div>
