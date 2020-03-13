@@ -26,6 +26,10 @@ In the following block, we can globally disable attempts to compute results. If 
 
 ```{r}
 DISABLE_COMPUTATIONS <- TRUE
+# Used with many qualititave values as brewer color palette:
+QPALETTE <- "Set3"
+# This is in inches!
+tikzWidthFull <- 6.1 # 6.12619 original/maximal for JSS article
 ```
 
 
@@ -87,7 +91,8 @@ max_rows_dataset <- 2000
 #' into training- and validation partitions. The split is 0.7, if the
 #' amount of rows is less than 800; 0.85, otherwise.
 #' @param name a short-cut name of the dataset to obtain, e.g. "iris"
-#' @param seedMult an integer used for \code{set.seed()}
+#' @param seedMult an integer used for \code{set.seed()}. The seedMult
+#' influences how we sample into training and validation.
 #' @param useDs an optional data.frame of a 3rd party dataset. Use this
 #' to use your own dataset but still obtain a list as produced by this
 #' function.
@@ -465,7 +470,7 @@ get_other_models_results <- function(modelsAndDatasets = data.frame()) {
 Here, we use the full grid as provided by `bayesCaret`. Please note that the grid and its size depends on whether we are doing classification or not.
 
 ```{r}
-datasets_c <- c("iris", "chick", "credit", "glass", "breast", "sonar")
+datasets_c <- c("iris", "chick", "credit", "glass", "breast", "sonar", "iono", "vehicle")
 modelAndData_c <- expand.grid(
   model = caret_models_c,
   dataset = datasets_c,
@@ -486,7 +491,7 @@ mmb::setDefaultRegressor(function(data) {
   return(res)
 })
 
-datasets_r <- c("mortality", "sacramento", "boston", "seals", "faithful", "diamonds")
+datasets_r <- c("mortality", "sacramento", "boston", "seals", "faithful", "diamonds", "pima", "txhousing")
 modelAndData_r <- expand.grid(
   model = caret_models_r,
   dataset = datasets_r,
@@ -494,6 +499,26 @@ modelAndData_r <- expand.grid(
 
 get_other_models_results(modelAndData_r)
 ```
+
+Let's print some table/overview of datasets that we actually use.
+
+```{r}
+datasets_overview <- do.call(rbind, lapply(c(datasets_c, datasets_r), function(d) {
+  dsList <- get_dataset(d, seedMult = 1)
+  isReg <- is.numeric(dsList$valid[[dsList$label]])
+  
+  return(data.frame(
+    Name = d,
+    NumTrain = nrow(dsList$train),
+    NumValid = nrow(dsList$valid),
+    Predictors = length(colnames(dsList$train)),
+    Classes = if (isReg) "Regression" else length(unique(as.character(dsList$ds[[dsList$label]])))
+  ))
+}))
+
+print(datasets_overview)
+```
+
 
 
 # Evaluation
@@ -513,10 +538,10 @@ margin <- ggplot2::margin
 #' and then returns it for further processing.
 #' @param ggplotInstance a gg plot
 #' @param fileName character the name of the file, without the extension.
-#' @param width in inches, defaults to the width of a portrait A4 (210mm)
-#' @param height in inches, defaults to 10cm (~3.93in)
+#' @param width in inches, defaults to @seealso \code{tikzWidthFull}
+#' @param height in inches, defaults to 6cm (~2.36in)
 #' @return ggplot the instance as given, unchanged
-saveAndPlotAsEPS <- function(ggplotInstance, fileName, width = 2100/254, height = 1000/254) {
+saveAndPlotAsEPS <- function(ggplotInstance, fileName, width = tikzWidthFull, height = 600/254) {
   f <- "figures"
   if (!dir.exists(f)) {
     dir.create(f)
@@ -691,7 +716,9 @@ We show some plots that our classifier was run on, showing Accuracy and Kappa fo
   labs(subtitle = "Accuracy of full, naive and simple classification.") +
   geom_boxplot(color="black") +
   facet_wrap(hyper.mode ~ ., labeller = label_both) +
-  theme_light() +
+  theme_light(base_size = 9) +
+  scale_color_brewer(palette = QPALETTE) +
+  scale_fill_brewer(palette = QPALETTE) +
   ylim(0, 1) +
   theme(
     text = element_text(family="Consolas"),
@@ -707,7 +734,9 @@ We show some plots that our classifier was run on, showing Accuracy and Kappa fo
   labs(subtitle = "Kappa of full, naive and simple classification.") +
   geom_boxplot(color="black") +
   facet_wrap(hyper.mode ~ ., labeller = label_both) +
-  theme_light() +
+  theme_light(base_size = 9) +
+  scale_color_brewer(palette = QPALETTE) +
+  scale_fill_brewer(palette = QPALETTE) +
   ylim(-.1, 1) + # Some results have a negative Kappa..
   theme(
     text = element_text(family="Consolas"),
@@ -719,6 +748,72 @@ We show some plots that our classifier was run on, showing Accuracy and Kappa fo
 ) %>% saveAndPlotAsEPS("Bayes-all-datasets_Kappa")
 ```
 
+### Plot Accuracy and Kappa as compared to other Classifiers
+Let's do almost the same, but this time compare to all other trained models as well.
+
+```{r}
+tempDsCols_c <- c("Dataset", "Model", "Accuracy", "Kappa", "Resample", "Runtime")
+gridresults_c_all <- rbind(
+    gridresults_c_bc[, tempDsCols_c],
+    gridresults_c_others[, tempDsCols_c])
+
+# Rename some models:
+gridresults_c_all$Model <- sapply(
+  as.character(gridresults_c_all$Model), function(m) if (m == "bc_f") "mmb:Full" else m)
+gridresults_c_all$Model <- sapply(
+  as.character(gridresults_c_all$Model), function(m) if (m == "bc_n") "mmb:Naive" else m)
+gridresults_c_all$Model <- sapply(
+  as.character(gridresults_c_all$Model), function(m) if (m == "bc_s") "mmb:Simple" else m)
+gridresults_c_all$Model <- sapply(
+  as.character(gridresults_c_all$Model), function(m) if (m == "null") "ZeroR" else m)
+
+# Next, we want to order the models:
+modelsFirst_c <- c("ZeroR", "mmb:Simple", "mmb:Full", "mmb:Naive")
+modelsFirst_c <- c(
+  modelsFirst_c, sort(setdiff(unique(as.character(gridresults_c_all$Model)), modelsFirst_c)))
+gridresults_c_all$Model <- factor(
+  as.character(gridresults_c_all$Model), levels = modelsFirst_c, ordered = TRUE)
+
+
+facettedBoxplot <- function(dataset, metric, metricName = metric, scales = "fixed", scale_y = scale_y_continuous()) {
+  ggplot(dataset, aes(y = dataset[[metric]], x = Model, fill = Model)) +
+    labs(subtitle = paste("Comparison of", metricName, "against the baseline (ZeroR) and other models.")) +
+    geom_boxplot(lwd = .2,
+                 outlier.colour = "#666666",
+                 outlier.size = 2,
+                 outlier.shape = 16,
+                 outlier.alpha = .75,
+                 outlier.stroke = 0) +
+    coord_flip() +
+    facet_wrap(Dataset ~., nrow = 2, scales = scales) +
+    scale_y +
+    scale_color_brewer(palette = QPALETTE) +
+    scale_fill_brewer(palette = QPALETTE) +
+    labs(fill = "Method") +
+    theme_light(base_size = 9) +
+    theme(plot.subtitle = element_text(size = 7, margin = margin(b=5)),
+          text = element_text(family="Consolas"),
+          axis.text.y = element_text(margin = margin(r=5)),
+          axis.title.y.left = element_blank(),
+          axis.text.x = element_text(angle = 90, margin = margin(t=5), hjust = 1, vjust = .4),
+          axis.title.x = element_blank(),
+          legend.margin = margin(l=5),
+          legend.text = element_text(size = 7),
+          legend.key.height = unit(14, "pt"),
+          strip.background = element_rect(fill="#dfdfdf"),
+          strip.text = element_text(color="black", size = 8))
+}
+```
+
+Let's make some combined Box-plots:
+
+```{r}
+facettedBoxplot(gridresults_c_all, "Accuracy") %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_Accuracy", height = 3.2)
+facettedBoxplot(gridresults_c_all, "Kappa") %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_Kappa", height = 3.2)
+```
+
+
+
 ### Load the data for regression
 
 Almost the same as for classification, only that of the time of writing, not all results were present, so we add a check. Also, we already read all other results, as we will be needing `ZeroR`-results already.
@@ -726,14 +821,29 @@ Almost the same as for classification, only that of the time of writing, not all
 Now, for each dataset, we want to show the performance metrics (MAE, RMSE, R^2) of BayesCaret (full and simple modes) vs. ZeroR. For that, we need to create a common dataset first:
 
 ```{r}
-tempDsCols <- c("Dataset", "Model", "RMSE", "Rsquared", "MAE", "Resample", "Runtime")
+tempDsCols_r <- c("Dataset", "Model", "RMSE", "Rsquared", "MAE", "Resample", "Runtime")
+gridresults_r_all <- rbind(
+    gridresults_r_bc[, tempDsCols_r],
+    gridresults_r_others[, tempDsCols_r])
+
+# Rename some models:
+gridresults_r_all$Model <- sapply(
+  as.character(gridresults_r_all$Model), function(m) if (m == "bc_f") "mmb:Full" else m)
+gridresults_r_all$Model <- sapply(
+  as.character(gridresults_r_all$Model), function(m) if (m == "bc_s") "mmb:Simple" else m)
+gridresults_r_all$Model <- sapply(
+  as.character(gridresults_r_all$Model), function(m) if (m == "null") "ZeroR" else m)
+
+# Next, we want to order the models:
+modelsFirst_r <- c("ZeroR", "mmb:Simple", "mmb:Full")
+modelsFirst_r <- c(
+  modelsFirst_r, sort(setdiff(unique(as.character(gridresults_r_all$Model)), modelsFirst_r)))
+gridresults_r_all$Model <- factor(
+  as.character(gridresults_r_all$Model), levels = modelsFirst_r, ordered = TRUE)
+
 tempDs <- do.call(rbind, lapply(datasets_r, function(d) {
-  temp <- rbind(
-    gridresults_r_bc[, tempDsCols],
-    gridresults_r_others[, tempDsCols])
-  
-  return(do.call(rbind, lapply(c(caret_models_r, "bc_f", "bc_s", "bc_n"), function(m) {
-    data <- temp[temp$Model == m & temp$Dataset == d, ]
+  return(do.call(rbind, lapply(c(caret_models_r, "Full", "Simple", "Naive"), function(m) {
+    data <- gridresults_r_all[gridresults_r_all$Model == m & gridresults_r_all$Dataset == d, ]
     if (nrow(data) == 0) return(data.frame())
     return(data.frame(
       Model = m,
@@ -745,66 +855,120 @@ tempDs <- do.call(rbind, lapply(datasets_r, function(d) {
   })))
 }))
 
-tempDs$Model <- sapply(as.character(tempDs$Model), function(m) if (m == "bc_f") "Full" else m)
-tempDs$Model <- sapply(as.character(tempDs$Model), function(m) if (m == "bc_s") "Simple" else m)
-tempDs$Model <- sapply(as.character(tempDs$Model), function(m) if (m == "null") "ZeroR" else m)
-
 # So it prints at least a small blue bar indicating it is actually zero..
 tempDs$Rsquared.mean <- tempDs$Rsquared.mean + 1e-2
-
-# Next, we want to order the models:
-modelsFirst <- c("ZeroR", "Simple", "Full")
-modelsFirst <- c(modelsFirst, sort(setdiff(unique(as.character(tempDs$Model)), modelsFirst)))
-tempDs$Model <- factor(as.character(tempDs$Model), levels = rev(modelsFirst))
 ```
 
 ```{r}
 (ggplot(tempDs, aes(y = RMSE.mean, x = Model, fill = Model)) +
-  labs(subtitle = "Comparison of RMSE against the baseline (ZeroR).") +
+  labs(subtitle = "Comparison of RMSE.mean against the baseline (ZeroR) and other models.") +
   geom_bar(position = "dodge", stat = "identity") +
   coord_flip() +
   facet_wrap(Dataset ~., scales = "free", nrow = 2) +
-  theme_light() +
+  scale_color_brewer(palette = QPALETTE) +
+  scale_fill_brewer(palette = QPALETTE) +
+  theme_light(base_size = 9) +
   theme(text = element_text(family="Consolas"),
     axis.text.x = element_text(angle = 45, margin = margin(t=10), hjust = .66),
     axis.title.x = element_blank(), strip.background = element_rect(fill="#dfdfdf"),
     axis.title.y = element_text(margin = margin(r=10)),
     legend.text = element_text(size = 8),
     strip.text = element_text(color="black")) + labs(fill = "Method")
-) %>% saveAndPlotAsEPS("Bayes-all-datasets_RMSE")
+) %>% saveAndPlotAsEPS("Bayes-all-datasets_RMSE", height = 12/2.54)
 
 (ggplot(tempDs, aes(y = MAE.mean, x = Model, fill = Model)) +
-  labs(subtitle = "Comparison of MAE against the baseline (ZeroR).") +
+  labs(subtitle = "Comparison of MAE.mean against the baseline (ZeroR) and other models.") +
   geom_bar(position = "dodge", stat = "identity") +
   coord_flip() +
   facet_wrap(Dataset ~., scales = "free", nrow = 2) +
-  theme_light() +
+  scale_color_brewer(palette = QPALETTE) +
+  scale_fill_brewer(palette = QPALETTE) +
+  theme_light(base_size = 9) +
   theme(text = element_text(family="Consolas"),
     axis.text.x = element_text(angle = 45, margin = margin(t=10), hjust = .66),
     axis.title.x = element_blank(), strip.background = element_rect(fill="#dfdfdf"),
     axis.title.y = element_text(margin = margin(r=10)),
     legend.text = element_text(size = 8),
     strip.text = element_text(color="black")) + labs(fill = "Method")
-) %>% saveAndPlotAsEPS("Bayes-all-datasets_MAE")
+) %>% saveAndPlotAsEPS("Bayes-all-datasets_MAE", height = 12/2.54)
 
 (ggplot(tempDs, aes(y = Rsquared.mean, x = Model, fill = Model)) +
-  labs(subtitle = "Comparison of R^2 against the baseline (ZeroR).") +
+  labs(subtitle = "Comparison of (R^2).mean against the baseline (ZeroR) and other models.") +
   ylab("R^2 = cov^2") +
   geom_bar(position = "dodge", stat = "identity") +
   coord_flip() +
   facet_wrap(Dataset ~., scales = "free", nrow = 2) +
+  scale_color_brewer(palette = QPALETTE) +
+  scale_fill_brewer(palette = QPALETTE) +
   #scale_y_sqrt() +
-  theme_light() +
+  theme_light(base_size = 9) +
   theme(text = element_text(family="Consolas"),
     axis.text.x = element_text(angle = 45, margin = margin(t=10), hjust = .66),
     axis.title.x = element_blank(), strip.background = element_rect(fill="#dfdfdf"),
     axis.title.y = element_text(margin = margin(r=10)),
     legend.text = element_text(size = 8),
     strip.text = element_text(color="black")) + labs(fill = "Method")
-) %>% saveAndPlotAsEPS("Bayes-all-datasets_RSQ")
+) %>% saveAndPlotAsEPS("Bayes-all-datasets_RSQ", height = 12/2.54)
 ```
 
+The above plots show only the mean of RMSE, R^2 and MAE. Let's make a facetted boxplot for each of these metrics. For that, we need to transform and present the data in another shape.
 
+```{r}
+# x-axis: dataset, y-axis: value, vertical-facet: model, horizontal-facet: metric
+tempDs2 <- data.frame(matrix(nrow = 0, ncol = 4))
+colnames(tempDs2) <- c("Dataset", "Value", "Model", "Metric")
+
+temp <- do.call(rbind, lapply(caret_models_r, function(m) {
+  if (m == "bayesCaret") {
+    # Let's subdivide this with simple=T/F
+    tempS <- gridresults_r_bc[gridresults_r_bc$hyper.mode == "simple", tempDsCols_r]
+    tempS$Model <- "Simple"
+    tempF <- gridresults_r_bc[gridresults_r_bc$hyper.mode == "full", tempDsCols_r]
+    tempF$Model <- "Full"
+    
+    return(rbind(tempS, tempF))
+  }
+  return(gridresults_r_others[, tempDsCols_r])
+}))
+
+for (ds in datasets_r) {
+  for (mod in c("Simple", "Full", caret_models_r)) {
+    for (met in c("RMSE", "Rsquared", "MAE")) {
+      data <- temp[temp$Model == mod, met]
+      dLen <- length(data)
+      if (dLen == 0) next
+      tempDs2 <- rbind(tempDs2, data.frame(
+        Dataset = rep(ds, dLen),
+        Value = data,
+        Model = rep(mod, dLen),
+        Metric = rep(met, dLen)
+      ))
+    }
+  }
+}
+```
+
+```{r}
+# x-axis: dataset, y-axis: value, vertical-facet: model, horizontal-facet: metric
+temp <- ggplot(tempDs2, aes(x=Dataset, y=Value)) +
+  geom_boxplot() +
+  facet_grid(Metric ~ Model, scales = "free") +
+  theme_light(base_size = 9) +
+  theme(text = element_text(family="Consolas"))
+
+#saveAndPlotAsEPS(temp, "Bayes-all-datasets-all-metrics", width = 1570, height = 1570)
+```
+
+The previous plot is not terribly useful, unfortunately. Let's show a facetted box-plot matrix per metric instead.
+
+```{r}
+facettedBoxplot(gridresults_r_all, "Rsquared", "R^2 (cov^2)") %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_RSQ", height = 3.2)
+
+facettedBoxplot(gridresults_r_all, "RMSE", scales = "free_x", scale_y = scale_y_log10(
+  breaks = scales::trans_breaks("log10", function(x) 10^x),
+  labels = scales::trans_format("log10", scales::math_format(10^.x))
+)) %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_RMSE", height = 3.2)
+```
 
 
 
