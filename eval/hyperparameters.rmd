@@ -467,7 +467,7 @@ get_other_models_results <- function(modelsAndDatasets = data.frame()) {
 
 
 ## Classification
-Here, we use the full grid as provided by `bayesCaret`. Please note that the grid and its size depends on whether we are doing classification or not.
+Here, we use the full grid as provided by `bayesCaret`. Please note that the grid and its size depend on whether we are doing classification or not.
 
 ```{r}
 datasets_c <- c("iris", "chick", "credit", "glass", "breast", "sonar", "iono", "vehicle")
@@ -558,8 +558,8 @@ saveAndPlotAsEPS <- function(ggplotInstance, fileName, width = tikzWidthFull, he
 
 
 
-## Evaluation of the Bayes-only models
-In this section, we will outline the effects of various hyperparameters in our Bayesian models.
+## Evaluation of the Bayesian models, compared to other models
+In this section, we will compare the performance of our Bayesian models to other, well-known models, such as Random forest.
 
 ### Load and aggregate the data (classification)
 We need to aggregate the results from each model, both for classification and regression. While `caret` determined a *best fit* per model (these are the results in the `*_agg.csv`-files), we will manually determine those for `BayesCaret`, as the result between full/simple/naive are quite different.
@@ -973,5 +973,6 @@ facettedBoxplot(gridresults_r_all, "RMSE", scales = "free_x", scale_y = scale_y_
 
 
 
-### Evaluation and comparison to other models
 
+## Evaluation of the effects of Hyperparameters
+In this section, we will outline the effects of various hyperparameters in our Bayesian models.
