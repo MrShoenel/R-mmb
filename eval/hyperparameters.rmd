@@ -57,7 +57,7 @@ packages_required <- c(
   "gbm", "xgboost", "klaR", "randomForest", "import",
   "pls", "kohonen", "brnn", "RSNNS", "bartMachine", "arm",
   "rpart", "pamr", "gam", "dplyr", "ggridges", "caret", "ranger",
-  "mmb", "rJava", "naivebayes", "Cairo")
+  "mmb", "rJava", "naivebayes", "Cairo", "plotly")
 
 for (pr in packages_required) {
   install.packages_cond(pr)
@@ -975,4 +975,251 @@ facettedBoxplot(gridresults_r_all, "RMSE", scales = "free_x", scale_y = scale_y_
 
 
 ## Evaluation of the effects of Hyperparameters
-In this section, we will outline the effects of various hyperparameters in our Bayesian models.
+In this section, we will outline the effects of various hyperparameters in our Bayesian models. Since the type and amount of hyperparameters varies for classification and regression, we do them separately.
+
+### Classification
+In classification, we distinguish the three modes simple, full and naive. We have 4 hyperparameters (list below). For assessing the effect, we relate each hyperparameter's realization to *Accuracy*. Accuracy and Kappa have a correlation coefficient of `r round(cor(gridresults_c_bc$Accuracy, gridresults_c_bc$Kappa), 2)`.
+
+* `shiftAmount`: Either `0` or `0.1`, so we could treat it as if it were boolean,
+* `retainMinValues`: Integer between `0` and `r max(gridresults_r_bc$hyper.retainMinValues)` (`r sort(unique(gridresults_r_bc$hyper.retainMinValues))`),
+* `doEcdf`: Boolean,
+* `online`: Integer between `0` (off) and `r max(gridresults_r_bc$hyper.online)`. Note that the maximum value is chosen so that all possible data is used. The values in use are: `r sort(unique(gridresults_r_bc$hyper.online))`.
+
+Per each of the three modes, we will print a facetted density plot.
+
+```{r}
+trainCounts <- sapply(datasets_c, function(d) {
+  return(nrow(get_dataset(d, 1)$train))
+})
+validCounts <- sapply(datasets_c, function(d) {
+  return(nrow(get_dataset(d, 1)$valid))
+})
+
+gridresults_c_bc$train.size <- 0
+for (n in names(trainCounts)) {
+  gridresults_c_bc[gridresults_c_bc$Dataset == n, ]$train.size <- trainCounts[[n]]
+  
+  # Where online == MAX, replace with actual max for dataset:
+  theMax <- trainCounts[[n]] + validCounts[[n]]
+  temp <- gridresults_c_bc[gridresults_c_bc$Dataset == n, ]$hyper.online
+  temp <- sapply(temp, function(v) if (v == .Machine$integer.max) theMax else v)
+  gridresults_c_bc[gridresults_c_bc$Dataset == n, "hyper.onlineN"] <- temp
+}
+
+
+tempDs_c <- rbind(
+  data.frame(
+    Acc = gridresults_c_bc$Accuracy,
+    Val = gridresults_c_bc$hyper.shiftAmount + 1e-10, # avoid 0
+    Var = rep("shiftAmount", nrow(gridresults_c_bc)),
+    doEcdf = gridresults_c_bc$hyper.doEcdf,
+    Model = gridresults_c_bc$Model
+  ),
+  
+  data.frame(
+    Acc = gridresults_c_bc$Accuracy,
+    Val = (gridresults_c_bc$hyper.retainMinValues / gridresults_c_bc$train.size) + 1e-10,
+    Var = rep("retainMinValues", nrow(gridresults_c_bc)),
+    doEcdf = gridresults_c_bc$hyper.doEcdf,
+    Model = gridresults_c_bc$Model
+  ),
+  
+  data.frame(
+    Acc = gridresults_c_bc$Accuracy,
+    Val = ifelse(gridresults_c_bc$hyper.online == 0,
+                 gridresults_c_bc$Accuracy * max(sqrt(gridresults_c_bc$hyper.onlineN)),
+                 sqrt(gridresults_c_bc$hyper.onlineN) + 1e-10),
+    Var = rep("sqrt(online)", nrow(gridresults_c_bc)),
+    doEcdf = gridresults_c_bc$hyper.doEcdf,
+    Model = gridresults_c_bc$Model
+  )
+)
+```
+
+```{r}
+facettedDensityPlot <- function(ds, metric, metricName = metric, form, subtitle, scale_y = scale_y_continuous(), labeller = label_both, grad_high = "#102723", grad_low = "#8DD3C7") {
+  ggplot(ds, aes(x=Val, y=ds[[metric]])) +
+    stat_density_2d(aes(fill = ..level..), geom="polygon", color = "white") +
+    facet_grid(form, scales = "free", labeller = labeller) +
+    theme_light() +
+    theme(plot.subtitle = element_text(size = 7, margin = margin(b=5)),
+          text = element_text(family="Consolas"),
+          axis.text.x = element_text(
+            angle = 90,
+            margin = margin(t=5),
+            hjust = 1,
+            vjust = .4
+          ),
+          axis.title.x = element_blank(),
+          axis.title.y = element_text(margin = margin(r=10), size = 7),
+          strip.background = element_rect(fill="#dfdfdf"),
+          strip.text = element_text(color="black", size = 8),
+          legend.text = element_text(size = 7),
+          legend.title = element_text(
+            angle = 270,
+            margin = margin(b=5),
+            size = 8,
+            vjust = .15
+          )
+    ) +
+    scale_y +
+    scale_fill_gradient(high = grad_high, low = grad_low) +
+    labs(
+      fill = "Relative\nLikelihood",
+      subtitle = subtitle
+    ) +
+    ylab(metricName)
+}
+```
+
+```{r}
+
+facettedDensityPlot(
+  ds = tempDs_c[tempDs_c$Model == "bc_s",],
+  metric = "Acc",
+  metricName = "Accuracy",
+  form = doEcdf ~ Var,
+  subtitle = "Effect of Hyperparameters in simple Bayesian classification."
+) %>% saveAndPlotAsEPS("Bayes-hps-c-simple", height = 3.2)
+
+facettedDensityPlot(
+  ds = tempDs_c[tempDs_c$Model == "bc_n",],
+  metric = "Acc",
+  metricName = "Accuracy",
+  form = doEcdf ~ Var,
+  subtitle = "Effect of Hyperparameters in naive Bayesian classification."
+) %>% saveAndPlotAsEPS("Bayes-hps-c-naive", height = 3.2)
+
+facettedDensityPlot(
+  ds = tempDs_c[tempDs_c$Model == "bc_f",],
+  metric = "Acc",
+  metricName = "Accuracy",
+  form = doEcdf ~ Var,
+  subtitle = "Effect of Hyperparameters in full Bayesian classification."
+) %>% saveAndPlotAsEPS("Bayes-hps-c-full", height = 3.2)
+```
+
+### Regression
+
+```{r}
+trainCounts_r <- sapply(datasets_r, function(d) {
+  return(nrow(get_dataset(d, 1)$train))
+})
+validCounts_r <- sapply(datasets_r, function(d) {
+  return(nrow(get_dataset(d, 1)$valid))
+})
+
+gridresults_r_bc$train.size <- 0
+for (n in names(trainCounts_r)) {
+  gridresults_r_bc[gridresults_r_bc$Dataset == n, ]$train.size <- trainCounts_r[[n]]
+  
+  # Where online == MAX, replace with actual max for dataset:
+  theMax <- trainCounts_r[[n]] + validCounts_r[[n]]
+  temp <- gridresults_r_bc[gridresults_r_bc$Dataset == n, ]$hyper.online
+  temp <- sapply(temp, function(v) if (v == .Machine$integer.max) theMax else v)
+  gridresults_r_bc[gridresults_r_bc$Dataset == n, "hyper.onlineN"] <- temp
+}
+
+gridresults_r_bc$hyper.numBucketsN <- gridresults_r_bc$hyper.numBuckets
+gridresults_r_bc[is.na(gridresults_r_bc$hyper.numBuckets),]$hyper.numBucketsN <-
+  ceiling(log2(gridresults_r_bc[is.na(gridresults_r_bc$hyper.numBuckets),]$train.size))
+
+gridresults_r_bc$Category <- ""
+for (doEcdf in c(TRUE, FALSE)) {
+  for (sampleAll in c(TRUE, FALSE)) {
+    theCat <- paste("ecdf:", if (doEcdf) "T" else "F", ", s.A.:", if (sampleAll) "T" else "F", sep = "")
+    gridresults_r_bc[gridresults_r_bc$hyper.doEcdf == doEcdf & gridresults_r_bc$hyper.sampleFromAllBuckets == sampleAll, ]$Category <- theCat
+  }
+}
+
+
+tempDs_r <- rbind(
+  data.frame(
+    Rsq = gridresults_r_bc$Rsquared,
+    Val = gridresults_r_bc$hyper.shiftAmount + runif(nrow(gridresults_r_bc)) * 1e-10, # avoid 0
+    Var = rep("shiftAmount", nrow(gridresults_r_bc)),
+    Cat = gridresults_r_bc$Category,
+    Model = gridresults_r_bc$Model
+  ),
+  
+  data.frame(
+    Rsq = gridresults_r_bc$Rsquared,
+    Val = (gridresults_r_bc$hyper.retainMinValues / gridresults_r_bc$train.size) + 1e-10,
+    Var = rep("retainMinValues", nrow(gridresults_r_bc)),
+    Cat = gridresults_r_bc$Category,
+    Model = gridresults_r_bc$Model
+  ),
+  
+  data.frame(
+    Rsq = gridresults_r_bc$Rsquared,
+    Val = gridresults_r_bc$hyper.numBucketsN,
+    Var = rep("numBuckets", nrow(gridresults_r_bc)),
+    Cat = gridresults_r_bc$Category,
+    Model = gridresults_r_bc$Model
+  ),
+  
+  data.frame(
+    Rsq = gridresults_r_bc$Rsquared,
+    Val = ifelse(gridresults_r_bc$hyper.online == 0,
+                 gridresults_r_bc$Rsquared * max(sqrt(gridresults_r_bc$hyper.onlineN)),
+                 sqrt(gridresults_r_bc$hyper.onlineN) + 1e-10),
+    Var = rep("sqrt(online)", nrow(gridresults_r_bc)),
+    Cat = gridresults_r_bc$Category,
+    Model = gridresults_r_bc$Model
+  )
+)
+```
+
+
+```{r}
+facettedDensityPlot(
+  ds = tempDs_r[tempDs_r$Model == "bc_s",],
+  metric = "Rsq",
+  metricName = "R^2 = cov^2",
+  form = Cat ~ Var,
+  subtitle ="Effect of Hyperparameters in simple Bayesian regression.",
+  grad_high = "#2C2749",
+  grad_low = "#BEBADA",
+  scale_y = scale_y_sqrt()
+) %>% saveAndPlotAsEPS("Bayes-hps-r-simple")
+
+
+facettedDensityPlot(
+  ds = tempDs_r[tempDs_r$Model == "bc_f",],
+  metric = "Rsq",
+  metricName = "R^2 = cov^2",
+  form = Cat ~ Var,
+  subtitle ="Effect of Hyperparameters in full Bayesian regression.",
+  grad_high = "#2C2749",
+  grad_low = "#BEBADA",
+  scale_y = scale_y_sqrt()
+) #%>% saveAndPlotAsEPS("Bayes-hps-r-full")
+```
+
+As can be seen in the above plot, we do not get great visual results for `shiftAmount` if `sampleFromAllBuckets=TRUE`, so let's plot it again w/o this column:
+
+```{r}
+facettedDensityPlot(
+  ds = tempDs_r[tempDs_r$Model == "bc_f" & tempDs_r$Var != "shiftAmount",],
+  metric = "Rsq",
+  metricName = "R^2 = cov^2",
+  form = Cat ~ Var,
+  subtitle ="Effect of Hyperparameters in full Bayesian regression.",
+  scale_y = scale_y_sqrt(),
+  grad_high = "#2C2749",
+  grad_low = "#BEBADA",
+  labeller = labeller(Cat = c(
+    "ecdf:F, s.A.:F" = "ecdf:F, sA:F",
+    "ecdf:F, s.A.:T" = "ecdf:F, sA:T",
+    "ecdf:T, s.A.:F" = "ecdf:T, sA:F",
+    "ecdf:T, s.A.:T" = "ecdf:T, sA:T"
+  ))
+) %>% saveAndPlotAsEPS("Bayes-hps-r-full", height = 4.6)
+```
+
+
+
+
+
+
+
