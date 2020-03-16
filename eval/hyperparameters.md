@@ -20,6 +20,10 @@ evaluations are skipped anyway. However, setting the following to FALSE,
 will prevent the actual attempt.
 
     DISABLE_COMPUTATIONS <- TRUE
+    # Used with many qualititave values as brewer color palette:
+    QPALETTE <- "Set3"
+    # This is in inches!
+    tikzWidthFull <- 6.1 # 6.12619 original/maximal for JSS article
 
 Let’s first install all the needed packages:
 
@@ -46,7 +50,8 @@ We define a couple of helper-functions:
     #' into training- and validation partitions. The split is 0.7, if the
     #' amount of rows is less than 800; 0.85, otherwise.
     #' @param name a short-cut name of the dataset to obtain, e.g. "iris"
-    #' @param seedMult an integer used for \code{set.seed()}
+    #' @param seedMult an integer used for \code{set.seed()}. The seedMult
+    #' influences how we sample into training and validation.
     #' @param useDs an optional data.frame of a 3rd party dataset. Use this
     #' to use your own dataset but still obtain a list as produced by this
     #' function.
@@ -241,7 +246,8 @@ We define a couple of helper-functions:
       for (cName in colnames(bestTune)) {
         bt <- bestTune[[cName]]
         cond <- NULL
-        if (is.na(bt) || is.nan(bt)) {
+        wasEmpty <- is.na(bt) || is.nan(bt)
+        if (wasEmpty) {
           n <- if (is.nan(bt)) "n" else ""
           cond <- paste(
             "is.na", n, "(resample$", cName, ")", sep = "")
@@ -260,6 +266,9 @@ We define a couple of helper-functions:
         }
 
         conds <- c(conds, cond)
+        if (!wasEmpty) {
+          conds <- c(conds, paste("!is.na(resample$", cName, ")", sep = ""))
+        }
       }
       
       return(resample[eval(parse(text = paste(conds, collapse = " & "))), ])
@@ -416,10 +425,10 @@ Classification
 --------------
 
 Here, we use the full grid as provided by `bayesCaret`. Please note that
-the grid and its size depends on whether we are doing classification or
+the grid and its size depend on whether we are doing classification or
 not.
 
-    datasets_c <- c("iris", "chick", "credit", "glass", "breast", "sonar")
+    datasets_c <- c("iris", "chick", "credit", "glass", "breast", "sonar", "iono", "vehicle")
     modelAndData_c <- expand.grid(
       model = caret_models_c,
       dataset = datasets_c,
@@ -441,7 +450,7 @@ Regression
       return(res)
     })
 
-    datasets_r <- c("mortality", "sacramento", "boston", "seals", "faithful", "diamonds")
+    datasets_r <- c("mortality", "sacramento", "boston", "seals", "faithful", "diamonds", "pima", "txhousing")
     modelAndData_r <- expand.grid(
       model = caret_models_r,
       dataset = datasets_r,
@@ -450,6 +459,41 @@ Regression
     get_other_models_results(modelAndData_r)
 
     ## [1] 0
+
+Let’s print some table/overview of datasets that we actually use.
+
+    datasets_overview <- do.call(rbind, lapply(c(datasets_c, datasets_r), function(d) {
+      dsList <- get_dataset(d, seedMult = 1)
+      isReg <- is.numeric(dsList$valid[[dsList$label]])
+      
+      return(data.frame(
+        Name = d,
+        NumTrain = nrow(dsList$train),
+        NumValid = nrow(dsList$valid),
+        Predictors = length(colnames(dsList$train)),
+        Classes = if (isReg) "Regression" else length(unique(as.character(dsList$ds[[dsList$label]])))
+      ))
+    }))
+
+    print(datasets_overview)
+
+    ##          Name NumTrain NumValid Predictors    Classes
+    ## 1        iris      105       45          5          3
+    ## 2       chick      405      173          4          4
+    ## 3      credit      850      150         10          2
+    ## 4       glass      153       61         10          6
+    ## 5      breast      479      204         10          2
+    ## 6       sonar      146       62         61          2
+    ## 7        iono      247      104         34          2
+    ## 8     vehicle      722      124         19          4
+    ## 9   mortality      281      119          6 Regression
+    ## 10 sacramento      795      137          8 Regression
+    ## 11     boston      356      150         14 Regression
+    ## 12      seals      983      172          4 Regression
+    ## 13   faithful     1701      300          3 Regression
+    ## 14   diamonds     1703      299         10 Regression
+    ## 15       pima      539      229          9 Regression
+    ## 16  txhousing     1704      298          9 Regression
 
 Evaluation
 ==========
@@ -475,10 +519,10 @@ continuing with our Bayesian results.
     #' and then returns it for further processing.
     #' @param ggplotInstance a gg plot
     #' @param fileName character the name of the file, without the extension.
-    #' @param width in inches, defaults to the width of a portrait A4 (210mm)
-    #' @param height in inches, defaults to 10cm (~3.93in)
+    #' @param width in inches, defaults to @seealso \code{tikzWidthFull}
+    #' @param height in inches, defaults to 6cm (~2.36in)
     #' @return ggplot the instance as given, unchanged
-    saveAndPlotAsEPS <- function(ggplotInstance, fileName, width = 2100/254, height = 1000/254) {
+    saveAndPlotAsEPS <- function(ggplotInstance, fileName, width = tikzWidthFull, height = 600/254) {
       f <- "figures"
       if (!dir.exists(f)) {
         dir.create(f)
@@ -492,30 +536,181 @@ continuing with our Bayesian results.
       return(ggplotInstance)
     }
 
-Evaluation of the Bayes-only models
------------------------------------
+Evaluation of the Bayesian models, compared to other models
+-----------------------------------------------------------
 
-In this section, we will outline the effects of various hyperparameters
-in our Bayesian models.
+In this section, we will compare the performance of our Bayesian models
+to other, well-known models, such as Random forest.
 
-### Load and aggregate the data
+### Load and aggregate the data (classification)
 
 We need to aggregate the results from each model, both for
-classification and regression.
+classification and regression. While `caret` determined a *best fit* per
+model (these are the results in the `*_agg.csv`-files), we will manually
+determine those for `BayesCaret`, as the result between
+full/simple/naive are quite different.
 
-    # bc means bayesCaret, c=classification
-    results_bc_c <- do.call(rbind, lapply(datasets_c, function(d) {
-      csv <- read.csv(paste("results_c/bayesCaret_", d, "_c.csv", sep = ""))
+We use the following naming-schema for our results:
+
+-   `gridresults_{type}_{model(s)}`, where `type` is either ‘r’ or ‘c’,
+    and `model` is either ‘bc\_{f/s/n}’ (BayesCaret full/simple/naive
+    \[only used in the ‘Model’ column, the name of the variable will
+    only be ‘bc’\]) or ‘other’ (all other models)
+-   `bestHps_{type}_{model(s)}`, takes the best performing
+    hyperparameters for each model/dataset combination and filters the
+    grid-results. Similar to taking *caret*’s `bestTune` and returning
+    those rows that match the hyperparameters of it.
+
+We keep the gridresults for BayesCaret and all other models separate, as
+we keep the full hyperparameters for our models for later evaluation.
+For other models, we only report their performance regardless of the
+hyperparameters used by caret in the grid-search.
+
+    #' Reads all BayesCaret-datasets, merges complete cases and returns them.
+    #' @param d the name of the dataset, e.g. "iris"
+    #' @param type either "c" or "r"
+    #' @return data.frame of all merged CSV files (only complete cases).
+    aggregateBCdatasets <- function(d, type) {
+      cc <- if (type == "c") c("Accuracy", "Kappa") else c("RMSE", "Rsquared")
+      csv <- read.csv(paste("results_", type, "/bayesCaret_", d, "_", type, ".csv", sep = ""))
+      csv <- csv[complete.cases(csv[, cc]), ]
+      
+      # Remove X column
       csv$X <- NULL
-      csv$Model <- NULL
+      
+      # When Naive Bayes was added, simple=T/F was replaced by mode=simple/full/naive.
+      # When reading in old results that do not have naive, we engineer this column
+      # and delete the 'simple'-column.
+      if (!("hyper.mode" %in% colnames(csv))) {
+        csv$hyper.mode <- sapply(csv$hyper.simple, function(x) if (x) "simple" else "full")
+        csv$hyper.simple <- NULL
+      }
+      
+      # Set Model to 'bc_{f/s/n}'
+      csv$Model <- sapply(csv$hyper.mode, function(m) paste("bc",
+        if (m == "simple") "s" else if (m == "full") "f" else "n", sep = "_"))
+      
       return(csv)
-    }))
+    }
 
-    (ggplot(results_bc_c, aes(x=Dataset, y=Accuracy)) +
-      labs(subtitle = "Accuracy of full and simple classification.") +
+    #' Finds the best tune per model (full/simple/naive) and model, and extracts
+    #' the results from all resamples matching the hyperparameters from the best tune.
+    #' @param gridresults data.frame with all results from the grid-search
+    #' @param type either "c" or "r"
+    #' @return data.frame with subset of best results
+    findBestBCtune <- function(gridresults, type) {
+      metric <- if (type == "c") "Accuracy" else "RMSE"
+      metrics <- if (type == "c") c("Accuracy", "Kappa") else c("RMSE", "Rsquared", "MAE")
+      # For each of these, we'll find a best-tune per dataset
+      bcModels <- c("bc_f", "bc_s", "bc_n")
+      datasets <- unique(as.character(gridresults$Dataset))
+      
+      bestResults <- NULL
+      
+      for (ds in datasets) {
+        for (m in bcModels) {
+          dsTemp <- gridresults[gridresults$Model == m & gridresults$Dataset == ds, ]
+          bestTuneFunc <- if (type == "c") which.max else which.min
+          bestTune <- dsTemp[bestTuneFunc(dsTemp[[metric]]), ]
+          
+          best <- aggregate_caret_results(
+            dsTemp, bestTune = bestTune[1, grep("^hyper\\.", colnames(bestTune)), ])
+          
+          if (nrow(best) == 0) next
+          
+          # Add some more aggregates:
+          for (ms in metrics) {
+            best[[paste(ms, "min", sep = ".")]] <- min(best[[ms]])
+            best[[paste(ms, "max", sep = ".")]] <- max(best[[ms]])
+            best[[paste(ms, "mean", sep = ".")]] <- mean(best[[ms]])
+            best[[paste(ms, "median", sep = ".")]] <- median(best[[ms]])
+          }
+          
+          bestResults <- rbind(bestResults, best)
+        }
+      }
+      
+      return(bestResults)
+    }
+
+    gridresults_c_bc <- do.call(
+      rbind, lapply(datasets_c, function(d) aggregateBCdatasets(d, "c")))
+    gridresults_r_bc <- do.call(
+      rbind, lapply(datasets_r, function(d) aggregateBCdatasets(d, "r")))
+
+    bestHps_c_bc <- findBestBCtune(gridresults_c_bc, "c")
+    bestHps_r_bc <- findBestBCtune(gridresults_r_bc, "r")
+
+Let’s aggregate all the other datasets into one common data.frame while
+we’re at it:
+
+    #' Merges and aggregates all other datasets, similar to the function
+    #' that does the same thing for BayesCaret.
+    #' @param d character name of dataset, e.g. "iris"
+    #' @param m character name of model, e.g. "ranger"
+    #' @param type "r" or "c"
+    #' @param agg BOOLEAN if true, aggregates the already aggregated
+    #' results (from best-tune as done by caret during the evaluation;
+    #' these results are stored in CSVs with same name, ending in "_agg").
+    aggregateOtherdatasets <- function(d, m, type, agg = FALSE) {
+      aggSuff <- if (agg) "_agg" else ""
+      f <- paste("results_", type, "/", m, "_", d, "_", type, aggSuff, ".csv", sep = "")
+      if (!file.exists(f)) return(data.frame()) # Some may be still computing..
+      
+      # Let's read the results for every model, but only keep the metrics's columns.
+      keepCols <- c("Dataset", "Model", "Accuracy", "Kappa", "RMSE", "Rsquared", "MAE", "Resample", "Runtime")
+      
+      cc <- if (type == "c") c("Accuracy", "Kappa") else c("RMSE") # "Rsquared" is NA for "null" (ZeroR)
+      csv <- read.csv(f)
+      csv <- csv[complete.cases(csv[, cc]), ]
+      
+      if (m == "null" && type == "r") {
+        csv$Rsquared <- 0
+      }
+      
+      # Remove X column
+      csv$X <- NULL
+      
+      return(csv[, colnames(csv) %in% keepCols])
+    }
+
+    gridresults_c_others <- do.call(
+      rbind, lapply(datasets_c, function(d) do.call(rbind, lapply(caret_models_c, function(m) {
+        if (m == "bayesCaret") return(data.frame()) # Effectively skip this
+        return(aggregateOtherdatasets(d, m, "c"))
+      }))))
+
+    gridresults_r_others <- do.call(
+      rbind, lapply(datasets_r, function(d) do.call(rbind, lapply(caret_models_r, function(m) {
+        if (m == "bayesCaret") return(data.frame())
+        return(aggregateOtherdatasets(d, m, "r"))
+      }))))
+
+    bestHps_c_others <- do.call(
+      rbind, lapply(datasets_c, function(d) do.call(rbind, lapply(caret_models_c, function(m) {
+        if (m == "bayesCaret") return(data.frame()) # Effectively skip this
+        return(aggregateOtherdatasets(d, m, "c", agg = TRUE))
+      }))))
+
+    bestHps_r_others <- do.call(
+      rbind, lapply(datasets_r, function(d) do.call(rbind, lapply(caret_models_r, function(m) {
+        if (m == "bayesCaret") return(data.frame())
+        return(aggregateOtherdatasets(d, m, "r", agg = TRUE))
+      }))))
+
+### Plot results for Accuracy and Kappa
+
+We show some plots that our classifier was run on, showing Accuracy and
+Kappa for full- and simple-models.
+
+    (ggplot(gridresults_c_bc, aes(x=Dataset, y=Accuracy, color=Dataset, fill=Dataset)) +
+      labs(subtitle = "Accuracy of full, naive and simple classification.") +
       geom_boxplot(color="black") +
-      facet_wrap(hyper.simple ~ ., labeller = label_both) +
-      theme_bw() +
+      facet_wrap(hyper.mode ~ ., labeller = label_both) +
+      theme_light(base_size = 9) +
+      scale_color_brewer(palette = QPALETTE) +
+      scale_fill_brewer(palette = QPALETTE) +
+      ylim(0, 1) +
       theme(
         text = element_text(family="Consolas"),
         axis.text.x = element_text(angle = 45, margin = margin(t=10), hjust = .66),
@@ -525,15 +720,17 @@ classification and regression.
         strip.text = element_text(color="black"))
     ) %>% saveAndPlotAsEPS("Bayes-all-datasets_Acc")
 
-![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-10-1.png)
+![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-12-1.png)
 
     # Now let's do the same, for Kappa
-    (ggplot(results_bc_c, aes(x=Dataset, y=Kappa)) +
-      labs(subtitle = "Kappa of full and simple classification.") +
+    (ggplot(gridresults_c_bc, aes(x=Dataset, y=Kappa, color=Dataset, fill=Dataset)) +
+      labs(subtitle = "Kappa of full, naive and simple classification.") +
       geom_boxplot(color="black") +
-      facet_wrap(hyper.simple ~ ., labeller = label_both) +
-      theme_bw() +
-      ylim(-.1, 1) + # For some reason, some results have a negative Kappa..
+      facet_wrap(hyper.mode ~ ., labeller = label_both) +
+      theme_light(base_size = 9) +
+      scale_color_brewer(palette = QPALETTE) +
+      scale_fill_brewer(palette = QPALETTE) +
+      ylim(-.1, 1) + # Some results have a negative Kappa..
       theme(
         text = element_text(family="Consolas"),
         axis.text.x = element_text(angle = 45, margin = margin(t=10), hjust = .66),
@@ -543,10 +740,501 @@ classification and regression.
         strip.text = element_text(color="black"))
     ) %>% saveAndPlotAsEPS("Bayes-all-datasets_Kappa")
 
-    ## Warning: Removed 226 rows containing non-finite values (stat_boxplot).
+    ## Warning: Removed 307 rows containing non-finite values (stat_boxplot).
 
-    ## Warning: Removed 226 rows containing non-finite values (stat_boxplot).
+    ## Warning: Removed 307 rows containing non-finite values (stat_boxplot).
 
-![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-10-2.png)
+![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-12-2.png)
 
-### Evaluation and comparison to other models
+### Plot Accuracy and Kappa as compared to other Classifiers
+
+Let’s do almost the same, but this time compare to all other trained
+models as well.
+
+    tempDsCols_c <- c("Dataset", "Model", "Accuracy", "Kappa", "Resample", "Runtime")
+    gridresults_c_all <- rbind(
+        gridresults_c_bc[, tempDsCols_c],
+        gridresults_c_others[, tempDsCols_c])
+
+    # Rename some models:
+    gridresults_c_all$Model <- sapply(
+      as.character(gridresults_c_all$Model), function(m) if (m == "bc_f") "mmb:Full" else m)
+    gridresults_c_all$Model <- sapply(
+      as.character(gridresults_c_all$Model), function(m) if (m == "bc_n") "mmb:Naive" else m)
+    gridresults_c_all$Model <- sapply(
+      as.character(gridresults_c_all$Model), function(m) if (m == "bc_s") "mmb:Simple" else m)
+    gridresults_c_all$Model <- sapply(
+      as.character(gridresults_c_all$Model), function(m) if (m == "null") "ZeroR" else m)
+
+    # Next, we want to order the models:
+    modelsFirst_c <- c("ZeroR", "mmb:Simple", "mmb:Full", "mmb:Naive")
+    modelsFirst_c <- c(
+      modelsFirst_c, sort(setdiff(unique(as.character(gridresults_c_all$Model)), modelsFirst_c)))
+    gridresults_c_all$Model <- factor(
+      as.character(gridresults_c_all$Model), levels = modelsFirst_c, ordered = TRUE)
+
+
+    facettedBoxplot <- function(dataset, metric, metricName = metric, scales = "fixed", scale_y = scale_y_continuous()) {
+      ggplot(dataset, aes(y = dataset[[metric]], x = Model, fill = Model)) +
+        labs(subtitle = paste("Comparison of", metricName, "against the baseline (ZeroR) and other models.")) +
+        geom_boxplot(lwd = .2,
+                     outlier.colour = "#666666",
+                     outlier.size = 2,
+                     outlier.shape = 16,
+                     outlier.alpha = .75,
+                     outlier.stroke = 0) +
+        coord_flip() +
+        facet_wrap(Dataset ~., nrow = 2, scales = scales) +
+        scale_y +
+        scale_color_brewer(palette = QPALETTE) +
+        scale_fill_brewer(palette = QPALETTE) +
+        labs(fill = "Method") +
+        theme_light(base_size = 9) +
+        theme(plot.subtitle = element_text(size = 7, margin = margin(b=5)),
+              text = element_text(family="Consolas"),
+              axis.text.y = element_text(margin = margin(r=5)),
+              axis.title.y.left = element_blank(),
+              axis.text.x = element_text(angle = 90, margin = margin(t=5), hjust = 1, vjust = .4),
+              axis.title.x = element_blank(),
+              legend.margin = margin(l=5),
+              legend.text = element_text(size = 7),
+              legend.key.height = unit(14, "pt"),
+              strip.background = element_rect(fill="#dfdfdf"),
+              strip.text = element_text(color="black", size = 8))
+    }
+
+Let’s make some combined Box-plots:
+
+    facettedBoxplot(gridresults_c_all, "Accuracy") %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_Accuracy", height = 3.2)
+
+![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-14-1.png)
+
+    facettedBoxplot(gridresults_c_all, "Kappa") %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_Kappa", height = 3.2)
+
+![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-14-2.png)
+
+### Load the data for regression
+
+Almost the same as for classification, only that of the time of writing,
+not all results were present, so we add a check. Also, we already read
+all other results, as we will be needing `ZeroR`-results already.
+
+Now, for each dataset, we want to show the performance metrics (MAE,
+RMSE, R^2) of BayesCaret (full and simple modes) vs. ZeroR. For that, we
+need to create a common dataset first:
+
+    tempDsCols_r <- c("Dataset", "Model", "RMSE", "Rsquared", "MAE", "Resample", "Runtime")
+    gridresults_r_all <- rbind(
+        gridresults_r_bc[, tempDsCols_r],
+        gridresults_r_others[, tempDsCols_r])
+
+    # Rename some models:
+    gridresults_r_all$Model <- sapply(
+      as.character(gridresults_r_all$Model), function(m) if (m == "bc_f") "mmb:Full" else m)
+    gridresults_r_all$Model <- sapply(
+      as.character(gridresults_r_all$Model), function(m) if (m == "bc_s") "mmb:Simple" else m)
+    gridresults_r_all$Model <- sapply(
+      as.character(gridresults_r_all$Model), function(m) if (m == "null") "ZeroR" else m)
+
+    # Next, we want to order the models:
+    modelsFirst_r <- c("ZeroR", "mmb:Simple", "mmb:Full")
+    modelsFirst_r <- c(
+      modelsFirst_r, sort(setdiff(unique(as.character(gridresults_r_all$Model)), modelsFirst_r)))
+    gridresults_r_all$Model <- factor(
+      as.character(gridresults_r_all$Model), levels = modelsFirst_r, ordered = TRUE)
+
+    tempDs <- do.call(rbind, lapply(datasets_r, function(d) {
+      return(do.call(rbind, lapply(c(caret_models_r, "Full", "Simple", "Naive"), function(m) {
+        data <- gridresults_r_all[gridresults_r_all$Model == m & gridresults_r_all$Dataset == d, ]
+        if (nrow(data) == 0) return(data.frame())
+        return(data.frame(
+          Model = m,
+          Dataset = d,
+          RMSE.mean = mean(data$RMSE),
+          Rsquared.mean = mean(data$Rsquared),
+          MAE.mean = mean(data$MAE)
+        ))
+      })))
+    }))
+
+    # So it prints at least a small blue bar indicating it is actually zero..
+    tempDs$Rsquared.mean <- tempDs$Rsquared.mean + 1e-2
+
+    (ggplot(tempDs, aes(y = RMSE.mean, x = Model, fill = Model)) +
+      labs(subtitle = "Comparison of RMSE.mean against the baseline (ZeroR) and other models.") +
+      geom_bar(position = "dodge", stat = "identity") +
+      coord_flip() +
+      facet_wrap(Dataset ~., scales = "free", nrow = 2) +
+      scale_color_brewer(palette = QPALETTE) +
+      scale_fill_brewer(palette = QPALETTE) +
+      theme_light(base_size = 9) +
+      theme(text = element_text(family="Consolas"),
+        axis.text.x = element_text(angle = 45, margin = margin(t=10), hjust = .66),
+        axis.title.x = element_blank(), strip.background = element_rect(fill="#dfdfdf"),
+        axis.title.y = element_text(margin = margin(r=10)),
+        legend.text = element_text(size = 8),
+        strip.text = element_text(color="black")) + labs(fill = "Method")
+    ) %>% saveAndPlotAsEPS("Bayes-all-datasets_RMSE", height = 12/2.54)
+
+![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-16-1.png)
+
+    (ggplot(tempDs, aes(y = MAE.mean, x = Model, fill = Model)) +
+      labs(subtitle = "Comparison of MAE.mean against the baseline (ZeroR) and other models.") +
+      geom_bar(position = "dodge", stat = "identity") +
+      coord_flip() +
+      facet_wrap(Dataset ~., scales = "free", nrow = 2) +
+      scale_color_brewer(palette = QPALETTE) +
+      scale_fill_brewer(palette = QPALETTE) +
+      theme_light(base_size = 9) +
+      theme(text = element_text(family="Consolas"),
+        axis.text.x = element_text(angle = 45, margin = margin(t=10), hjust = .66),
+        axis.title.x = element_blank(), strip.background = element_rect(fill="#dfdfdf"),
+        axis.title.y = element_text(margin = margin(r=10)),
+        legend.text = element_text(size = 8),
+        strip.text = element_text(color="black")) + labs(fill = "Method")
+    ) %>% saveAndPlotAsEPS("Bayes-all-datasets_MAE", height = 12/2.54)
+
+![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-16-2.png)
+
+    (ggplot(tempDs, aes(y = Rsquared.mean, x = Model, fill = Model)) +
+      labs(subtitle = "Comparison of (R^2).mean against the baseline (ZeroR) and other models.") +
+      ylab("R^2 = cov^2") +
+      geom_bar(position = "dodge", stat = "identity") +
+      coord_flip() +
+      facet_wrap(Dataset ~., scales = "free", nrow = 2) +
+      scale_color_brewer(palette = QPALETTE) +
+      scale_fill_brewer(palette = QPALETTE) +
+      #scale_y_sqrt() +
+      theme_light(base_size = 9) +
+      theme(text = element_text(family="Consolas"),
+        axis.text.x = element_text(angle = 45, margin = margin(t=10), hjust = .66),
+        axis.title.x = element_blank(), strip.background = element_rect(fill="#dfdfdf"),
+        axis.title.y = element_text(margin = margin(r=10)),
+        legend.text = element_text(size = 8),
+        strip.text = element_text(color="black")) + labs(fill = "Method")
+    ) %>% saveAndPlotAsEPS("Bayes-all-datasets_RSQ", height = 12/2.54)
+
+    ## Warning: Removed 2 rows containing missing values (geom_bar).
+
+    ## Warning: Removed 2 rows containing missing values (geom_bar).
+
+![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-16-3.png)
+
+The above plots show only the mean of RMSE, R^2 and MAE. Let’s make a
+facetted boxplot for each of these metrics. For that, we need to
+transform and present the data in another shape.
+
+    # x-axis: dataset, y-axis: value, vertical-facet: model, horizontal-facet: metric
+    tempDs2 <- data.frame(matrix(nrow = 0, ncol = 4))
+    colnames(tempDs2) <- c("Dataset", "Value", "Model", "Metric")
+
+    temp <- do.call(rbind, lapply(caret_models_r, function(m) {
+      if (m == "bayesCaret") {
+        # Let's subdivide this with simple=T/F
+        tempS <- gridresults_r_bc[gridresults_r_bc$hyper.mode == "simple", tempDsCols_r]
+        tempS$Model <- "Simple"
+        tempF <- gridresults_r_bc[gridresults_r_bc$hyper.mode == "full", tempDsCols_r]
+        tempF$Model <- "Full"
+        
+        return(rbind(tempS, tempF))
+      }
+      return(gridresults_r_others[, tempDsCols_r])
+    }))
+
+    for (ds in datasets_r) {
+      for (mod in c("Simple", "Full", caret_models_r)) {
+        for (met in c("RMSE", "Rsquared", "MAE")) {
+          data <- temp[temp$Model == mod, met]
+          dLen <- length(data)
+          if (dLen == 0) next
+          tempDs2 <- rbind(tempDs2, data.frame(
+            Dataset = rep(ds, dLen),
+            Value = data,
+            Model = rep(mod, dLen),
+            Metric = rep(met, dLen)
+          ))
+        }
+      }
+    }
+
+    # x-axis: dataset, y-axis: value, vertical-facet: model, horizontal-facet: metric
+    temp <- ggplot(tempDs2, aes(x=Dataset, y=Value)) +
+      geom_boxplot() +
+      facet_grid(Metric ~ Model, scales = "free") +
+      theme_light(base_size = 9) +
+      theme(text = element_text(family="Consolas"))
+
+    #saveAndPlotAsEPS(temp, "Bayes-all-datasets-all-metrics", width = 1570, height = 1570)
+
+The previous plot is not terribly useful, unfortunately. Let’s show a
+facetted box-plot matrix per metric instead.
+
+    facettedBoxplot(gridresults_r_all, "Rsquared", "R^2 (cov^2)") %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_RSQ", height = 3.2)
+
+    ## Warning: Removed 56 rows containing non-finite values (stat_boxplot).
+
+    ## Warning: Removed 56 rows containing non-finite values (stat_boxplot).
+
+![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-19-1.png)
+
+    facettedBoxplot(gridresults_r_all, "RMSE", scales = "free_x", scale_y = scale_y_log10(
+      breaks = scales::trans_breaks("log10", function(x) 10^x),
+      labels = scales::trans_format("log10", scales::math_format(10^.x))
+    )) %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_RMSE", height = 3.2)
+
+![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-19-2.png)
+
+Evaluation of the effects of Hyperparameters
+--------------------------------------------
+
+In this section, we will outline the effects of various hyperparameters
+in our Bayesian models. Since the type and amount of hyperparameters
+varies for classification and regression, we do them separately.
+
+### Classification
+
+In classification, we distinguish the three modes simple, full and
+naive. We have 4 hyperparameters (list below). For assessing the effect,
+we relate each hyperparameter’s realization to *Accuracy*. Accuracy and
+Kappa have a correlation coefficient of 0.74.
+
+-   `shiftAmount`: Either `0` or `0.1`, so we could treat it as if it
+    were boolean,
+-   `retainMinValues`: Integer between `0` and 101 (2, 4, 6, 8, 10, 11,
+    12, 20, 21, 26, 39, 47, 58, 101),
+-   `doEcdf`: Boolean,
+-   `online`: Integer between `0` (off) and 2147483647. Note that the
+    maximum value is chosen so that all possible data is used. The
+    values in use are: 0, 480, 607, 922, 1118, 1386, 2401,
+    2402, 2147483647.
+
+Per each of the three modes, we will print a facetted density plot.
+
+    trainCounts <- sapply(datasets_c, function(d) {
+      return(nrow(get_dataset(d, 1)$train))
+    })
+    validCounts <- sapply(datasets_c, function(d) {
+      return(nrow(get_dataset(d, 1)$valid))
+    })
+
+    gridresults_c_bc$train.size <- 0
+    for (n in names(trainCounts)) {
+      gridresults_c_bc[gridresults_c_bc$Dataset == n, ]$train.size <- trainCounts[[n]]
+      
+      # Where online == MAX, replace with actual max for dataset:
+      theMax <- trainCounts[[n]] + validCounts[[n]]
+      temp <- gridresults_c_bc[gridresults_c_bc$Dataset == n, ]$hyper.online
+      temp <- sapply(temp, function(v) if (v == .Machine$integer.max) theMax else v)
+      gridresults_c_bc[gridresults_c_bc$Dataset == n, "hyper.onlineN"] <- temp
+    }
+
+
+    tempDs_c <- rbind(
+      data.frame(
+        Acc = gridresults_c_bc$Accuracy,
+        Val = gridresults_c_bc$hyper.shiftAmount + 1e-10, # avoid 0
+        Var = rep("shiftAmount", nrow(gridresults_c_bc)),
+        doEcdf = gridresults_c_bc$hyper.doEcdf,
+        Model = gridresults_c_bc$Model
+      ),
+      
+      data.frame(
+        Acc = gridresults_c_bc$Accuracy,
+        Val = (gridresults_c_bc$hyper.retainMinValues / gridresults_c_bc$train.size) + 1e-10,
+        Var = rep("retainMinValues", nrow(gridresults_c_bc)),
+        doEcdf = gridresults_c_bc$hyper.doEcdf,
+        Model = gridresults_c_bc$Model
+      ),
+      
+      data.frame(
+        Acc = gridresults_c_bc$Accuracy,
+        Val = ifelse(gridresults_c_bc$hyper.online == 0,
+                     gridresults_c_bc$Accuracy * max(sqrt(gridresults_c_bc$hyper.onlineN)),
+                     sqrt(gridresults_c_bc$hyper.onlineN) + 1e-10),
+        Var = rep("sqrt(online)", nrow(gridresults_c_bc)),
+        doEcdf = gridresults_c_bc$hyper.doEcdf,
+        Model = gridresults_c_bc$Model
+      )
+    )
+
+    facettedDensityPlot <- function(ds, metric, metricName = metric, form, subtitle, scale_y = scale_y_continuous(), labeller = label_both, grad_high = "#102723", grad_low = "#8DD3C7") {
+      ggplot(ds, aes(x=Val, y=ds[[metric]])) +
+        stat_density_2d(aes(fill = ..level..), geom="polygon", color = "white") +
+        facet_grid(form, scales = "free", labeller = labeller) +
+        theme_light() +
+        theme(plot.subtitle = element_text(size = 7, margin = margin(b=5)),
+              text = element_text(family="Consolas"),
+              axis.text.x = element_text(
+                angle = 90,
+                margin = margin(t=5),
+                hjust = 1,
+                vjust = .4
+              ),
+              axis.title.x = element_blank(),
+              axis.title.y = element_text(margin = margin(r=10), size = 7),
+              strip.background = element_rect(fill="#dfdfdf"),
+              strip.text = element_text(color="black", size = 8),
+              legend.text = element_text(size = 7),
+              legend.title = element_text(
+                angle = 270,
+                margin = margin(b=5),
+                size = 8,
+                vjust = .15
+              )
+        ) +
+        scale_y +
+        scale_fill_gradient(high = grad_high, low = grad_low) +
+        labs(
+          fill = "Relative\nLikelihood",
+          subtitle = subtitle
+        ) +
+        ylab(metricName)
+    }
+
+    facettedDensityPlot(
+      ds = tempDs_c[tempDs_c$Model == "bc_s",],
+      metric = "Acc",
+      metricName = "Accuracy",
+      form = doEcdf ~ Var,
+      subtitle = "Effect of Hyperparameters in simple Bayesian classification."
+    ) %>% saveAndPlotAsEPS("Bayes-hps-c-simple", height = 3.2)
+
+![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-22-1.png)
+
+    facettedDensityPlot(
+      ds = tempDs_c[tempDs_c$Model == "bc_n",],
+      metric = "Acc",
+      metricName = "Accuracy",
+      form = doEcdf ~ Var,
+      subtitle = "Effect of Hyperparameters in naive Bayesian classification."
+    ) %>% saveAndPlotAsEPS("Bayes-hps-c-naive", height = 3.2)
+
+![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-22-2.png)
+
+    facettedDensityPlot(
+      ds = tempDs_c[tempDs_c$Model == "bc_f",],
+      metric = "Acc",
+      metricName = "Accuracy",
+      form = doEcdf ~ Var,
+      subtitle = "Effect of Hyperparameters in full Bayesian classification."
+    ) %>% saveAndPlotAsEPS("Bayes-hps-c-full", height = 3.2)
+
+![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-22-3.png)
+
+### Regression
+
+    trainCounts_r <- sapply(datasets_r, function(d) {
+      return(nrow(get_dataset(d, 1)$train))
+    })
+    validCounts_r <- sapply(datasets_r, function(d) {
+      return(nrow(get_dataset(d, 1)$valid))
+    })
+
+    gridresults_r_bc$train.size <- 0
+    for (n in names(trainCounts_r)) {
+      gridresults_r_bc[gridresults_r_bc$Dataset == n, ]$train.size <- trainCounts_r[[n]]
+      
+      # Where online == MAX, replace with actual max for dataset:
+      theMax <- trainCounts_r[[n]] + validCounts_r[[n]]
+      temp <- gridresults_r_bc[gridresults_r_bc$Dataset == n, ]$hyper.online
+      temp <- sapply(temp, function(v) if (v == .Machine$integer.max) theMax else v)
+      gridresults_r_bc[gridresults_r_bc$Dataset == n, "hyper.onlineN"] <- temp
+    }
+
+    gridresults_r_bc$hyper.numBucketsN <- gridresults_r_bc$hyper.numBuckets
+    gridresults_r_bc[is.na(gridresults_r_bc$hyper.numBuckets),]$hyper.numBucketsN <-
+      ceiling(log2(gridresults_r_bc[is.na(gridresults_r_bc$hyper.numBuckets),]$train.size))
+
+    gridresults_r_bc$Category <- ""
+    for (doEcdf in c(TRUE, FALSE)) {
+      for (sampleAll in c(TRUE, FALSE)) {
+        theCat <- paste("ecdf:", if (doEcdf) "T" else "F", ", s.A.:", if (sampleAll) "T" else "F", sep = "")
+        gridresults_r_bc[gridresults_r_bc$hyper.doEcdf == doEcdf & gridresults_r_bc$hyper.sampleFromAllBuckets == sampleAll, ]$Category <- theCat
+      }
+    }
+
+
+    tempDs_r <- rbind(
+      data.frame(
+        Rsq = gridresults_r_bc$Rsquared,
+        Val = gridresults_r_bc$hyper.shiftAmount + runif(nrow(gridresults_r_bc)) * 1e-10, # avoid 0
+        Var = rep("shiftAmount", nrow(gridresults_r_bc)),
+        Cat = gridresults_r_bc$Category,
+        Model = gridresults_r_bc$Model
+      ),
+      
+      data.frame(
+        Rsq = gridresults_r_bc$Rsquared,
+        Val = (gridresults_r_bc$hyper.retainMinValues / gridresults_r_bc$train.size) + 1e-10,
+        Var = rep("retainMinValues", nrow(gridresults_r_bc)),
+        Cat = gridresults_r_bc$Category,
+        Model = gridresults_r_bc$Model
+      ),
+      
+      data.frame(
+        Rsq = gridresults_r_bc$Rsquared,
+        Val = gridresults_r_bc$hyper.numBucketsN,
+        Var = rep("numBuckets", nrow(gridresults_r_bc)),
+        Cat = gridresults_r_bc$Category,
+        Model = gridresults_r_bc$Model
+      ),
+      
+      data.frame(
+        Rsq = gridresults_r_bc$Rsquared,
+        Val = ifelse(gridresults_r_bc$hyper.online == 0,
+                     gridresults_r_bc$Rsquared * max(sqrt(gridresults_r_bc$hyper.onlineN)),
+                     sqrt(gridresults_r_bc$hyper.onlineN) + 1e-10),
+        Var = rep("sqrt(online)", nrow(gridresults_r_bc)),
+        Cat = gridresults_r_bc$Category,
+        Model = gridresults_r_bc$Model
+      )
+    )
+
+    facettedDensityPlot(
+      ds = tempDs_r[tempDs_r$Model == "bc_s",],
+      metric = "Rsq",
+      metricName = "R^2 = cov^2",
+      form = Cat ~ Var,
+      subtitle ="Effect of Hyperparameters in simple Bayesian regression.",
+      grad_high = "#2C2749",
+      grad_low = "#BEBADA",
+      scale_y = scale_y_sqrt()
+    ) %>% saveAndPlotAsEPS("Bayes-hps-r-simple")
+
+![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-24-1.png)
+
+    facettedDensityPlot(
+      ds = tempDs_r[tempDs_r$Model == "bc_f",],
+      metric = "Rsq",
+      metricName = "R^2 = cov^2",
+      form = Cat ~ Var,
+      subtitle ="Effect of Hyperparameters in full Bayesian regression.",
+      grad_high = "#2C2749",
+      grad_low = "#BEBADA",
+      scale_y = scale_y_sqrt()
+    ) #%>% saveAndPlotAsEPS("Bayes-hps-r-full")
+
+![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-24-2.png)
+
+As can be seen in the above plot, we do not get great visual results for
+`shiftAmount` if `sampleFromAllBuckets=TRUE`, so let’s plot it again w/o
+this column:
+
+    facettedDensityPlot(
+      ds = tempDs_r[tempDs_r$Model == "bc_f" & tempDs_r$Var != "shiftAmount",],
+      metric = "Rsq",
+      metricName = "R^2 = cov^2",
+      form = Cat ~ Var,
+      subtitle ="Effect of Hyperparameters in full Bayesian regression.",
+      scale_y = scale_y_sqrt(),
+      grad_high = "#2C2749",
+      grad_low = "#BEBADA",
+      labeller = labeller(Cat = c(
+        "ecdf:F, s.A.:F" = "ecdf:F, sA:F",
+        "ecdf:F, s.A.:T" = "ecdf:F, sA:T",
+        "ecdf:T, s.A.:F" = "ecdf:T, sA:F",
+        "ecdf:T, s.A.:T" = "ecdf:T, sA:T"
+      ))
+    ) %>% saveAndPlotAsEPS("Bayes-hps-r-full", height = 4.6)
+
+![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-25-1.png)
