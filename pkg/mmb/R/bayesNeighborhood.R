@@ -19,7 +19,7 @@ utils::globalVariables("rn", package = c("mmb"))
 #' @return data.frame with rows that were selected as neighborhood. It is
 #' guaranteed that the rownames are maintained.
 #' @export
-neighborhood <- function(df, features, selectedFeatureNames = c()) {
+neighborhood <- function(df, features, selectedFeatureNames = c(), retainMinValues = 0) {
   if (length(selectedFeatureNames) == 0) {
     if (mmb::getWarnings()) warning("No explicit feature selection, using all.")
     selectedFeatureNames <- features$name
@@ -28,7 +28,7 @@ neighborhood <- function(df, features, selectedFeatureNames = c()) {
   return(mmb::conditionalDataMin(
     df = df, features = features,
     selectedFeatureNames = selectedFeatureNames,
-    retainMinValues = 0))
+    retainMinValues = retainMinValues))
 }
 
 
@@ -156,7 +156,8 @@ centralities <- function(
 vicinitiesForSample <- function(
   df, sampleFromDf,
   selectedFeatureNames = c(),
-  shiftAmount = 0.1, doEcdf = FALSE, ecdfMinusOne = FALSE
+  shiftAmount = 0.1, doEcdf = FALSE, ecdfMinusOne = FALSE,
+  retainMinValues = 0
 ) {
   if (!is.data.frame(df)) {
     stop("df is not a data.frame.")
@@ -174,7 +175,8 @@ vicinitiesForSample <- function(
     mmb::bayesConvertData(sampleFromDf), colnames(sampleFromDf)[1])
 
   dfNeighborhood <- mmb::neighborhood(
-    df, samp, selectedFeatureNames = selectedFeatureNames)
+    df, samp, selectedFeatureNames = selectedFeatureNames,
+    retainMinValues = retainMinValues)
   # Names of rows that are NOT in the neighborhood:
   rowsNotNeighborhood <- setdiff(rownames(df), rownames(dfNeighborhood))
 
@@ -228,7 +230,7 @@ vicinitiesForSample <- function(
 vicinities <- function(
   df, selectedFeatureNames = c(),
   shiftAmount = 0.1, doEcdf = FALSE, ecdfMinusOne = FALSE,
-  useParallel = NULL)
+  useParallel = NULL, retainMinVAlues = 0)
 {
   if (!is.data.frame(df) || nrow(df) == 0) {
     stop("df is not a data.frame or empty.")
@@ -256,7 +258,8 @@ vicinities <- function(
   ), {
     res <- mmb::vicinitiesForSample(
       df, df[rn, ], selectedFeatureNames = selectedFeatureNames,
-      shiftAmount = shiftAmount, doEcdf = doEcdf, ecdfMinusOne = ecdfMinusOne)
+      shiftAmount = shiftAmount, doEcdf = doEcdf, ecdfMinusOne = ecdfMinusOne,
+      retainMinVAlues = retainMinVAlues)
 
     res$vicinity
   })
