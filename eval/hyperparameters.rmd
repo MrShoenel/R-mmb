@@ -57,7 +57,7 @@ packages_required <- c(
   "gbm", "xgboost", "klaR", "randomForest", "import",
   "pls", "kohonen", "brnn", "RSNNS", "bartMachine", "arm",
   "rpart", "pamr", "gam", "dplyr", "ggridges", "caret", "ranger",
-  "mmb", "rJava", "naivebayes", "Cairo", "plotly")
+  "mmb", "rJava", "naivebayes", "Cairo", "Rtsne", "Metrics")
 
 for (pr in packages_required) {
   install.packages_cond(pr)
@@ -521,7 +521,7 @@ print(datasets_overview)
 
 
 
-# Evaluation
+# Comparison to other Models
 In this section, we will load the results and aggregate all data, so that we can then continue with visualizations and statistical analyses. We begin by first loading the results for all other models, before continuing with our Bayesian results.
 
 ```{r}
@@ -959,7 +959,9 @@ temp <- ggplot(tempDs2, aes(x=Dataset, y=Value)) +
 #saveAndPlotAsEPS(temp, "Bayes-all-datasets-all-metrics", width = 1570, height = 1570)
 ```
 
-The previous plot is not terribly useful, unfortunately. Let's show a facetted box-plot matrix per metric instead.
+### Plot RMSE and R^2, compared to other classifiers.
+
+The previous plot is not terribly useful, unfortunately. Let's show a facetted box-plot matrix per metric instead. Also it is noteworthy, that we trained the entire grid for our `mmb`-based models, whereas the other models use an optimized grid. Therefore, the results of other models are overall better, as they do not cover the entire spectrum.
 
 ```{r}
 facettedBoxplot(gridresults_r_all, "Rsquared", "R^2 (cov^2)") %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_RSQ", height = 3.2)
@@ -974,10 +976,10 @@ facettedBoxplot(gridresults_r_all, "RMSE", scales = "free_x", scale_y = scale_y_
 
 
 
-## Evaluation of the effects of Hyperparameters
+# The effects of Hyperparameters
 In this section, we will outline the effects of various hyperparameters in our Bayesian models. Since the type and amount of hyperparameters varies for classification and regression, we do them separately.
 
-### Classification
+## Classification
 In classification, we distinguish the three modes simple, full and naive. We have 4 hyperparameters (list below). For assessing the effect, we relate each hyperparameter's realization to *Accuracy*. Accuracy and Kappa have a correlation coefficient of `r round(cor(gridresults_c_bc$Accuracy, gridresults_c_bc$Kappa), 2)`.
 
 * `shiftAmount`: Either `0` or `0.1`, so we could treat it as if it were boolean,
@@ -1099,7 +1101,12 @@ facettedDensityPlot(
 ) %>% saveAndPlotAsEPS("Bayes-hps-c-full", height = 3.2)
 ```
 
-### Regression
+## Regression
+
+For regression, there are only simple and full Bayesian models. However, we have the following additional hyperparameters:
+
+* `numBuckets`: Used for discretization, the amount of ranges for discretization. The values in use are `r sort(unique(gridresults_r_bc$hyper.numBuckets))` and `R NA`. If `NA`, then the amount of buckets is calculated as `ceiling(log2(nrow(data)))`.
+* `sampleFromAllBuckets`: Boolean, whether to sample from all buckets. Otherwise, only takes the values from the most likely range/bucket.
 
 ```{r}
 trainCounts_r <- sapply(datasets_r, function(d) {
@@ -1216,6 +1223,142 @@ facettedDensityPlot(
   ))
 ) %>% saveAndPlotAsEPS("Bayes-hps-r-full", height = 4.6)
 ```
+
+
+## Neighborhood Search
+
+The evaluation for the Neighborhood Search is two-fold. The first part is an analytical approach, while in the second part, we do a visual evaluation, based on dimensionality reduction.
+
+### Analytical Evaluation
+
+In this section, we will focus on evaluating how the hyperparameters affect the vicinity of randomly chosen samples and their neighborhood. Assigning the vicinity to a dataset based on the attributes of a randomly chosen sample can be thought of selecting those samples, that are close to the random sample. All other samples should be classified as not relevant. We will therefore design an evaluation where the assigned vicinity is used as a binary classifier. We then measure which of the samples are classified to be in the neighborhood (here: same class) using accuracy, Kappa, F1, precision and recall.
+
+This will require us to do some grid-searching again. For that, we define the grid manually and then run it across the classification datasets.
+
+```{r}
+#get_other_models_results(modelsAndDatasets = df)
+get_vicinity_results <- function(hpsAndDatasets = data.frame()) {
+  if (DISABLE_COMPUTATIONS) {
+    return(0)
+  }
+  
+  dataName <- paste("results_n/vicinities.csv", sep = "")
+  if (file.exists(dataName)) {
+    return(read.csv(dataName))
+  }
+  
+  # shuffle deterministically
+  perms <- hpsAndDatasets[order(hpsAndDatasets$dataset), ]
+  set.seed(0xbeef42)
+  perms <- perms[sample(rownames(perms)), ]
+  
+  
+  numCores <- parallel::detectCores()
+  cl <- parallel::makeCluster(round(numCores * 1.25), outfile = "")
+  clusterExport(cl, as.list(names(.GlobalEnv)))
+  registerDoSNOW(cl)
+  pb <- txtProgressBar(min = 0, max = nrow(perms), style = 3)
+  
+  
+  allResults <- foreach(
+    permRowIdx = rownames(perms),
+    .combine = rbind,
+    .packages = packages_required,
+    .options.snow = list(
+      progress = function(n) {
+        writeLines(paste(n, Sys.time(), sep = "  --  "), con = "progress.txt")
+        setTxtProgressBar(pb, n)
+      }
+    )
+  ) %dopar% {
+    permRow <- perms[permRowIdx, ]
+    dsList <- get_dataset(permRow$dataset, seedMult = permRow$seedMult)
+    
+    # Let's choose a random sample from the dataset. All other samples
+    # carrying the same label will be marked as "1" (included), and all
+    # other samples will be marked "0". The vicinity should assign an
+    # "0" to all samples not having the same label, and that's what we measure.
+    
+    df <- dsList$ds[,]
+    # Pick the sample and then assign "1" and "0":
+    s <- df[sample(rownames(df), 1), ]
+    s$vicGroup <- 1
+    df$vicGroup <- 0
+    df[df[[dsList$label]] == s[[dsList$label]], ]$vicGroup <- 1
+    
+    selFeats <- colnames(s)[!(colnames(s) %in% c(dsList$label, "vicGroup"))]
+    
+    vic <- mmb::vicinitiesForSample(
+      df = df[, selFeats],
+      sampleFromDf = s[, selFeats, ],
+      selectedFeatureNames = selFeats,
+      shiftAmount = permRow$shiftAmount,
+      doEcdf = permRow$doEcdf,
+      ecdfMinusOne = permRow$ecdfMinusOne,
+      retainMinValues = permRow$retainMinValues
+    )
+    
+    # The ground-truth is now in df$vicGroup, and we assign the
+    # group again where vic > 0. Actually, for shiftAmount > 0,
+    # the condition is vic > shiftAmount^length(selFeats).
+    vicMin <- permRow$shiftAmount^length(selFeats)
+    gt <- df$vicGroup
+    pred <- sapply(vic$vicinity, function(v) {
+      if (v > vicMin) return(1)
+      return(0)
+    })
+    
+    permRow$precision <- Metrics::precision(gt, pred)
+    permRow$recall <- Metrics::recall(gt, pred)
+    permRow$F1 <- Metrics::f1(gt, pred)
+    permRow$Fbeta <- Metrics::fbeta_score(gt, pred)
+    permRow$accuracy <- Metrics::accuracy(gt, pred)
+    permRow$Kappa <- Metrics::ScoreQuadraticWeightedKappa(gt, pred)
+    permRow$auc <- Metrics::auc(gt, pred)
+    
+    return(permRow)
+  }
+  
+  stopCluster(cl)
+  registerDoSEQ()
+  
+  write.csv(allResults, dataName)
+  return(allResults)
+}
+```
+
+```{r}
+set.seed(42)
+hpsAndDatasets <- expand.grid(
+  dataset = datasets_c,
+  seedMult = sample.int(.Machine$integer.max, 10),
+  shiftAmount = c(0, 0.1),
+  doEcdf = c(TRUE, FALSE),
+  ecdfMinusOne = c(TRUE, FALSE),
+  retainMinValues = c(0, 1, 3, 5)
+)
+# Remove some cases that make no sense:
+hpsAndDatasets <- hpsAndDatasets[!(hpsAndDatasets$ecdfMinusOne & !hpsAndDatasets$doEcdf), ]
+
+#DISABLE_COMPUTATIONS <- FALSE
+#temp <- get_vicinity_results(hpsAndDatasets)
+```
+
+
+
+
+### Visual Evaluation using `t-SNE`
+
+In dimensionality reduction, a high-dimensional sample-space is reduced to fewer dimensions. Using `t-SNE`, the reduction is usually done towards 2 dimensions, so that they can be plotted. While the Cartesian coordinates do not have a meaning, we expect to see correct clustering. In other words, a good result is when samples that are close in high-dimensional space are still close in a lower dimensional space (here: 2).
+
+
+
+
+
+
+
+
+
 
 
 
