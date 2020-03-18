@@ -6,7 +6,8 @@
 the remaining samples in the neighborhood.}
 \usage{
 vicinitiesForSample(df, sampleFromDf, selectedFeatureNames = c(),
-  shiftAmount = 0.1, doEcdf = FALSE, ecdfMinusOne = FALSE)
+  shiftAmount = 0.1, doEcdf = FALSE, ecdfMinusOne = FALSE,
+  retainMinValues = 0)
 }
 \arguments{
 \item{df}{data.frame that holds the data (and also the sample to use to define

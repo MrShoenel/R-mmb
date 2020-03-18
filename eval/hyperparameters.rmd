@@ -1238,13 +1238,13 @@ This will require us to do some grid-searching again. For that, we define the gr
 ```{r}
 #get_other_models_results(modelsAndDatasets = df)
 get_vicinity_results <- function(hpsAndDatasets = data.frame()) {
-  if (DISABLE_COMPUTATIONS) {
-    return(0)
-  }
-  
   dataName <- paste("results_n/vicinities.csv", sep = "")
   if (file.exists(dataName)) {
     return(read.csv(dataName))
+  }
+  
+  if (DISABLE_COMPUTATIONS) {
+    return(0)
   }
   
   # shuffle deterministically
@@ -1308,13 +1308,13 @@ get_vicinity_results <- function(hpsAndDatasets = data.frame()) {
       return(0)
     })
     
-    permRow$precision <- Metrics::precision(gt, pred)
-    permRow$recall <- Metrics::recall(gt, pred)
+    permRow$Precision <- Metrics::precision(gt, pred)
+    permRow$Recall <- Metrics::recall(gt, pred)
     permRow$F1 <- Metrics::f1(gt, pred)
     permRow$Fbeta <- Metrics::fbeta_score(gt, pred)
-    permRow$accuracy <- Metrics::accuracy(gt, pred)
+    permRow$Accuracy <- Metrics::accuracy(gt, pred)
     permRow$Kappa <- Metrics::ScoreQuadraticWeightedKappa(gt, pred)
-    permRow$auc <- Metrics::auc(gt, pred)
+    permRow$AUC <- Metrics::auc(gt, pred)
     
     return(permRow)
   }
@@ -1327,21 +1327,104 @@ get_vicinity_results <- function(hpsAndDatasets = data.frame()) {
 }
 ```
 
+Do the computation for all sets of hyperparameters and datasets:
+
 ```{r}
 set.seed(42)
 hpsAndDatasets <- expand.grid(
-  dataset = datasets_c,
-  seedMult = sample.int(.Machine$integer.max, 10),
-  shiftAmount = c(0, 0.1),
-  doEcdf = c(TRUE, FALSE),
-  ecdfMinusOne = c(TRUE, FALSE),
-  retainMinValues = c(0, 1, 3, 5)
+  Dataset = datasets_c,
+  seedMult = sample.int(.Machine$integer.max, 25),
+  hyper.shiftAmount = c(0, 0.1, 1),
+  hyper.doEcdf = c(TRUE, FALSE),
+  hyper.ecdfMinusOne = c(TRUE, FALSE),
+  hyper.retainMinValues = c(0, 1, 3, 5, 10)
 )
 # Remove some cases that make no sense:
-hpsAndDatasets <- hpsAndDatasets[!(hpsAndDatasets$ecdfMinusOne & !hpsAndDatasets$doEcdf), ]
+hpsAndDatasets <- hpsAndDatasets[!(hpsAndDatasets$hyper.ecdfMinusOne & !hpsAndDatasets$hyper.doEcdf), ]
 
-#DISABLE_COMPUTATIONS <- FALSE
-#temp <- get_vicinity_results(hpsAndDatasets)
+gridresults_n <- get_vicinity_results(hpsAndDatasets)
+```
+
+Some evaluation:
+
+```{r}
+# Let's show some boxplots per dataset and metric!
+tempDs_n <- rbind(
+  data.frame(
+    Val = gridresults_n$Precision,
+    Metric = rep("Precision", nrow(gridresults_n)),
+    Dataset = gridresults_n$Dataset
+  ),
+  
+  data.frame(
+    Val = gridresults_n$Recall,
+    Metric = rep("Recall", nrow(gridresults_n)),
+    Dataset = gridresults_n$Dataset
+  ),
+  
+  data.frame(
+    Val = gridresults_n$F1,
+    Metric = rep("F1", nrow(gridresults_n)),
+    Dataset = gridresults_n$Dataset
+  ),
+  
+  data.frame(
+    Val = gridresults_n$Fbeta,
+    Metric = rep("Fbeta", nrow(gridresults_n)),
+    Dataset = gridresults_n$Dataset
+  ),
+  
+  data.frame(
+    Val = gridresults_n$Accuracy,
+    Metric = rep("Accuracy", nrow(gridresults_n)),
+    Dataset = gridresults_n$Dataset
+  ),
+  
+  data.frame(
+    Val = gridresults_n$Kappa,
+    Metric = rep("Kappa", nrow(gridresults_n)),
+    Dataset = gridresults_n$Dataset
+  ),
+  
+  data.frame(
+    Val = gridresults_n$AUC,
+    Metric = rep("AUC", nrow(gridresults_n)),
+    Dataset = gridresults_n$Dataset
+  )
+)
+
+# We should assign a good order to the metrics:
+tempDs_n$Metric <- factor(x = as.character(tempDs_n$Metric), levels = c("Accuracy", "Kappa", "Precision", "Recall", "F1", "Fbeta", "AUC"), ordered = TRUE)
+
+
+(ggplot(tempDs_n, aes(y = Val, x = Metric, fill = Metric)) +
+  labs(subtitle = paste("Comparison of various metrics using mmb::vicinity() as binary classifier.")) +
+  geom_boxplot(lwd = .2,
+               outlier.colour = "#666666",
+               outlier.size = 2,
+               outlier.shape = 16,
+               outlier.alpha = .75,
+               outlier.stroke = 0) +
+  facet_wrap(Dataset ~., nrow = 2, scales = "free_x") +
+  coord_flip() +
+  scale_color_brewer(palette = QPALETTE) +
+  scale_fill_brewer(palette = QPALETTE) +
+  labs(fill = "Metric") +
+  theme_light(base_size = 9) +
+  theme(plot.subtitle = element_text(size = 7, margin = margin(b=5)),
+        text = element_text(family="Consolas"),
+        axis.text.y = element_text(margin = margin(r=5)),
+        axis.title.y.left = element_blank(),
+        axis.text.x = element_text(
+          angle = 90, margin = margin(t=5), hjust = 1, vjust = .4),
+        axis.title.x = element_blank(),
+        legend.margin = margin(l=5),
+        legend.text = element_text(size = 7),
+        legend.key.height = unit(14, "pt"),
+        panel.spacing.y = unit(1, "lines"),
+        strip.background = element_rect(fill="#dfdfdf"),
+        strip.text = element_text(color="black", size = 8))
+) %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_vicinity", height = 3.2)
 ```
 
 

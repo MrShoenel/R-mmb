@@ -6,7 +6,8 @@
 samples in the neighborhood. Uses @seealso \code{vicinitiesForSample()}.}
 \usage{
 vicinities(df, selectedFeatureNames = c(), shiftAmount = 0.1,
-  doEcdf = FALSE, ecdfMinusOne = FALSE, useParallel = NULL)
+  doEcdf = FALSE, ecdfMinusOne = FALSE, useParallel = NULL,
+  retainMinVAlues = 0)
 }
 \arguments{
 \item{df}{data.frame to compute the matrix of vicinites for.}

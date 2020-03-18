@@ -1,0 +1,121 @@
+---
+title: "Cluster Analysis"
+author: "Sebastian Hönel"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cluster Analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+> In this vignette, we are evaluating neighborhood-search, network-centralities and vicinities using Bayesian estimators as implemented in *mmb*.
+
+
+# Dummy Example
+So we keep the code for the moment..:
+
+```{r}
+library(ggplot2)
+library(ggpubr)
+library(Rtsne)
+data("iris")
+
+set.seed(1)
+tsne <- Rtsne(iris[, 1:4], check_duplicates = FALSE)
+ggplot(data.frame(X=tsne$Y[,1], Y=tsne$Y[,2], L=iris$Species),
+       aes(x=X, y=Y, color=L)) + geom_point() + stat_ellipse()
+```
+
+
+# Dummy Vicinity Example
+Using some gradient-coloring:
+
+```{r}
+library(mmb)
+set.seed(1337 + 43)
+
+df <- iris[sample(rownames(iris)), ]
+tsne <- Rtsne(df[, 1:4], check_duplicates = FALSE)
+# Attach:
+df$X <- tsne$Y[, 1]
+df$Y <- tsne$Y[, 2]
+
+# Let's pick one sample to calculate the vicinity for:
+s <- df[5, 1:4]
+vics <- mmb::vicinitiesForSample(doEcdf = FALSE, shiftAmount = 0.1,
+  df = df[, 1:4], sampleFromDf = s, selectedFeatureNames = colnames(s),
+  retainMinValues = 1)
+
+# Attach to df:
+df$vics <- vics$vicinity
+# TEMP TEMP TEMP: Discretize vics
+mmbd <- mmb::discretizeVariableToRanges(df$vics, numRanges = length(levels(df$Species)))
+df$vicsD <- sapply(df$vics, function(v) {
+  for (i in 1:length(mmbd)) {
+    r <- mmbd[[i]]
+    if (v >= r[1] && v < r[2]) return(paste("R", i, sep = "_"))
+  }
+})
+
+# Also, create a binary classification:
+df$vicsB <- sapply(df$vics, function(v) {
+  return(if (v > 0.1) "P" else "N")
+})
+
+# Additionally, compute the Euler-distance:
+df$vicsE <- as.vector(philentropy::distance(df[, 1:4])[1,])
+
+
+g1 <- ggplot(df, aes(x=X, y=Y, color=Species)) +
+  geom_point() +
+  stat_ellipse()
+
+g2 <- ggplot(df, aes(x=X, y=Y)) +
+  geom_point(aes(color=vics)) +
+  #stat_ellipse() +
+  scale_color_gradient(low="blue", high="red")
+
+# TEMP TEMP TEMP
+g3 <- ggplot(df, aes(x=X, y=Y, color=vicsD)) +
+  geom_point() #+
+  #stat_ellipse()
+
+g4 <- ggplot(df, aes(x=X, y=Y, color=vicsB)) +
+  geom_point() +
+  stat_ellipse()
+
+g5 <- ggplot(df, aes(x=X, y=Y)) +
+  geom_point(aes(color=vicsE)) +
+  #stat_ellipse() +
+  scale_color_gradient(low="blue", high="red")
+
+ggarrange(g1, g2, g3, g4, g5)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

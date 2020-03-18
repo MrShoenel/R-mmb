@@ -5,7 +5,8 @@
 \title{Given Bayesian features, returns those samples from a dataset that
 exhibit a similarity (i.e., the neighborhood).}
 \usage{
-neighborhood(df, features, selectedFeatureNames = c())
+neighborhood(df, features, selectedFeatureNames = c(),
+  retainMinValues = 0)
 }
 \arguments{
 \item{df}{data.frame to select the neighborhood from}
