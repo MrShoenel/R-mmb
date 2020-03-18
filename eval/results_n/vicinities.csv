@@ -1,4 +1,4 @@
-"","Dataset","seedMult","hyper.shiftAmount","hyper.doEcdf","hyper.ecdfMinusOne","hyper.retainMinValues","Precision","Recall","F1","Fbeta","Accuracy","Kappa","AUC"
+"","dataset","seedMult","shiftAmount","doEcdf","ecdfMinusOne","retainMinValues","precision","recall","F1","Fbeta","accuracy","Kappa","auc"
 "7115","credit",1919735301,1,FALSE,FALSE,3,0.72972972972973,0.0385714285714286,1,0.073270013568521,0.317,0.00321074138937538,0.502619047619048
 "4326","sonar",1020514210,0,FALSE,FALSE,1,1,0.00900900900900901,1,0.0178571428571429,0.471153846153846,0.00840773164600861,0.504504504504504
 "1520","vehicle",1919735301,0.1,TRUE,FALSE,0,1,0.00471698113207547,1,0.00938967136150235,0.750591016548463,0.00705330025476425,0.502358490566038
