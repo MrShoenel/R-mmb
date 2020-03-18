@@ -16,6 +16,11 @@ utils::globalVariables("rn", package = c("mmb"))
 #' rows that should make up the neighborhood.
 #' @param selectedFeatureNames vector of names of features to use to demar-
 #' cate the neighborhood. If empty, uses all features' names.
+#' @param retainMinValues DEFAULT 0 the amount of samples to retain during
+#' segmentation. For separating a neighborhood, this value typically should
+#' be 0, so that no samples are included that are not within it. However,
+#' for very sparse data or a great amount of variables, it might still make
+#' sense to retain samples.
 #' @return data.frame with rows that were selected as neighborhood. It is
 #' guaranteed that the rownames are maintained.
 #' @export
@@ -150,6 +155,11 @@ centralities <- function(
 #' @param ecdfMinusOne boolean DEFAULT FALSE only has an effect if the ECDF is
 #' used. If true, uses 1 minus the ECDF to find the probability of a continuous
 #' value. Depending on the interpretation of what you try to do, this may be of use.
+#' @param retainMinValues DEFAULT 0 the amount of samples to retain during
+#' segmentation. For separating a neighborhood, this value typically should
+#' be 0, so that no samples are included that are not within it. However,
+#' for very sparse data or a great amount of variables, it might still make
+#' sense to retain samples.
 #' @return data.frame with a single column 'vicinity' and the same rownames as the
 #' given data.frame. Each row then holds the vicinity for the corresponding row.
 #' @export
@@ -218,6 +228,11 @@ vicinitiesForSample <- function(
 #' @param ecdfMinusOne boolean DEFAULT FALSE only has an effect if the ECDF is
 #' used. If true, uses 1 minus the ECDF to find the probability of a continuous
 #' value. Depending on the interpretation of what you try to do, this may be of use.
+#' @param retainMinValues DEFAULT 0 the amount of samples to retain during
+#' segmentation. For separating a neighborhood, this value typically should
+#' be 0, so that no samples are included that are not within it. However,
+#' for very sparse data or a great amount of variables, it might still make
+#' sense to retain samples.
 #' @param useParallel boolean DEFAULT NULL whether to use parallelism or not. Setting this to
 #' true requires also having previously registered a parallel backend. If parallel
 #' computing is enabled, then each neighborhood is computed separately.
@@ -230,7 +245,7 @@ vicinitiesForSample <- function(
 vicinities <- function(
   df, selectedFeatureNames = c(),
   shiftAmount = 0.1, doEcdf = FALSE, ecdfMinusOne = FALSE,
-  useParallel = NULL, retainMinVAlues = 0)
+  retainMinValues = 0, useParallel = NULL)
 {
   if (!is.data.frame(df) || nrow(df) == 0) {
     stop("df is not a data.frame or empty.")
@@ -259,7 +274,7 @@ vicinities <- function(
     res <- mmb::vicinitiesForSample(
       df, df[rn, ], selectedFeatureNames = selectedFeatureNames,
       shiftAmount = shiftAmount, doEcdf = doEcdf, ecdfMinusOne = ecdfMinusOne,
-      retainMinVAlues = retainMinVAlues)
+      retainMinValues = retainMinValues)
 
     res$vicinity
   })

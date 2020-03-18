@@ -5,8 +5,7 @@
 \title{Given Bayesian features, returns those samples from a dataset that
 exhibit a similarity (i.e., the neighborhood).}
 \usage{
-neighborhood(df, features, selectedFeatureNames = c(),
-  retainMinValues = 0)
+neighborhood(df, features, selectedFeatureNames = c(), retainMinValues = 0)
 }
 \arguments{
 \item{df}{data.frame to select the neighborhood from}
@@ -16,6 +15,12 @@ rows that should make up the neighborhood.}
 
 \item{selectedFeatureNames}{vector of names of features to use to demar-
 cate the neighborhood. If empty, uses all features' names.}
+
+\item{retainMinValues}{DEFAULT 0 the amount of samples to retain during
+segmentation. For separating a neighborhood, this value typically should
+be 0, so that no samples are included that are not within it. However,
+for very sparse data or a great amount of variables, it might still make
+sense to retain samples.}
 }
 \value{
 data.frame with rows that were selected as neighborhood. It is

@@ -7,8 +7,12 @@ Only rows satisfying all conditions are kept. Supports discrete and con-
 tinuous variables. Supports NA, NaN and NULL by using is.na, is.nan and
 is.null as comparator.}
 \usage{
-conditionalDataMin(df, features, selectedFeatureNames = c(),
-  retainMinValues = 1)
+conditionalDataMin(
+  df,
+  features,
+  selectedFeatureNames = c(),
+  retainMinValues = 1
+)
 }
 \arguments{
 \item{df}{data.frame with data to segment. If it contains less than or

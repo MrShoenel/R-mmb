@@ -5,8 +5,13 @@
 \title{Given a neighborhood of data, computes the similarity of each sample
 in the neighborhood to the neighborhood.}
 \usage{
-centralities(dfNeighborhood, selectedFeatureNames = c(),
-  shiftAmount = 0.1, doEcdf = FALSE, ecdfMinusOne = FALSE)
+centralities(
+  dfNeighborhood,
+  selectedFeatureNames = c(),
+  shiftAmount = 0.1,
+  doEcdf = FALSE,
+  ecdfMinusOne = FALSE
+)
 }
 \arguments{
 \item{dfNeighborhood}{data.frame that holds all rows that make up the neighborhood.}

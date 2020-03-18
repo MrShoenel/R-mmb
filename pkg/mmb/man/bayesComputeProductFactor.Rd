@@ -9,8 +9,14 @@ equation (two in the numerator and one in the denominator). This function
 calculates exactly one factor and expects all features to be given in the
 right order. If computing the denominator, no target-feature is required.}
 \usage{
-bayesComputeProductFactor(df, conditionalFeatures, targetFeature,
-  computeNumerator, retainMinValues = 1, doEcdf = FALSE)
+bayesComputeProductFactor(
+  df,
+  conditionalFeatures,
+  targetFeature,
+  computeNumerator,
+  retainMinValues = 1,
+  doEcdf = FALSE
+)
 }
 \arguments{
 \item{df}{data.frame with data that is used to segment}

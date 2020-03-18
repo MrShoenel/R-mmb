@@ -4,10 +4,20 @@
 \alias{bayesProbabilityAssign}
 \title{Assign probabilities to one or more samples, given some training data.}
 \usage{
-bayesProbabilityAssign(dfTrain, dfValid, targetCol,
-  selectedFeatureNames = c(), shiftAmount = 0.1, retainMinValues = 1,
-  doEcdf = FALSE, online = 0, simple = FALSE, naive = FALSE,
-  useParallel = NULL, returnProbabilityTable = FALSE)
+bayesProbabilityAssign(
+  dfTrain,
+  dfValid,
+  targetCol,
+  selectedFeatureNames = c(),
+  shiftAmount = 0.1,
+  retainMinValues = 1,
+  doEcdf = FALSE,
+  online = 0,
+  simple = FALSE,
+  naive = FALSE,
+  useParallel = NULL,
+  returnProbabilityTable = FALSE
+)
 }
 \arguments{
 \item{dfTrain}{data.frame that holds the training data.}

@@ -5,9 +5,15 @@
 \title{Segment a dataset by a single sample and compute vicinities for it and
 the remaining samples in the neighborhood.}
 \usage{
-vicinitiesForSample(df, sampleFromDf, selectedFeatureNames = c(),
-  shiftAmount = 0.1, doEcdf = FALSE, ecdfMinusOne = FALSE,
-  retainMinValues = 0)
+vicinitiesForSample(
+  df,
+  sampleFromDf,
+  selectedFeatureNames = c(),
+  shiftAmount = 0.1,
+  doEcdf = FALSE,
+  ecdfMinusOne = FALSE,
+  retainMinValues = 0
+)
 }
 \arguments{
 \item{df}{data.frame that holds the data (and also the sample to use to define
@@ -30,6 +36,12 @@ to find the likelihood of continuous values.}
 \item{ecdfMinusOne}{boolean DEFAULT FALSE only has an effect if the ECDF is
 used. If true, uses 1 minus the ECDF to find the probability of a continuous
 value. Depending on the interpretation of what you try to do, this may be of use.}
+
+\item{retainMinValues}{DEFAULT 0 the amount of samples to retain during
+segmentation. For separating a neighborhood, this value typically should
+be 0, so that no samples are included that are not within it. However,
+for very sparse data or a great amount of variables, it might still make
+sense to retain samples.}
 }
 \value{
 data.frame with a single column 'vicinity' and the same rownames as the
