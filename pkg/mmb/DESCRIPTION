@@ -2,7 +2,7 @@ Package: mmb
 Type: Package
 Title: Arbitrary Dependency Mixed Multivariate Bayesian Models for Inferencing, Regression,
     and Neighborhood Search using Joint Probabilities and Kernel Density Estimation
-Version: 0.12.0
+Version: 0.13.0
 Author: Sebastian Hönel
 Maintainer: Sebastian Hönel <sebastian.honel@lnu.se>
 Description: This package supports Bayesian models with full and partial (hence arbitrary)
@@ -23,7 +23,12 @@ Suggests:
     e1071,
     caret,
     knitr,
-    rmarkdown
+    rmarkdown,
+    ggplot2,
+    ggpubr,
+    cowplot,
+    philentropy,
+    Rtsne
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.0
 Imports: 

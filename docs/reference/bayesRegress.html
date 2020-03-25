@@ -73,7 +73,7 @@ according to their likelihood." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.11.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.13.0</span>
       </span>
     </div>
 
@@ -95,6 +95,9 @@ according to their likelihood." />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/Cluster-Analysis.html">Cluster Analysis</a>
+    </li>
     <li>
       <a href="../articles/Hyperparameter-Evaluation.html">Hyperparameter Evaluation</a>
     </li>
@@ -129,10 +132,19 @@ the values in the most likely range or sample from all ranges,
 according to their likelihood.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>bayesRegress</span>(<span class='no'>df</span>, <span class='no'>features</span>, <span class='no'>targetCol</span>, <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>shiftAmount</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useParallel</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>numBuckets</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log2</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>df</span>))),
-  <span class='kw'>sampleFromAllBuckets</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>regressor</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>bayesRegress</span>(
+  <span class='no'>df</span>,
+  <span class='no'>features</span>,
+  <span class='no'>targetCol</span>,
+  <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>shiftAmount</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
+  <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>2</span>,
+  <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useParallel</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>numBuckets</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log2</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>df</span>))),
+  <span class='kw'>sampleFromAllBuckets</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>regressor</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

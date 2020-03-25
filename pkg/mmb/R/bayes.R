@@ -242,7 +242,7 @@ bayesProbability <- function(
     .packages = c("mmb", "utils"),
     .combine = c
   ), {
-    return(computeFac(T, featIdx, rowOfLabelFeature))
+    return(computeFac(TRUE, featIdx, rowOfLabelFeature))
   })
 
   # Add the marginal:
@@ -266,7 +266,7 @@ bayesProbability <- function(
   ), {
     # Here, we do almost the same, except for that we
     # do not require the target feature.
-    return(computeFac(F, featIdx))
+    return(computeFac(FALSE, featIdx))
   })
 
 

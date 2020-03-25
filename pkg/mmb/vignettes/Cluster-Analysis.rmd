@@ -19,40 +19,30 @@ knitr::opts_chunk$set(
 > In this vignette, we are evaluating neighborhood-search, network-centralities and vicinities using Bayesian estimators as implemented in *mmb*.
 
 
-# Dummy Example
-So we keep the code for the moment..:
-
-```{r}
-library(ggplot2)
-library(ggpubr)
-library(Rtsne)
-data("iris")
-
-set.seed(1)
-tsne <- Rtsne(iris[, 1:4], check_duplicates = FALSE)
-ggplot(data.frame(X=tsne$Y[,1], Y=tsne$Y[,2], L=iris$Species),
-       aes(x=X, y=Y, color=L)) + geom_point() + stat_ellipse()
-```
-
-
-# Dummy Vicinity Example
+# Vicinity Example
 Using some gradient-coloring:
 
 ```{r}
 library(mmb)
-set.seed(1337 + 43)
+library(Rtsne)
+library(ggplot2)
+library(ggpubr)
+
+set.seed(1)
+chooseSample <- 1
 
 df <- iris[sample(rownames(iris)), ]
-tsne <- Rtsne(df[, 1:4], check_duplicates = FALSE)
+#df <- iris[,]
+tsne <- Rtsne::Rtsne(df[, 1:4], check_duplicates = FALSE)
 # Attach:
 df$X <- tsne$Y[, 1]
 df$Y <- tsne$Y[, 2]
 
 # Let's pick one sample to calculate the vicinity for:
-s <- df[5, 1:4]
-vics <- mmb::vicinitiesForSample(doEcdf = FALSE, shiftAmount = 0.1,
+s <- df[chooseSample, 1:4]
+vics <- mmb::vicinitiesForSample(doEcdf = FALSE, shiftAmount = 1,
   df = df[, 1:4], sampleFromDf = s, selectedFeatureNames = colnames(s),
-  retainMinValues = 1)
+  retainMinValues = 5)
 
 # Attach to df:
 df$vics <- vics$vicinity
@@ -70,12 +60,16 @@ df$vicsB <- sapply(df$vics, function(v) {
   return(if (v > 0.1) "P" else "N")
 })
 
-# Additionally, compute the Euler-distance:
+# Additionally, compute the Euclidean-distance:
 df$vicsE <- as.vector(philentropy::distance(df[, 1:4])[1,])
+df$vicsE <- max(df$vicsE) - df$vicsE
+
+pointCommon <- geom_point(shape=1, size=3, color="#000000", data=df[chooseSample,], mapping=aes(x=df[chooseSample,]$X, y=df[chooseSample,]$Y))
 
 
 g1 <- ggplot(df, aes(x=X, y=Y, color=Species)) +
   geom_point() +
+  pointCommon +
   stat_ellipse()
 
 g2 <- ggplot(df, aes(x=X, y=Y)) +

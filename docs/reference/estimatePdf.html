@@ -72,7 +72,7 @@ approximation of the PDF as a function." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.11.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.13.0</span>
       </span>
     </div>
 
@@ -94,6 +94,9 @@ approximation of the PDF as a function." />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/Cluster-Analysis.html">Cluster Analysis</a>
+    </li>
     <li>
       <a href="../articles/Hyperparameter-Evaluation.html">Hyperparameter Evaluation</a>
     </li>
@@ -126,8 +129,10 @@ approximation of the PDF as a function.</h1>
 approximation of the PDF as a function.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>estimatePdf</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(), <span class='kw'>densFun</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>vec</span>) {
-  <span class='kw pkg'>stats</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/density.html'>density</a></span>(<span class='no'>vec</span>, <span class='kw'>bw</span> <span class='kw'>=</span> <span class='st'>"SJ"</span>) })</pre>
+    <pre class="usage"><span class='fu'>estimatePdf</span>(
+  <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>densFun</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>vec</span>) {     <span class='kw pkg'>stats</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/density.html'>density</a></span>(<span class='no'>vec</span>, <span class='kw'>bw</span> <span class='kw'>=</span> <span class='st'>"SJ"</span>) }
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

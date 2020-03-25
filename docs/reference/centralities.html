@@ -75,7 +75,7 @@ vicinity (or similarity) of the sample to the given neighborhood." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.11.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.13.0</span>
       </span>
     </div>
 
@@ -97,6 +97,9 @@ vicinity (or similarity) of the sample to the given neighborhood." />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/Cluster-Analysis.html">Cluster Analysis</a>
+    </li>
     <li>
       <a href="../articles/Hyperparameter-Evaluation.html">Hyperparameter Evaluation</a>
     </li>
@@ -132,8 +135,13 @@ sample. That probability (or relative likelihood) then represents the
 vicinity (or similarity) of the sample to the given neighborhood.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>centralities</span>(<span class='no'>dfNeighborhood</span>, <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>shiftAmount</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ecdfMinusOne</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>centralities</span>(
+  <span class='no'>dfNeighborhood</span>,
+  <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>shiftAmount</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
+  <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>ecdfMinusOne</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

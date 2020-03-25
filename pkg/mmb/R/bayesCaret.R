@@ -93,18 +93,19 @@ bayesCaret$grid <- function(x = NULL, y = NULL, len = NULL, search = "grid") {
 
   # Some parameters that depend on whether we do classification or regression:
   rmv <- NULL
+  rmvMin <- if (isClassification) 1 else 2
   if (!is.null(numTrain)) {
-    rmv <- c(ceiling(numTrain * 0.01), ceiling(numTrain * 0.05))
+    rmv <- c(max(rmvMin, ceiling(numTrain * 0.01)), max(rmvMin, ceiling(numTrain * 0.05)))
   }
 
   if (isClassification) {
-    rmv <- sort(c(rmv, 0, 1, 2, 11))
+    rmv <- c(rmv, 0, 1, 2, 11)
     # no meaning for cls.:
     gridList[["numBuckets"]] <- NA
     gridList[["sampleFromAllBuckets"]] <- FALSE
   } else {
     # note that values < 2 are not allowed for regression
-    rmv <- sort(c(rmv, 2, 11))
+    rmv <- c(rmv, 2, 11)
     # not required for classification; NA leads to always calculating it
     gridList[["numBuckets"]] <- c(5, 10, NA)
     gridList[["sampleFromAllBuckets"]] <- c(TRUE, FALSE)
