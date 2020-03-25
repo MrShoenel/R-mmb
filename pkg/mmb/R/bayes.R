@@ -2,12 +2,14 @@
 utils::globalVariables("featIdx", package = c("mmb"))
 
 
-#' Computes one single factor that is needed for full Bayesian inferencing.
-#' In an equation such as P(A|B) = P(B|A) * P(A) / P(B), the target-feature
-#' is A, while the conditional feature is B. There are three factors in that
+#' @title Computes one single factor that is needed for full Bayesian inferencing.
+#'
+#' @description In an equation such as P(A|B) = P(B|A) * P(A) / P(B), the target-
+#' feature is A, while the conditional feature is B. There are three factors in that
 #' equation (two in the numerator and one in the denominator). This function
 #' calculates exactly one factor and expects all features to be given in the
 #' right order. If computing the denominator, no target-feature is required.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param df data.frame with data that is used to segment
 #' @param conditionalFeatures data.frame with Bayesian features, as produced
@@ -88,8 +90,11 @@ bayesComputeProductFactor <- function(
 }
 
 
-#' Computes the probability (discrete feature) or relative likelihood
+#' @title Compute a marginal factor (continuous or discrete random variable).
+#'
+#' @description Computes the probability (discrete feature) or relative likelihood
 #' (continuous feature) of one given feature and a concrete value for it.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param df data.frame that contains all the feature's data
 #' @param feature data.frame containing the designated feature as created
@@ -147,6 +152,7 @@ bayesComputeMarginalFactor <- function(df, feature, doEcdf = FALSE) {
 #' function is a relative likelihood of the target feature's value. If
 #' all of the features are discrete or the empirical CDF is used instead
 #' of the PDF, the result of this function is a probability.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param df data.frame that contains all the feature's data
 #' @param features data.frame with bayes-features. One of the features needs

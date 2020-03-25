@@ -18,8 +18,11 @@ bayesSimpleCheckData <- function(df, features, labelCol) {
 }
 
 
-#' Converts all columns in a data.frame that are factors to character,
-#' except for the target column.
+#' @title Convert data for usage within Bayesian models.
+#'
+#' @description Converts all columns in a data.frame that are factors to
+#' character, except for the target column.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param df data.frame to be used for bayesian inferencing.
 #' @return the same data.frame with all factors converted to character.
@@ -42,7 +45,9 @@ bayesConvertData <- function(df) {
 }
 
 
-#' Uses simple Bayesian inference to determine the probability or relative
+#' @title Perform simple (network) Bayesian inferencing and regression.
+#'
+#' @description Uses simple Bayesian inference to determine the probability or relative
 #' likelihood of a given value. This function can also regress to the most
 #' likely value instead. Simple means that segmented data is used in a way
 #' that is equal to how a Bayesian network works. For a finite set of labels,
@@ -55,6 +60,7 @@ bayesConvertData <- function(df) {
 #' tive likelihood is returned.
 #' regression, set \code{doRegress = T} to obtain the most likely value of
 #' the target feature, instead of obtaining its relative likelihood.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param df data.frame
 #' @param features data.frame with bayes-features. One of the features needs
@@ -178,8 +184,11 @@ bayesInferSimple <- function(
 
 
 
-#' Uses simple Bayesian inference to return the probability or relative likeli-
-#' hood or a discrete labe or continuous value.
+#' @title Assign a probability using a simple (network) Bayesian classifier.
+#'
+#' @description Uses simple Bayesian inference to return the probability or
+#' relative likelihood or a discrete label or continuous value.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @seealso \code{mmb::bayesInferSimple()}
 #' @param df data.frame
@@ -210,10 +219,13 @@ bayesProbabilitySimple <- function(
 }
 
 
-#' Uses simple Bayesian inferencing to segment the data given the conditional
-#' features. Then estimates a density over the remaining values of the target
-#' feature and returns the most likely value using a maximum a posteriori
+#' @title Perform simple (network) Bayesian regression.
+#'
+#' @description Uses simple Bayesian inferencing to segment the data given the
+#' conditional features. Then estimates a density over the remaining values of
+#' the target feature and returns the most likely value using a maximum a posteriori
 #' estimate of the kernel (returning its mode).
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @seealso \code{mmb::bayesInferSimple()}
 #' @param df data.frame
@@ -249,5 +261,4 @@ bayesRegressSimple <- function(
     retainMinValues = retainMinValues,
     doRegress = TRUE, doEcdf = FALSE, regressor = regressor))
 }
-
 

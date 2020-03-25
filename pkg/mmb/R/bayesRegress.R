@@ -2,6 +2,7 @@ varDefaultRegressor <- make.varClosure(function(data) mmb::estimatePdf(data)$arg
 
 
 #' @title Set a system-wide default regressor.
+#'
 #' @description Getting and setting the default regressor affects all functions
 #' that have an overridable regressor. If this is not given, the default has
 #' defined here will be obtained.
@@ -17,9 +18,12 @@ setDefaultRegressor <- function(func) {
 
 
 #' @title Get the system-wide default regressor.
+#'
 #' @description Getting and setting the default regressor affects all functions
 #' that have an overridable regressor. If this is not given, the default has
 #' defined here will be obtained.
+#'
+#' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @return Function the function used as the regressor. Defaults to
 #' \code{function(data) mmb::estimatePdf(data)$argmax}.
 #' @export
@@ -34,6 +38,7 @@ getDefaultRegressor <- function() varDefaultRegressor$get()
 #' then finding the most probable ranges. It can either regress on
 #' the values in the most likely range or sample from all ranges,
 #' according to their likelihood.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param df data.frame that contains all the feature's data
 #' @param features data.frame with bayes-features. One of the features needs
@@ -342,5 +347,4 @@ bayesRegressAssign <- function(
 
   return(predicted)
 }
-
 

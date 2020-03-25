@@ -2,7 +2,7 @@
 % Please edit documentation in R/warnings.R
 \name{setWarnings}
 \alias{setWarnings}
-\title{Setter for enabling or disabling warnings. Warnings are enabled by default.}
+\title{Enable or disable warnings system-wide.}
 \usage{
 setWarnings(enable = TRUE)
 }
@@ -13,7 +13,8 @@ setWarnings(enable = TRUE)
 Boolean the state of enabled
 }
 \description{
-Setter for enabling or disabling warnings. Warnings are enabled by default.
+Setter for enabling or disabling warnings. Warnings are
+enabled by default.
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}

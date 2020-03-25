@@ -2,8 +2,7 @@
 % Please edit documentation in R/pdfAndProb.R
 \name{getProbForDiscrete}
 \alias{getProbForDiscrete}
-\title{Similar to @seealso \code{estimatePdf}, this function returns the probability
-for a discrete value, given some observations.}
+\title{Get a probability of a discrete value.}
 \usage{
 getProbForDiscrete(data, value)
 }
@@ -16,8 +15,8 @@ getProbForDiscrete(data, value)
 the probability of value given data.
 }
 \description{
-Similar to @seealso \code{estimatePdf}, this function returns the probability
-for a discrete value, given some observations.
+Similar to @seealso \code{estimatePdf}, this function returns
+the probability for a discrete value, given some observations.
 }
 \note{
 If no observations are given, then this function will warn and return

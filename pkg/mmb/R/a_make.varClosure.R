@@ -1,4 +1,4 @@
-#' Creates a closure over a variable and returns its getter and setter.
+#' @title Creates a closure over a variable and returns its getter and setter.
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param initVarVal the initial value of the closed variable.
 #' @keywords internal

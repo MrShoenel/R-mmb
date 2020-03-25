@@ -2,8 +2,7 @@
 % Please edit documentation in R/bayesFeature.R
 \name{checkBayesFeature}
 \alias{checkBayesFeature}
-\title{Internal function to check common arguments for function that
-use samples transformed to bayes-features.}
+\title{Validate a Bayesian feature using some sanity checks.}
 \usage{
 checkBayesFeature(dfFeature, featName)
 }
@@ -18,8 +17,8 @@ obtain the value.}
 data.frame the row corresponding to the given feature name
 }
 \description{
-Internal function to check common arguments for function that
-use samples transformed to bayes-features.
+Internal function to check common arguments for function
+that use samples transformed to bayes-features.
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}

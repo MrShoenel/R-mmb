@@ -2,8 +2,7 @@
 % Please edit documentation in R/bayesFeature.R
 \name{bayesFeaturesToSample}
 \alias{bayesFeaturesToSample}
-\title{Counter operation to @seealso \code{mmb::sampleToBayesFeatures()}.
-Takes a Bayes-feature data.frame and transforms it back to a row.}
+\title{Transform a collection of Bayesian features back to a sample.}
 \usage{
 bayesFeaturesToSample(dfOrg, features)
 }

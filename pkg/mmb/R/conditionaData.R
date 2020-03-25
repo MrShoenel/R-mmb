@@ -1,7 +1,10 @@
-#' Takes a data.frame and segments it, according to the selected variables.
-#' Only rows satisfying all conditions are kept. Supports discrete and con-
-#' tinuous variables. Supports NA, NaN and NULL by using is.na, is.nan and
-#' is.null as comparator.
+#' @title Segment data according to one or more random variables.
+#'
+#' @description Takes a data.frame and segments it, according to the selected
+#' variables. Only rows satisfying all conditions are kept. Supports discrete
+#' and continuous variables. Supports NA, NaN and NULL by using is.na, is.nan
+#' and is.null as comparator.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @seealso \code{getValueKeyOfBayesFeatures()}
 #' @param df data.frame with data to segment. If it contains less than or

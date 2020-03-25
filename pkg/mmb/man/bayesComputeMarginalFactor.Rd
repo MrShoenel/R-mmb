@@ -2,8 +2,7 @@
 % Please edit documentation in R/bayes.R
 \name{bayesComputeMarginalFactor}
 \alias{bayesComputeMarginalFactor}
-\title{Computes the probability (discrete feature) or relative likelihood
-(continuous feature) of one given feature and a concrete value for it.}
+\title{Compute a marginal factor (continuous or discrete random variable).}
 \usage{
 bayesComputeMarginalFactor(df, feature, doEcdf = FALSE)
 }

@@ -2,10 +2,7 @@
 % Please edit documentation in R/conditionaData.R
 \name{conditionalDataMin}
 \alias{conditionalDataMin}
-\title{Takes a data.frame and segments it, according to the selected variables.
-Only rows satisfying all conditions are kept. Supports discrete and con-
-tinuous variables. Supports NA, NaN and NULL by using is.na, is.nan and
-is.null as comparator.}
+\title{Segment data according to one or more random variables.}
 \usage{
 conditionalDataMin(
   df,
@@ -41,10 +38,10 @@ data.frame that is segmented according to the selected variables
 and the minimum amount of rows to retain.
 }
 \description{
-Takes a data.frame and segments it, according to the selected variables.
-Only rows satisfying all conditions are kept. Supports discrete and con-
-tinuous variables. Supports NA, NaN and NULL by using is.na, is.nan and
-is.null as comparator.
+Takes a data.frame and segments it, according to the selected
+variables. Only rows satisfying all conditions are kept. Supports discrete
+and continuous variables. Supports NA, NaN and NULL by using is.na, is.nan
+and is.null as comparator.
 }
 \seealso{
 \code{getValueKeyOfBayesFeatures()}

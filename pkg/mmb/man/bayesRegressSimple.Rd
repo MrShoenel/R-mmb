@@ -2,10 +2,7 @@
 % Please edit documentation in R/bayesSimple.R
 \name{bayesRegressSimple}
 \alias{bayesRegressSimple}
-\title{Uses simple Bayesian inferencing to segment the data given the conditional
-features. Then estimates a density over the remaining values of the target
-feature and returns the most likely value using a maximum a posteriori
-estimate of the kernel (returning its mode).}
+\title{Perform simple (network) Bayesian regression.}
 \usage{
 bayesRegressSimple(
   df,
@@ -41,9 +38,9 @@ average etc. You may also use this function to obtain the raw values
 for further processing.}
 }
 \description{
-Uses simple Bayesian inferencing to segment the data given the conditional
-features. Then estimates a density over the remaining values of the target
-feature and returns the most likely value using a maximum a posteriori
+Uses simple Bayesian inferencing to segment the data given the
+conditional features. Then estimates a density over the remaining values of
+the target feature and returns the most likely value using a maximum a posteriori
 estimate of the kernel (returning its mode).
 }
 \seealso{

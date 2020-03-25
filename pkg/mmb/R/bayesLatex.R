@@ -1,6 +1,10 @@
-#' Creates a string that can be used in Latex in an e.g. equation-environment.
-#' @note Use \code{cat()} to print a string that can be copy-pasted.
+#' @title Create a string that can be used in Latex in an e.g. equation-environment.
+#'
+#' @description This function can be used to generate Latex-markup that models the
+#' full dependency between covariates and a target variable.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @note Use \code{cat()} to print a string that can be copy-pasted.
 #' @param conditionalFeatures data.frame of Bayesian features, the target-
 #' feature depends on.
 #' @param targetFeature data.frame that holds exactly one Bayesian feature,

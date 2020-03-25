@@ -2,7 +2,7 @@
 % Please edit documentation in R/bayesLatex.R
 \name{bayesToLatex}
 \alias{bayesToLatex}
-\title{Creates a string that can be used in Latex in an e.g. equation-environment.}
+\title{Create a string that can be used in Latex in an e.g. equation-environment.}
 \usage{
 bayesToLatex(conditionalFeatures, targetFeature, includeValues = FALSE)
 }
@@ -20,7 +20,8 @@ the features' values or not, i.e. "A" vs. "A = setosa".}
 a string that can be used in Latex documents.
 }
 \description{
-Creates a string that can be used in Latex in an e.g. equation-environment.
+This function can be used to generate Latex-markup that models the
+full dependency between covariates and a target variable.
 }
 \note{
 Use \code{cat()} to print a string that can be copy-pasted.

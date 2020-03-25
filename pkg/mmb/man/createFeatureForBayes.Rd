@@ -2,10 +2,7 @@
 % Please edit documentation in R/bayesFeature.R
 \name{createFeatureForBayes}
 \alias{createFeatureForBayes}
-\title{Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, character
-and boolean values. Note that factor is internally converted to
-character.}
+\title{Create a Bayesian feature by name and value.}
 \usage{
 createFeatureForBayes(name, value, isLabel = FALSE, isDiscrete = FALSE)
 }

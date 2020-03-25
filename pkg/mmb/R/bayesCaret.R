@@ -1,5 +1,6 @@
 #' @title Provides a caret-compatible wrapper around functionality for classification
 #' and regression, as implemented by mmb.
+#'
 #' @description A wrapper to be used with the package/function \code{caret::train()}.
 #' Supports regression and classification and an extensive default grid.
 #'

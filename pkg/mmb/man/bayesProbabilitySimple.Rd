@@ -2,8 +2,7 @@
 % Please edit documentation in R/bayesSimple.R
 \name{bayesProbabilitySimple}
 \alias{bayesProbabilitySimple}
-\title{Uses simple Bayesian inference to return the probability or relative likeli-
-hood or a discrete labe or continuous value.}
+\title{Assign a probability using a simple (network) Bayesian classifier.}
 \usage{
 bayesProbabilitySimple(
   df,
@@ -39,8 +38,8 @@ double the probability of the target-label, using the maximum a
 posteriori estimate.
 }
 \description{
-Uses simple Bayesian inference to return the probability or relative likeli-
-hood or a discrete labe or continuous value.
+Uses simple Bayesian inference to return the probability or
+relative likelihood or a discrete label or continuous value.
 }
 \seealso{
 \code{mmb::bayesInferSimple()}

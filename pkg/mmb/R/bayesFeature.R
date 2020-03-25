@@ -1,7 +1,10 @@
-#' Transforms a sample's feature's value into a dataframe, that holds
+#' @title Create a Bayesian feature by name and value.
+#'
+#' @description Transforms a sample's feature's value into a dataframe, that holds
 #' its name, type and value. Currently supports numeric, factor, character
 #' and boolean values. Note that factor is internally converted to
 #' character.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @seealso \code{sampleToBayesFeatures} that uses this function
 #' @param name the name of the feature or variable.
@@ -35,8 +38,11 @@ createFeatureForBayes <- function(name, value, isLabel = FALSE, isDiscrete = FAL
 }
 
 
-#' Internal function to check common arguments for function that
-#' use samples transformed to bayes-features.
+#' @title Validate a Bayesian feature using some sanity checks.
+#'
+#' @description Internal function to check common arguments for function
+#' that use samples transformed to bayes-features.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param dfFeature a data.frame for a single feature or variable
 #' as constructed by @seealso \code{createFeatureForBayes}.
@@ -61,9 +67,12 @@ checkBayesFeature <- function(dfFeature, featName) {
 }
 
 
-#' Given a data.frame with one or multiple features as constructed by
-#' @seealso \code{createFeatureForBayes} and a name, extracts the
-#' value of the feature specified by name.
+#' @title Obtain the value of a Bayesian feature.
+#'
+#' @description Given a data.frame with one or multiple features as
+#' constructed by @seealso \code{createFeatureForBayes} and a name,
+#' extracts the value of the feature specified by name.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param dfFeature a data.frame for a single feature or variable
 #' as constructed by @seealso \code{createFeatureForBayes}.
@@ -82,10 +91,13 @@ getValueOfBayesFeatures <- function(dfFeature, featName) {
 }
 
 
-#' Given a data.frame with one or multiple features as constructed by
-#' @seealso \code{createFeatureForBayes} and a name, extracts the
-#' type of the feature specified by name. Note that this is only
-#' used internally.
+#' @title Obtain the type of the value of a Bayesian feature.
+#'
+#' @description Given a data.frame with one or multiple features as
+#' constructed by @seealso \code{createFeatureForBayes} and a name,
+#' extracts the type of the feature specified by name. Note that this
+#' is only used internally.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param dfFeature a data.frame for a single feature or variable
 #' as constructed by @seealso \code{createFeatureForBayes}.
@@ -104,11 +116,14 @@ getValueKeyOfBayesFeatures <- function(dfFeature, featName) {
 }
 
 
-#' Helper function that takes one sample (e.g., a row of a dataframe
+#' @title Transform an entire sample into a collection of Bayesian features.
+#'
+#' @description Helper function that takes one sample (e.g., a row of a dataframe
 #' with validation data) and transforms it into a data.frame where
 #' each row corresponds to one feature (and its value) of the sample.
 #' This is done using @seealso \code{createFeatureForBayes}. This
 #' operation can be thought of transposing a matrix.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param dfRow a row of a data.frame with a value for each feature.
 #' @param targetCol the name of the feature (column in the data.frame)
@@ -140,8 +155,11 @@ sampleToBayesFeatures <- function(dfRow, targetCol) {
 }
 
 
-#' Counter operation to @seealso \code{mmb::sampleToBayesFeatures()}.
+#' @title Transform a collection of Bayesian features back to a sample.
+#'
+#' @description Counter operation to @seealso \code{mmb::sampleToBayesFeatures()}.
 #' Takes a Bayes-feature data.frame and transforms it back to a row.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param dfOrg data.frame containing at least one row of the original
 #' format, so that we can rebuild the sample matching exactly the

@@ -2,19 +2,7 @@
 % Please edit documentation in R/bayesSimple.R
 \name{bayesInferSimple}
 \alias{bayesInferSimple}
-\title{Uses simple Bayesian inference to determine the probability or relative
-likelihood of a given value. This function can also regress to the most
-likely value instead. Simple means that segmented data is used in a way
-that is equal to how a Bayesian network works. For a finite set of labels,
-this function needs to be called for each, to obtain the probability of
-each label (or, for n-1 labels or until a label with >.5 probability is
-found). For obtaining the probability of a continuous value, this function
-is useful for deciding between picking among a finite set of values. The
-empirical CDF may be used to obtain an actual probability for a given
-continuous value, otherwise, the empirical PDF is estimated and a rela-
-tive likelihood is returned.
-regression, set \code{doRegress = T} to obtain the most likely value of
-the target feature, instead of obtaining its relative likelihood.}
+\title{Perform simple (network) Bayesian inferencing and regression.}
 \usage{
 bayesInferSimple(
   df,

@@ -2,11 +2,7 @@
 % Please edit documentation in R/bayesFeature.R
 \name{sampleToBayesFeatures}
 \alias{sampleToBayesFeatures}
-\title{Helper function that takes one sample (e.g., a row of a dataframe
-with validation data) and transforms it into a data.frame where
-each row corresponds to one feature (and its value) of the sample.
-This is done using @seealso \code{createFeatureForBayes}. This
-operation can be thought of transposing a matrix.}
+\title{Transform an entire sample into a collection of Bayesian features.}
 \usage{
 sampleToBayesFeatures(dfRow, targetCol)
 }

@@ -3,6 +3,7 @@ utils::globalVariables("rn", package = c("mmb"))
 
 #' @title Given Bayesian features, returns those samples from a dataset that
 #' exhibit a similarity (i.e., the neighborhood).
+#'
 #' @description The neighborhood \eqn{N_i} is defined as the set of samples that
 #' have a similarity greater than zero to the given sample \eqn{s_i}. Segmentation
 #' is done using equality (\code{==}) for discrete features and less than or equal
@@ -39,6 +40,7 @@ neighborhood <- function(df, features, selectedFeatureNames = c(), retainMinValu
 
 #' @title Given a neighborhood of data, computes the similarity of each sample
 #' in the neighborhood to the neighborhood.
+#'
 #' @description Takes a data.frame of samples, then builds a PDF/PMF or ECDF
 #' for each of the selected features. Then, for each sample, computes the product
 #' of probabilities. The result is a vector that holds a probability for each
@@ -132,6 +134,7 @@ centralities <- function(
 
 #' @title Given a neighborhood of data and two samples from that neighborhood,
 #' calculates the distance between the samples.
+#'
 #' @description The distance of two samples x,y from each other within a given
 #' neighborhood is defined as the absolute value of the subtraction of each
 #' sample's centrality to the neighborhood.
@@ -170,6 +173,7 @@ distance <- function(
 
 #' @title Segment a dataset by a single sample and compute vicinities for it and
 #' the remaining samples in the neighborhood.
+#'
 #' @description Given some data and one sample \eqn{s_i} from it, constructs the
 #' neighborhood \eqn{N_i} of that sample and assigns centralities to all other
 #' samples in that neighborhood to it. Samples that lie outside the neighborhood
@@ -246,6 +250,7 @@ vicinitiesForSample <- function(
 
 #' @title Segment a dataset by each row once, then compute vicinities of
 #' samples in the neighborhood. Uses @seealso \code{vicinitiesForSample()}.
+#'
 #' @description Given an entire dataset, uses each instance in it to demarcate
 #' a neighborhood using the selected features. Then, for each neighborhood,
 #' the vicinity of all samples to it is computed. The result of this is an

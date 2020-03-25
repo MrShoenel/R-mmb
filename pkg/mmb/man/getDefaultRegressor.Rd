@@ -15,3 +15,6 @@ Getting and setting the default regressor affects all functions
 that have an overridable regressor. If this is not given, the default has
 defined here will be obtained.
 }
+\author{
+Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
+}

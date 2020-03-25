@@ -2,7 +2,7 @@
 % Please edit documentation in R/warnings.R
 \name{getWarnings}
 \alias{getWarnings}
-\title{Getter for the state of warnings. Returns true if enabled.}
+\title{Get a boolean indicating whether warnings are enabled system-wide.}
 \usage{
 getWarnings()
 }

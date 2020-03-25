@@ -2,7 +2,7 @@
 % Please edit documentation in R/bayesFeature.R
 \name{getValueKeyOfBayesFeatures}
 \alias{getValueKeyOfBayesFeatures}
-\title{Given a data.frame with one or multiple features as constructed by}
+\title{Obtain the type of the value of a Bayesian feature.}
 \usage{
 getValueKeyOfBayesFeatures(dfFeature, featName)
 }
@@ -17,12 +17,10 @@ obtain the type.}
 the (internal) type of the feature.
 }
 \description{
-Given a data.frame with one or multiple features as constructed by
-}
-\seealso{
-\code{createFeatureForBayes} and a name, extracts the
-type of the feature specified by name. Note that this is only
-used internally.
+Given a data.frame with one or multiple features as
+constructed by @seealso \code{createFeatureForBayes} and a name,
+extracts the type of the feature specified by name. Note that this
+is only used internally.
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}

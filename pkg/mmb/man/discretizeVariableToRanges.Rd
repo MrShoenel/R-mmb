@@ -2,8 +2,7 @@
 % Please edit documentation in R/discretization.R
 \name{discretizeVariableToRanges}
 \alias{discretizeVariableToRanges}
-\title{Discretizes a continuous random variable into buckets (ranges). Each range
-is delimited by an exclusive minimum value and an inclusive maximum value.}
+\title{Discretize a continuous random variable to ranges/buckets.}
 \usage{
 discretizeVariableToRanges(
   data,
@@ -40,8 +39,8 @@ inclusive maximum value of the range. The list will be as long as the number
 of buckets requested.
 }
 \description{
-Discretizes a continuous random variable into buckets (ranges). Each range
-is delimited by an exclusive minimum value and an inclusive maximum value.
+Discretizes a continuous random variable into buckets (ranges).
+Each range is delimited by an exclusive minimum value and an inclusive maximum value.
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}

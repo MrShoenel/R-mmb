@@ -2,12 +2,7 @@
 % Please edit documentation in R/bayes.R
 \name{bayesComputeProductFactor}
 \alias{bayesComputeProductFactor}
-\title{Computes one single factor that is needed for full Bayesian inferencing.
-In an equation such as P(A|B) = P(B|A) * P(A) / P(B), the target-feature
-is A, while the conditional feature is B. There are three factors in that
-equation (two in the numerator and one in the denominator). This function
-calculates exactly one factor and expects all features to be given in the
-right order. If computing the denominator, no target-feature is required.}
+\title{Computes one single factor that is needed for full Bayesian inferencing.}
 \usage{
 bayesComputeProductFactor(
   df,
@@ -49,9 +44,8 @@ target feature is discrete, a probability is returned; a relative like-
 lihood, otherwise.
 }
 \description{
-Computes one single factor that is needed for full Bayesian inferencing.
-In an equation such as P(A|B) = P(B|A) * P(A) / P(B), the target-feature
-is A, while the conditional feature is B. There are three factors in that
+In an equation such as P(A|B) = P(B|A) * P(A) / P(B), the target-
+feature is A, while the conditional feature is B. There are three factors in that
 equation (two in the numerator and one in the denominator). This function
 calculates exactly one factor and expects all features to be given in the
 right order. If computing the denominator, no target-feature is required.

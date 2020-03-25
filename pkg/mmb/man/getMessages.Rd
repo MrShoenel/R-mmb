@@ -2,7 +2,7 @@
 % Please edit documentation in R/warnings.R
 \name{getMessages}
 \alias{getMessages}
-\title{Getter for the state of messages. Returns true if enabled.}
+\title{Get a boolean indicating whether messages are enabled system-wide.}
 \usage{
 getMessages()
 }

@@ -1,5 +1,10 @@
-#' Given a few observations of a random variable, this function returns an
-#' approximation of the PDF as a function.
+#' @title Safe PDF estimation that works also for sparse random variables.
+#'
+#' @description Given a few observations of a random variable, this function
+#' returns an approximation of the PDF as a function. Returns also the PDF's
+#' support and argmax and works when only zero or one value was given. Depending
+#' on the used density function, two values are often enough to estimate a PDF.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @note If the given vector is empty, warns and returns a constant function
 #' that always returns zero for all values.
@@ -83,8 +88,11 @@ estimatePdf <- function(data = c(), densFun = function(vec) {
 
 
 
-#' Similar to @seealso \code{estimatePdf}, this function returns the probability
-#' for a discrete value, given some observations.
+#' @title Get a probability of a discrete value.
+#'
+#' @description Similar to @seealso \code{estimatePdf}, this function returns
+#' the probability for a discrete value, given some observations.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @note If no observations are given, then this function will warn and return
 #' a probability of zero for the value given. While we could technically return

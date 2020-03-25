@@ -1,5 +1,8 @@
-#' Discretizes a continuous random variable into buckets (ranges). Each range
-#' is delimited by an exclusive minimum value and an inclusive maximum value.
+#' @title Discretize a continuous random variable to ranges/buckets.
+#'
+#' @description Discretizes a continuous random variable into buckets (ranges).
+#' Each range is delimited by an exclusive minimum value and an inclusive maximum value.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param data a vector with numeric data
 #' @param openEndRanges boolean default True. If true, then the minimum value
@@ -94,11 +97,15 @@ discretizeVariableToRanges <- function(
 
 
 
-#' Given a list of previously computed ranges for a random variable, this
-#' function returns the index of the range the given value belongs to (i.e.,
-#' in which bucket it belongs). The indexes start R-typically at 1. Per
-#' definition, a value is within a range, if it is larger than the range's
-#' minimum and less than or equal to its maximum.
+#' @title Get the range-/bucket-ID of a given value.
+#'
+#' @description Given a list of previously computed ranges for a random
+#' variable, this function returns the index of the range the given value
+#' belongs to (i.e., in which bucket it belongs). The indexes start R-typically
+#' at 1. Per definition, a value is within a range, if it is larger than the
+#' range's minimum and less than or equal to its maximum.
+#'
+#' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param ranges list of ranges, as obtained by @seealso \code{discretizeVariableToRanges}
 #' @param value numeric a value drawn from the previously discretized
 #' random variable.
