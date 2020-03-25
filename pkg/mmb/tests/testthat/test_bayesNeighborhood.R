@@ -85,6 +85,18 @@ test_that("getting vicinities for one sample works", {
 })
 
 
+test_that("we can obtain the distance between 2 samples", {
+  w <- mmb::getWarnings()
+  mmb::setWarnings(FALSE)
+
+  d <- mmb::distance(
+    dfNeighborhood = iris, rowNrOfSample1 = "1", rowNrOfSample2 = "20"
+  )
+  expect_gte(d, 0)
+  mmb::setWarnings(w)
+})
+
+
 test_that("we can obtain the entire matrix of vicinities", {
   m <- mmb::getMessages()
   mmb::setMessages(T)

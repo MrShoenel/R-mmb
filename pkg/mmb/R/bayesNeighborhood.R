@@ -130,6 +130,44 @@ centralities <- function(
 }
 
 
+#' @title Given a neighborhood of data and two samples from that neighborhood,
+#' calculates the distance between the samples.
+#' @description The distance of two samples x,y from each other within a given
+#' neighborhood is defined as the absolute value of the subtraction of each
+#' sample's centrality to the neighborhood.
+#'
+#' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords network
+#' @param dfNeighborhood data.frame that holds all rows that make up the neighborhood.
+#' @param rowNrOfSample1 character the name of the row that constitutes the first
+#' sample from the given neighborhood.
+#' @param rowNrOfSample2 character the name of the row that constitutes the second
+#' sample from the given neighborhood.
+#' @param selectedFeatureNames vector of names of features to use. The centrality
+#' of each row in the neighborhood is calculated based on the selected features.
+#' @param shiftAmount numeric DEFAULT 0.1 optional amount to shift each features
+#' probability by. This is useful for when the centrality not necessarily must be
+#' an actual probability and too many features are selected. To obtain actual
+#' probabilities, this needs to be 0, and you must use the ECDF.
+#' @param doEcdf boolean DEFAULT FALSE whether to use the ECDF instead of the EPDF
+#' to find the likelihood of continuous values.
+#' @param ecdfMinusOne boolean DEFAULT FALSE only has an effect if the ECDF is
+#' used. If true, uses 1 minus the ECDF to find the probability of a continuous
+#' value. Depending on the interpretation of what you try to do, this may be of use.
+#' @return numeric the distance as a positive number.
+#' @export
+distance <- function(
+  dfNeighborhood, rowNrOfSample1, rowNrOfSample2, selectedFeatureNames = c(),
+  shiftAmount = 0.1, doEcdf = FALSE, ecdfMinusOne = FALSE
+) {
+  c <- mmb::centralities(
+    dfNeighborhood = dfNeighborhood, selectedFeatureNames = selectedFeatureNames,
+    shiftAmount = shiftAmount, doEcdf = doEcdf, ecdfMinusOne = ecdfMinusOne
+  )
+  return(abs(c[[rowNrOfSample1]] - c[[rowNrOfSample2]]))
+}
+
+
 #' @title Segment a dataset by a single sample and compute vicinities for it and
 #' the remaining samples in the neighborhood.
 #' @description Given some data and one sample \eqn{s_i} from it, constructs the
