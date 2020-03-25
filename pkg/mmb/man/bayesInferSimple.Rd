@@ -16,9 +16,16 @@ tive likelihood is returned.
 regression, set \code{doRegress = T} to obtain the most likely value of
 the target feature, instead of obtaining its relative likelihood.}
 \usage{
-bayesInferSimple(df, features, targetCol, selectedFeatureNames = c(),
-  retainMinValues = 1, doRegress = FALSE, doEcdf = FALSE,
-  regressor = NULL)
+bayesInferSimple(
+  df,
+  features,
+  targetCol,
+  selectedFeatureNames = c(),
+  retainMinValues = 1,
+  doRegress = FALSE,
+  doEcdf = FALSE,
+  regressor = NULL
+)
 }
 \arguments{
 \item{df}{data.frame}

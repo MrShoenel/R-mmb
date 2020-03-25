@@ -5,8 +5,10 @@
 \title{Given a few observations of a random variable, this function returns an
 approximation of the PDF as a function.}
 \usage{
-estimatePdf(data = c(), densFun = function(vec) {    
-  stats::density(vec, bw = "SJ") })
+estimatePdf(
+  data = c(),
+  densFun = function(vec) {     stats::density(vec, bw = "SJ") }
+)
 }
 \arguments{
 \item{data}{vector of numeric data. Used to compute the empirical density

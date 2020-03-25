@@ -4,10 +4,19 @@
 \alias{bayesRegress}
 \title{Perform full-dependency Bayesian regression for a sample.}
 \usage{
-bayesRegress(df, features, targetCol, selectedFeatureNames = c(),
-  shiftAmount = 0.1, retainMinValues = 2, doEcdf = FALSE,
-  useParallel = NULL, numBuckets = ceiling(log2(nrow(df))),
-  sampleFromAllBuckets = TRUE, regressor = NULL)
+bayesRegress(
+  df,
+  features,
+  targetCol,
+  selectedFeatureNames = c(),
+  shiftAmount = 0.1,
+  retainMinValues = 2,
+  doEcdf = FALSE,
+  useParallel = NULL,
+  numBuckets = ceiling(log2(nrow(df))),
+  sampleFromAllBuckets = TRUE,
+  regressor = NULL
+)
 }
 \arguments{
 \item{df}{data.frame that contains all the feature's data}

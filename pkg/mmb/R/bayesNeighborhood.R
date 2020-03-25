@@ -16,10 +16,15 @@ utils::globalVariables("rn", package = c("mmb"))
 #' rows that should make up the neighborhood.
 #' @param selectedFeatureNames vector of names of features to use to demar-
 #' cate the neighborhood. If empty, uses all features' names.
+#' @param retainMinValues DEFAULT 0 the amount of samples to retain during
+#' segmentation. For separating a neighborhood, this value typically should
+#' be 0, so that no samples are included that are not within it. However,
+#' for very sparse data or a great amount of variables, it might still make
+#' sense to retain samples.
 #' @return data.frame with rows that were selected as neighborhood. It is
 #' guaranteed that the rownames are maintained.
 #' @export
-neighborhood <- function(df, features, selectedFeatureNames = c()) {
+neighborhood <- function(df, features, selectedFeatureNames = c(), retainMinValues = 0) {
   if (length(selectedFeatureNames) == 0) {
     if (mmb::getWarnings()) warning("No explicit feature selection, using all.")
     selectedFeatureNames <- features$name
@@ -28,7 +33,7 @@ neighborhood <- function(df, features, selectedFeatureNames = c()) {
   return(mmb::conditionalDataMin(
     df = df, features = features,
     selectedFeatureNames = selectedFeatureNames,
-    retainMinValues = 0))
+    retainMinValues = retainMinValues))
 }
 
 
@@ -125,6 +130,44 @@ centralities <- function(
 }
 
 
+#' @title Given a neighborhood of data and two samples from that neighborhood,
+#' calculates the distance between the samples.
+#' @description The distance of two samples x,y from each other within a given
+#' neighborhood is defined as the absolute value of the subtraction of each
+#' sample's centrality to the neighborhood.
+#'
+#' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords network
+#' @param dfNeighborhood data.frame that holds all rows that make up the neighborhood.
+#' @param rowNrOfSample1 character the name of the row that constitutes the first
+#' sample from the given neighborhood.
+#' @param rowNrOfSample2 character the name of the row that constitutes the second
+#' sample from the given neighborhood.
+#' @param selectedFeatureNames vector of names of features to use. The centrality
+#' of each row in the neighborhood is calculated based on the selected features.
+#' @param shiftAmount numeric DEFAULT 0.1 optional amount to shift each features
+#' probability by. This is useful for when the centrality not necessarily must be
+#' an actual probability and too many features are selected. To obtain actual
+#' probabilities, this needs to be 0, and you must use the ECDF.
+#' @param doEcdf boolean DEFAULT FALSE whether to use the ECDF instead of the EPDF
+#' to find the likelihood of continuous values.
+#' @param ecdfMinusOne boolean DEFAULT FALSE only has an effect if the ECDF is
+#' used. If true, uses 1 minus the ECDF to find the probability of a continuous
+#' value. Depending on the interpretation of what you try to do, this may be of use.
+#' @return numeric the distance as a positive number.
+#' @export
+distance <- function(
+  dfNeighborhood, rowNrOfSample1, rowNrOfSample2, selectedFeatureNames = c(),
+  shiftAmount = 0.1, doEcdf = FALSE, ecdfMinusOne = FALSE
+) {
+  c <- mmb::centralities(
+    dfNeighborhood = dfNeighborhood, selectedFeatureNames = selectedFeatureNames,
+    shiftAmount = shiftAmount, doEcdf = doEcdf, ecdfMinusOne = ecdfMinusOne
+  )
+  return(abs(c[[rowNrOfSample1]] - c[[rowNrOfSample2]]))
+}
+
+
 #' @title Segment a dataset by a single sample and compute vicinities for it and
 #' the remaining samples in the neighborhood.
 #' @description Given some data and one sample \eqn{s_i} from it, constructs the
@@ -150,13 +193,19 @@ centralities <- function(
 #' @param ecdfMinusOne boolean DEFAULT FALSE only has an effect if the ECDF is
 #' used. If true, uses 1 minus the ECDF to find the probability of a continuous
 #' value. Depending on the interpretation of what you try to do, this may be of use.
+#' @param retainMinValues DEFAULT 0 the amount of samples to retain during
+#' segmentation. For separating a neighborhood, this value typically should
+#' be 0, so that no samples are included that are not within it. However,
+#' for very sparse data or a great amount of variables, it might still make
+#' sense to retain samples.
 #' @return data.frame with a single column 'vicinity' and the same rownames as the
 #' given data.frame. Each row then holds the vicinity for the corresponding row.
 #' @export
 vicinitiesForSample <- function(
   df, sampleFromDf,
   selectedFeatureNames = c(),
-  shiftAmount = 0.1, doEcdf = FALSE, ecdfMinusOne = FALSE
+  shiftAmount = 0.1, doEcdf = FALSE, ecdfMinusOne = FALSE,
+  retainMinValues = 0
 ) {
   if (!is.data.frame(df)) {
     stop("df is not a data.frame.")
@@ -174,7 +223,8 @@ vicinitiesForSample <- function(
     mmb::bayesConvertData(sampleFromDf), colnames(sampleFromDf)[1])
 
   dfNeighborhood <- mmb::neighborhood(
-    df, samp, selectedFeatureNames = selectedFeatureNames)
+    df, samp, selectedFeatureNames = selectedFeatureNames,
+    retainMinValues = retainMinValues)
   # Names of rows that are NOT in the neighborhood:
   rowsNotNeighborhood <- setdiff(rownames(df), rownames(dfNeighborhood))
 
@@ -216,6 +266,11 @@ vicinitiesForSample <- function(
 #' @param ecdfMinusOne boolean DEFAULT FALSE only has an effect if the ECDF is
 #' used. If true, uses 1 minus the ECDF to find the probability of a continuous
 #' value. Depending on the interpretation of what you try to do, this may be of use.
+#' @param retainMinValues DEFAULT 0 the amount of samples to retain during
+#' segmentation. For separating a neighborhood, this value typically should
+#' be 0, so that no samples are included that are not within it. However,
+#' for very sparse data or a great amount of variables, it might still make
+#' sense to retain samples.
 #' @param useParallel boolean DEFAULT NULL whether to use parallelism or not. Setting this to
 #' true requires also having previously registered a parallel backend. If parallel
 #' computing is enabled, then each neighborhood is computed separately.
@@ -228,7 +283,7 @@ vicinitiesForSample <- function(
 vicinities <- function(
   df, selectedFeatureNames = c(),
   shiftAmount = 0.1, doEcdf = FALSE, ecdfMinusOne = FALSE,
-  useParallel = NULL)
+  retainMinValues = 0, useParallel = NULL)
 {
   if (!is.data.frame(df) || nrow(df) == 0) {
     stop("df is not a data.frame or empty.")
@@ -256,7 +311,8 @@ vicinities <- function(
   ), {
     res <- mmb::vicinitiesForSample(
       df, df[rn, ], selectedFeatureNames = selectedFeatureNames,
-      shiftAmount = shiftAmount, doEcdf = doEcdf, ecdfMinusOne = ecdfMinusOne)
+      shiftAmount = shiftAmount, doEcdf = doEcdf, ecdfMinusOne = ecdfMinusOne,
+      retainMinValues = retainMinValues)
 
     res$vicinity
   })

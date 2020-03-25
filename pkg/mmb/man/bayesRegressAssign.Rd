@@ -4,11 +4,21 @@
 \alias{bayesRegressAssign}
 \title{Regression for one or more samples, given some training data.}
 \usage{
-bayesRegressAssign(dfTrain, dfValid, targetCol,
-  selectedFeatureNames = c(), shiftAmount = 0.1, retainMinValues = 2,
-  doEcdf = FALSE, online = 0, simple = FALSE, useParallel = NULL,
-  numBuckets = ceiling(log2(nrow(df))), sampleFromAllBuckets = TRUE,
-  regressor = NULL)
+bayesRegressAssign(
+  dfTrain,
+  dfValid,
+  targetCol,
+  selectedFeatureNames = c(),
+  shiftAmount = 0.1,
+  retainMinValues = 2,
+  doEcdf = FALSE,
+  online = 0,
+  simple = FALSE,
+  useParallel = NULL,
+  numBuckets = ceiling(log2(nrow(df))),
+  sampleFromAllBuckets = TRUE,
+  regressor = NULL
+)
 }
 \arguments{
 \item{dfTrain}{data.frame that holds the training data.}

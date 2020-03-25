@@ -5,8 +5,14 @@
 \title{Uses simple Bayesian inference to return the probability or relative likeli-
 hood or a discrete labe or continuous value.}
 \usage{
-bayesProbabilitySimple(df, features, targetCol,
-  selectedFeatureNames = c(), retainMinValues = 1, doEcdf = FALSE)
+bayesProbabilitySimple(
+  df,
+  features,
+  targetCol,
+  selectedFeatureNames = c(),
+  retainMinValues = 1,
+  doEcdf = FALSE
+)
 }
 \arguments{
 \item{df}{data.frame}

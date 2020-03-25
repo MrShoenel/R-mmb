@@ -75,7 +75,7 @@ are also supported using is.na() and is.nan()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.11.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.13.0</span>
       </span>
     </div>
 
@@ -97,6 +97,9 @@ are also supported using is.na() and is.nan()." />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/Cluster-Analysis.html">Cluster Analysis</a>
+    </li>
     <li>
       <a href="../articles/Hyperparameter-Evaluation.html">Hyperparameter Evaluation</a>
     </li>
@@ -132,7 +135,7 @@ is done using equality (<code>==</code>) for discrete features and less than or 
 are also supported using <code><a href='https://rdrr.io/r/base/NA.html'>is.na()</a></code> and <code><a href='https://rdrr.io/r/base/is.finite.html'>is.nan()</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>neighborhood</span>(<span class='no'>df</span>, <span class='no'>features</span>, <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>())</pre>
+    <pre class="usage"><span class='fu'>neighborhood</span>(<span class='no'>df</span>, <span class='no'>features</span>, <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(), <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>0</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -150,6 +153,14 @@ rows that should make up the neighborhood.</p></td>
       <th>selectedFeatureNames</th>
       <td><p>vector of names of features to use to demar-
 cate the neighborhood. If empty, uses all features' names.</p></td>
+    </tr>
+    <tr>
+      <th>retainMinValues</th>
+      <td><p>DEFAULT 0 the amount of samples to retain during
+segmentation. For separating a neighborhood, this value typically should
+be 0, so that no samples are included that are not within it. However,
+for very sparse data or a great amount of variables, it might still make
+sense to retain samples.</p></td>
     </tr>
     </table>
 

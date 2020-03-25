@@ -5,9 +5,16 @@
 \title{Naive Bayesian inferencing for determining the probability or
 relative likelihood of a given value.}
 \usage{
-bayesProbabilityNaive(df, features, targetCol,
-  selectedFeatureNames = c(), shiftAmount = 0.1, retainMinValues = 1,
-  doEcdf = FALSE, useParallel = NULL)
+bayesProbabilityNaive(
+  df,
+  features,
+  targetCol,
+  selectedFeatureNames = c(),
+  shiftAmount = 0.1,
+  retainMinValues = 1,
+  doEcdf = FALSE,
+  useParallel = NULL
+)
 }
 \arguments{
 \item{df}{data.frame that contains all the feature's data}

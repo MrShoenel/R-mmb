@@ -5,7 +5,9 @@
 \alias{bayesCaret}
 \title{Provides a caret-compatible wrapper around functionality for classification
 and regression, as implemented by mmb.}
-\format{An object of class \code{list} of length 7.}
+\format{
+An object of class \code{list} of length 7.
+}
 \usage{
 bayesCaret
 }

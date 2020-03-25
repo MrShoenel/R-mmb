@@ -84,7 +84,7 @@ right order. If computing the denominator, no target-feature is required." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.11.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.13.0</span>
       </span>
     </div>
 
@@ -106,6 +106,9 @@ right order. If computing the denominator, no target-feature is required." />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/Cluster-Analysis.html">Cluster Analysis</a>
+    </li>
     <li>
       <a href="../articles/Hyperparameter-Evaluation.html">Hyperparameter Evaluation</a>
     </li>
@@ -146,8 +149,14 @@ calculates exactly one factor and expects all features to be given in the
 right order. If computing the denominator, no target-feature is required.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>bayesComputeProductFactor</span>(<span class='no'>df</span>, <span class='no'>conditionalFeatures</span>, <span class='no'>targetFeature</span>,
-  <span class='no'>computeNumerator</span>, <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>bayesComputeProductFactor</span>(
+  <span class='no'>df</span>,
+  <span class='no'>conditionalFeatures</span>,
+  <span class='no'>targetFeature</span>,
+  <span class='no'>computeNumerator</span>,
+  <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

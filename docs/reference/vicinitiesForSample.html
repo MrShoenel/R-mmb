@@ -75,7 +75,7 @@ mmb::centralities()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.11.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.13.0</span>
       </span>
     </div>
 
@@ -97,6 +97,9 @@ mmb::centralities()." />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/Cluster-Analysis.html">Cluster Analysis</a>
+    </li>
     <li>
       <a href="../articles/Hyperparameter-Evaluation.html">Hyperparameter Evaluation</a>
     </li>
@@ -132,8 +135,15 @@ are assigned a vicinity of zero. Uses <code><a href='neighborhood.html'>mmb::nei
 <code><a href='centralities.html'>mmb::centralities()</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>vicinitiesForSample</span>(<span class='no'>df</span>, <span class='no'>sampleFromDf</span>, <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>shiftAmount</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ecdfMinusOne</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>vicinitiesForSample</span>(
+  <span class='no'>df</span>,
+  <span class='no'>sampleFromDf</span>,
+  <span class='kw'>selectedFeatureNames</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>shiftAmount</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
+  <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>ecdfMinusOne</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>0</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -170,6 +180,14 @@ to find the likelihood of continuous values.</p></td>
       <td><p>boolean DEFAULT FALSE only has an effect if the ECDF is
 used. If true, uses 1 minus the ECDF to find the probability of a continuous
 value. Depending on the interpretation of what you try to do, this may be of use.</p></td>
+    </tr>
+    <tr>
+      <th>retainMinValues</th>
+      <td><p>DEFAULT 0 the amount of samples to retain during
+segmentation. For separating a neighborhood, this value typically should
+be 0, so that no samples are included that are not within it. However,
+for very sparse data or a great amount of variables, it might still make
+sense to retain samples.</p></td>
     </tr>
     </table>
 
