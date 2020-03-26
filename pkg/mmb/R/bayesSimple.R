@@ -56,10 +56,10 @@ bayesConvertData <- function(df) {
 #' found). For obtaining the probability of a continuous value, this function
 #' is useful for deciding between picking among a finite set of values. The
 #' empirical CDF may be used to obtain an actual probability for a given
-#' continuous value, otherwise, the empirical PDF is estimated and a rela-
-#' tive likelihood is returned.
-#' regression, set \code{doRegress = T} to obtain the most likely value of
-#' the target feature, instead of obtaining its relative likelihood.
+#' continuous value, otherwise, the empirical PDF is estimated and a relative
+#' likelihood is returned. For regression, set \code{doRegress = TRUE} to
+#' obtain the most likely value of the target feature, instead of obtaining
+#' its relative likelihood.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param df data.frame

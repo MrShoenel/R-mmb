@@ -15,8 +15,8 @@ utils::globalVariables("rn", package = c("mmb"))
 #' @param df data.frame to select the neighborhood from
 #' @param features data.frame of Bayes-features, used to segment/select the
 #' rows that should make up the neighborhood.
-#' @param selectedFeatureNames vector of names of features to use to demar-
-#' cate the neighborhood. If empty, uses all features' names.
+#' @param selectedFeatureNames vector of names of features to use to demarcate
+#' the neighborhood. If empty, uses all features' names.
 #' @param retainMinValues DEFAULT 0 the amount of samples to retain during
 #' segmentation. For separating a neighborhood, this value typically should
 #' be 0, so that no samples are included that are not within it. However,

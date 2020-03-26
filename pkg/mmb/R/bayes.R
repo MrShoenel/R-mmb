@@ -4,7 +4,7 @@ utils::globalVariables("featIdx", package = c("mmb"))
 
 #' @title Computes one single factor that is needed for full Bayesian inferencing.
 #'
-#' @description In an equation such as P(A|B) = P(B|A) * P(A) / P(B), the target-
+#' @description In an equation such as P(A|B) = P(B|A) * P(A) / P(B), the target
 #' feature is A, while the conditional feature is B. There are three factors in that
 #' equation (two in the numerator and one in the denominator). This function
 #' calculates exactly one factor and expects all features to be given in the
@@ -15,8 +15,8 @@ utils::globalVariables("featIdx", package = c("mmb"))
 #' @param conditionalFeatures data.frame with Bayesian features, as produced
 #' by @seealso \code{mmb::createFeatureForBayes()}. This data.frame must not
 #' be empty, as we need to depend on at least one feature.
-#' @param targetFeature data.frame with exactly one Bayesian feature. Any ex-
-#' cessive features are discarded and a warning is produced. If computing a
+#' @param targetFeature data.frame with exactly one Bayesian feature. Any
+#' excessive features are discarded and a warning is produced. If computing a
 #' factor for the denominator, this data.frame may be empty.
 #' @param computeNumerator boolean to indicate whether a factor for the
 #' numerator is build. In that case, the target feature is required.
@@ -30,8 +30,8 @@ utils::globalVariables("featIdx", package = c("mmb"))
 #' given value is returned. Setting this parameter to true in conjunction
 #' with a non-zero shiftAmount must be done with caution.
 #' @return numeric the factor as probability or relative likelihood. If the
-#' target feature is discrete, a probability is returned; a relative like-
-#' lihood, otherwise.
+#' target feature is discrete, a probability is returned; a relative
+#' likelihood, otherwise.
 #' @keywords internal
 bayesComputeProductFactor <- function(
   df, conditionalFeatures, targetFeature,
@@ -323,8 +323,8 @@ bayesProbability <- function(
 #' do inferencing. If zero, then only the initially given data.frame dfTrain is
 #' used. If > 0, then each inferenced sample will be attached to it and the
 #' resulting data.frame is truncated to this number. Use an integer large enough
-#' (i.e., sum of training and validation rows) to keep all samples during infer-
-#' encing. A smaller amount as, e.g., in dfTrain, will keep the amount of data
+#' (i.e., sum of training and validation rows) to keep all samples during
+#' inferencing. A smaller amount as, e.g., in dfTrain, will keep the amount of data
 #' restricted, discarding older rows. A larger amount than, e.g., in dfTrain is
 #' also fine; dfTrain will grow to it and then discard rows.
 #' @param simple default FALSE boolean to indicate whether or not to use simple

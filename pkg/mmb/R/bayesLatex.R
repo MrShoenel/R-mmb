@@ -5,7 +5,7 @@
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @note Use \code{cat()} to print a string that can be copy-pasted.
-#' @param conditionalFeatures data.frame of Bayesian features, the target-
+#' @param conditionalFeatures data.frame of Bayesian features, the target
 #' feature depends on.
 #' @param targetFeature data.frame that holds exactly one Bayesian feature,
 #' that is supposed to be the target-feture for Bayesian inferencing.
