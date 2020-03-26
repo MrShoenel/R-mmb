@@ -57,5 +57,5 @@ rl2 <- epdf$fun(1.7)
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
-\keyword{density-estimation,}
+\keyword{density-estimation}
 \keyword{likelihood}

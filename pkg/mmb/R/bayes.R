@@ -162,7 +162,7 @@ bayesComputeMarginalFactor <- function(df, feature, doEcdf = FALSE) {
 #' of the PDF, the result of this function is a probability.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
-#' @keywords full-dependency, classification, inferencing
+#' @keywords full-dependency classification inferencing
 #' @importFrom Rdpack reprompt
 #' @references
 #' \insertRef{bayes1763lii}{mmb}
@@ -330,7 +330,7 @@ bayesProbability <- function(
 #' good documentation there.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
-#' @keywords full-dependency, classification, inferencing
+#' @keywords full-dependency classification inferencing
 #' @importFrom Rdpack reprompt
 #' @references
 #' \insertRef{bayes1763lii}{mmb}

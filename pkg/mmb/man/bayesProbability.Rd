@@ -107,6 +107,6 @@ test-case "a zero denominator can happen"
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
-\keyword{classification,}
-\keyword{full-dependency,}
+\keyword{classification}
+\keyword{full-dependency}
 \keyword{inferencing}

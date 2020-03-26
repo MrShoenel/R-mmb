@@ -71,7 +71,7 @@ bayesConvertData <- function(df) {
 #' its relative likelihood.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
-#' @keywords simple, regression, inferencing
+#' @keywords simple regression inferencing
 #' @importFrom Rdpack reprompt
 #' @references
 #' \insertRef{rpkg:bnlearn_4.5}{mmb}
@@ -221,7 +221,7 @@ bayesInferSimple <- function(
 #' relative likelihood or a discrete label or continuous value.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
-#' @keywords simple, inferencing
+#' @keywords simple inferencing
 #' @importFrom Rdpack reprompt
 #' @references
 #' \insertRef{rpkg:bnlearn_4.5}{mmb}
@@ -271,7 +271,7 @@ bayesProbabilitySimple <- function(
 #' estimate of the kernel (returning its mode).
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
-#' @keywords simple, regression
+#' @keywords simple regression
 #' @importFrom Rdpack reprompt
 #' @references
 #' \insertRef{rpkg:bnlearn_4.5}{mmb}

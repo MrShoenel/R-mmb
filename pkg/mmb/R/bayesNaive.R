@@ -11,7 +11,7 @@ utils::globalVariables("fn", package = c("mmb"))
 #' subset of features for dependency.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
-#' @keywords naive, classification, inferencing
+#' @keywords naive classification inferencing
 #' @param df data.frame that contains all the feature's data
 #' @param features data.frame with bayes-features. One of the features needs
 #' to be the label-column.

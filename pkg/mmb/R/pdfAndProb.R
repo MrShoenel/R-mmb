@@ -6,7 +6,7 @@
 #' on the used density function, two values are often enough to estimate a PDF.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
-#' @keywords density-estimation, likelihood
+#' @keywords density-estimation likelihood
 #' @note If the given vector is empty, warns and returns a constant function
 #' that always returns zero for all values.
 #' @note If the given vector contains only one observation, then a function
@@ -103,7 +103,7 @@ estimatePdf <- function(data = c(), densFun = function(vec) {
 #' the probability for a discrete value, given some observations.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
-#' @keywords probability, likelihood
+#' @keywords probability likelihood
 #' @note If no observations are given, then this function will warn and return
 #' a probability of zero for the value given. While we could technically return
 #' positive infinity, 0 is more suitable in the context of Bayesian inferencing.

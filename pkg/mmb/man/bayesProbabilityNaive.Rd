@@ -76,6 +76,6 @@ subset of features for dependency.
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
-\keyword{classification,}
+\keyword{classification}
 \keyword{inferencing}
-\keyword{naive,}
+\keyword{naive}

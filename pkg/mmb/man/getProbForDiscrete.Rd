@@ -31,4 +31,4 @@ mmb::getProbForDiscrete(data = iris$Species, value = iris[1,]$Species)
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
 \keyword{likelihood}
-\keyword{probability,}
+\keyword{probability}

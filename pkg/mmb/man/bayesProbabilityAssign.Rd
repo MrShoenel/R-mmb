@@ -92,6 +92,6 @@ mmb::bayesProbabilityAssign(dfTrain, dfValid, "Species")
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
-\keyword{classification,}
-\keyword{full-dependency,}
+\keyword{classification}
+\keyword{full-dependency}
 \keyword{inferencing}

@@ -96,5 +96,5 @@ mmb::bayesInferSimple(df = iris, features = feats, targetCol = feat1$name)
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
 \keyword{inferencing}
-\keyword{regression,}
-\keyword{simple,}
+\keyword{regression}
+\keyword{simple}

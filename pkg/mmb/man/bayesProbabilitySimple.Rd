@@ -61,4 +61,4 @@ mmb::bayesProbabilitySimple(df = iris, features = rbind(feat1, feat2),
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
 \keyword{inferencing}
-\keyword{simple,}
+\keyword{simple}
