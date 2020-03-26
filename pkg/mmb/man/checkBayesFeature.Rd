@@ -23,3 +23,5 @@ that use samples transformed to bayes-features.
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{feature}
+\keyword{internal}

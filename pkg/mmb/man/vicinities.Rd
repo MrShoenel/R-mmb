@@ -57,6 +57,12 @@ the vicinity of all samples to it is computed. The result of this is an
 N x N matrix, where the entry \eqn{m_{i,j}} corresponds to the vicinity of
 sample \eqn{s_j} in neighborhood \eqn{N_i}.
 }
+\examples{
+mmb::vicinities(df = iris[1:10,])
+
+# Run the same, but use the ECDF and retain more values:
+mmb::vicinities(df = iris[1:10,], doEcdf = T, retainMinValues = 10)
+}
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }

@@ -7,7 +7,7 @@
 bayesToLatex(conditionalFeatures, targetFeature, includeValues = FALSE)
 }
 \arguments{
-\item{conditionalFeatures}{data.frame of Bayesian features, the target-
+\item{conditionalFeatures}{data.frame of Bayesian features, the target
 feature depends on.}
 
 \item{targetFeature}{data.frame that holds exactly one Bayesian feature,
@@ -25,6 +25,17 @@ full dependency between covariates and a target variable.
 }
 \note{
 Use \code{cat()} to print a string that can be copy-pasted.
+}
+\examples{
+feat1 <- mmb::createFeatureForBayes(
+  name = "Petal.Length", value = mean(iris$Petal.Length))
+feat2 <- mmb::createFeatureForBayes(
+  name = "Petal.Width", value = mean(iris$Petal.Width))
+featT <- mmb::createFeatureForBayes(
+  name = "Species", iris[1,]$Species, isLabel = TRUE)
+
+mmb::bayesToLatex(conditionalFeatures = rbind(feat1, feat2),
+  targetFeature = featT, includeValues = TRUE)
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}

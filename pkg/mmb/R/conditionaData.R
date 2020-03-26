@@ -6,6 +6,7 @@
 #' and is.null as comparator.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords segmentation
 #' @seealso \code{getValueKeyOfBayesFeatures()}
 #' @param df data.frame with data to segment. If it contains less than or
 #' equally many rows as specified by \code{retainMinValues}, then the same
@@ -26,6 +27,15 @@
 #' is undercut, then the result from the previous round is returned.
 #' @return data.frame that is segmented according to the selected variables
 #' and the minimum amount of rows to retain.
+#' @examples
+#' feat1 <- mmb::createFeatureForBayes(
+#'   name = "Petal.Length", value = mean(iris$Petal.Length))
+#' feat2 <- mmb::createFeatureForBayes(
+#'   name = "Petal.Width", value = mean(iris$Petal.Width))
+#' feats <- rbind(feat1, feat2)
+#'
+#' data <- mmb::conditionalDataMin(df = iris, features = feats,
+#'   selectedFeatureNames = feats$name, retainMinValues = 1)
 #' @export
 conditionalDataMin <- function(df, features, selectedFeatureNames = c(), retainMinValues = 1) {
   if (length(selectedFeatureNames) == 0 || nrow(df) <= retainMinValues) {

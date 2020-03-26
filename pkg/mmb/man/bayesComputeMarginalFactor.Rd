@@ -27,6 +27,12 @@ assuming its given value.
 Computes the probability (discrete feature) or relative likelihood
 (continuous feature) of one given feature and a concrete value for it.
 }
+\examples{
+feat <- mmb::createFeatureForBayes(
+  name = "Petal.Length", value = mean(iris$Petal.Length))
+mmb::bayesComputeMarginalFactor(df = iris, feature = feat)
+mmb::bayesComputeMarginalFactor(df = iris, feature = feat, doEcdf = TRUE)
+}
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }

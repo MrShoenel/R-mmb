@@ -6,6 +6,7 @@
 #' character.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords feature
 #' @seealso \code{sampleToBayesFeatures} that uses this function
 #' @param name the name of the feature or variable.
 #' @param value the value of the feature or variable.
@@ -16,6 +17,11 @@
 #' given is a charater, factor or a logical.
 #' @return A data.frame with one row holding all the feature's value's
 #' properties.
+#' @examples
+#' feat <- mmb::createFeatureForBayes(
+#'   name = "Petal.Width", value = mean(iris$Petal.Width))
+#' featTarget <- mmb::createFeatureForBayes(
+#'   name = "Species", iris[1,]$Species, isLabel = TRUE)
 #' @export
 createFeatureForBayes <- function(name, value, isLabel = FALSE, isDiscrete = FALSE) {
   value <- if (is.factor(value)) as.character(value) else value
@@ -44,11 +50,13 @@ createFeatureForBayes <- function(name, value, isLabel = FALSE, isDiscrete = FAL
 #' that use samples transformed to bayes-features.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords feature
 #' @param dfFeature a data.frame for a single feature or variable
 #' as constructed by @seealso \code{createFeatureForBayes}.
 #' @param featName the name of the feature or variable of which to
 #' obtain the value.
 #' @return data.frame the row corresponding to the given feature name
+#' @keywords internal
 checkBayesFeature <- function(dfFeature, featName) {
   if (!is.data.frame(dfFeature)) {
     stop("The given dfFeature is not a data.frame.")
@@ -74,11 +82,22 @@ checkBayesFeature <- function(dfFeature, featName) {
 #' extracts the value of the feature specified by name.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords feature
 #' @param dfFeature a data.frame for a single feature or variable
 #' as constructed by @seealso \code{createFeatureForBayes}.
 #' @param featName the name of the feature or variable of which to
 #' obtain the value.
 #' @return the value of the feature.
+#' @examples
+#' feats <- rbind(
+#'   mmb::createFeatureForBayes(
+#'     "Petal.Width", value = mean(iris$Petal.Width)),
+#'   mmb::createFeatureForBayes(
+#'     name = "Species", iris[1,]$Species, isLabel = TRUE)
+#' )
+#'
+#' print(mmb::getValueOfBayesFeatures(feats, "Species"))
+#' print(mmb::getValueOfBayesFeatures(feats, "Petal.Width"))
 #' @export
 getValueOfBayesFeatures <- function(dfFeature, featName) {
   row <- checkBayesFeature(dfFeature, featName)
@@ -99,11 +118,22 @@ getValueOfBayesFeatures <- function(dfFeature, featName) {
 #' is only used internally.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords feature
 #' @param dfFeature a data.frame for a single feature or variable
 #' as constructed by @seealso \code{createFeatureForBayes}.
 #' @param featName the name of the feature or variable of which to
 #' obtain the type.
 #' @return the (internal) type of the feature.
+#' @examples
+#' feats <- rbind(
+#'   mmb::createFeatureForBayes(
+#'     "Petal.Width", value = mean(iris$Petal.Width)),
+#'   mmb::createFeatureForBayes(
+#'     name = "Species", iris[1,]$Species, isLabel = TRUE)
+#' )
+#'
+#' print(mmb::getValueKeyOfBayesFeatures(feats, "Species"))
+#' print(mmb::getValueKeyOfBayesFeatures(feats, "Petal.Width"))
 #' @export
 getValueKeyOfBayesFeatures <- function(dfFeature, featName) {
   row <- checkBayesFeature(dfFeature, featName)
@@ -125,11 +155,17 @@ getValueKeyOfBayesFeatures <- function(dfFeature, featName) {
 #' operation can be thought of transposing a matrix.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords feature
 #' @param dfRow a row of a data.frame with a value for each feature.
 #' @param targetCol the name of the feature (column in the data.frame)
 #' that is the target variable for classification or regression.
 #' @return a data.frame where the first row is the feature that
 #' represents the label.
+#' @examples
+#' # Converts all features of iris; the result is a data.frame of length
+#' # equal to the amount of features in iris (5). The first feature is
+#' # targetCol (has isLabel=TRUE).
+#' samp <- mmb::sampleToBayesFeatures(dfRow = iris[15,], targetCol = "Species")
 #' @export
 sampleToBayesFeatures <- function(dfRow, targetCol) {
   if (!is.data.frame(dfRow) || nrow(dfRow) == 0) {
@@ -161,12 +197,19 @@ sampleToBayesFeatures <- function(dfRow, targetCol) {
 #' Takes a Bayes-feature data.frame and transforms it back to a row.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords feature
 #' @param dfOrg data.frame containing at least one row of the original
 #' format, so that we can rebuild the sample matching exactly the
 #' original column names.
 #' @param features data.frame of Bayes-features, as for example
 #' previously created using \code{mmb::sampleToBayesFeatures()}.
 #' @return data.frame the sample as 1-row data.frame.
+#' @examples
+#' samp <- mmb::sampleToBayesFeatures(dfRow = iris[15,], targetCol = "Species")
+#'
+#' # Convert the sample (as features) back to a sample that can be, e.g.,
+#' # appended to the data again:
+#' row <- mmb::bayesFeaturesToSample(dfOrg = iris, features = samp)
 #' @export
 bayesFeaturesToSample <- function(dfOrg, features) {
   if (!is.data.frame(dfOrg) || !is.data.frame(features)) {

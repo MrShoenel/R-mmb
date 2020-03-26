@@ -11,6 +11,9 @@ utils::globalVariables("featIdx", package = c("mmb"))
 #' right order. If computing the denominator, no target-feature is required.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @importFrom Rdpack reprompt
+#' @references
+#' \insertRef{bayes1763lii}{mmb}
 #' @param df data.frame with data that is used to segment
 #' @param conditionalFeatures data.frame with Bayesian features, as produced
 #' by @seealso \code{mmb::createFeatureForBayes()}. This data.frame must not
@@ -107,6 +110,11 @@ bayesComputeProductFactor <- function(
 #' given value is returned.
 #' @return numeric the probability or likelihood of the given feature
 #' assuming its given value.
+#' @examples
+#' feat <- mmb::createFeatureForBayes(
+#'   name = "Petal.Length", value = mean(iris$Petal.Length))
+#' mmb::bayesComputeMarginalFactor(df = iris, feature = feat)
+#' mmb::bayesComputeMarginalFactor(df = iris, feature = feat, doEcdf = TRUE)
 #' @export
 bayesComputeMarginalFactor <- function(df, feature, doEcdf = FALSE) {
   prob <- 0
@@ -154,6 +162,10 @@ bayesComputeMarginalFactor <- function(df, feature, doEcdf = FALSE) {
 #' of the PDF, the result of this function is a probability.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords full-dependency, classification, inferencing
+#' @importFrom Rdpack reprompt
+#' @references
+#' \insertRef{bayes1763lii}{mmb}
 #' @param df data.frame that contains all the feature's data
 #' @param features data.frame with bayes-features. One of the features needs
 #' to be the label-column.
@@ -194,6 +206,22 @@ bayesComputeMarginalFactor <- function(df, feature, doEcdf = FALSE) {
 #' likelihood (regression, inferring likelihood of continuous value) or most
 #' likely value given the conditional features. If using a positive
 #' \code{shiftAmount}, the result is a 'probability score'.
+#' @examples
+#' feat1 <- mmb::createFeatureForBayes(
+#'   name = "Petal.Length", value = mean(iris$Petal.Length))
+#' feat2 <- mmb::createFeatureForBayes(
+#'   name = "Petal.Width", value = mean(iris$Petal.Width))
+#' featT <- mmb::createFeatureForBayes(
+#'   name = "Species", iris[1,]$Species, isLabel = TRUE)
+#'
+#' # Check the probability of Species=setosa, given the other 2 features:
+#' mmb::bayesProbability(
+#'   df = iris, features = rbind(feat1, feat2, featT), targetCol = "Species")
+#'
+#' # Now check the probability of Species=versicolor:
+#' featT$valueChar <- "versicolor"
+#' mmb::bayesProbability(
+#'   df = iris, features = rbind(feat1, feat2, featT), targetCol = "Species")
 #' @export
 bayesProbability <- function(
   df, features, targetCol, selectedFeatureNames = c(),
@@ -302,6 +330,10 @@ bayesProbability <- function(
 #' good documentation there.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords full-dependency, classification, inferencing
+#' @importFrom Rdpack reprompt
+#' @references
+#' \insertRef{bayes1763lii}{mmb}
 #' @param dfTrain data.frame that holds the training data.
 #' @param dfValid data.frame that holds the validation samples, for each of which
 #' a probability is sought. The convention is, that if you attempt to assign a

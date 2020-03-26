@@ -45,6 +45,17 @@ If the given vector contains only one observation, then a function
 is returned that returns 1 iff the value supplied is the same as the
 observation. Otherwise, that function will return zero.
 }
+\examples{
+epdf <- mmb::mmb::estimatePdf(data = iris$Petal.Width)
+print(epdf$argmax)
+plot(epdf)
+
+# Get relative likelihood of some values:
+rl1 <- epdf$fun(0.5)
+rl2 <- epdf$fun(1.7)
+}
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{density-estimation,}
+\keyword{likelihood}

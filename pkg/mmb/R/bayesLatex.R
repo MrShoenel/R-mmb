@@ -12,6 +12,16 @@
 #' @param includeValues default FALSE boolean to indicate whether to include
 #' the features' values or not, i.e. "A" vs. "A = setosa".
 #' @return a string that can be used in Latex documents.
+#' @examples
+#' feat1 <- mmb::createFeatureForBayes(
+#'   name = "Petal.Length", value = mean(iris$Petal.Length))
+#' feat2 <- mmb::createFeatureForBayes(
+#'   name = "Petal.Width", value = mean(iris$Petal.Width))
+#' featT <- mmb::createFeatureForBayes(
+#'   name = "Species", iris[1,]$Species, isLabel = TRUE)
+#'
+#' mmb::bayesToLatex(conditionalFeatures = rbind(feat1, feat2),
+#'   targetFeature = featT, includeValues = TRUE)
 #' @export
 bayesToLatex <- function(conditionalFeatures, targetFeature, includeValues = FALSE) {
   if (nrow(conditionalFeatures) == 0 || nrow(targetFeature) == 0) {

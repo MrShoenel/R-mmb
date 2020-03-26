@@ -54,6 +54,14 @@ samples in that neighborhood to it. Samples that lie outside the neighborhood
 are assigned a vicinity of zero. Uses \code{mmb::neighborhood()} and
 \code{mmb::centralities()}.
 }
+\examples{
+vic <- mmb::vicinitiesForSample(
+  df = iris, sampleFromDf = iris[1,], shiftAmount = 0.1)
+vic$vicinity
+
+# Plot the ordered samples to get an idea which ones have a vicinity > 0
+plot(x=rownames(vic), y=vic$vicinity)
+}
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }

@@ -40,6 +40,7 @@ getDefaultRegressor <- function() varDefaultRegressor$get()
 #' according to their likelihood.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords full-dependency, regression
 #' @param df data.frame that contains all the feature's data
 #' @param features data.frame with bayes-features. One of the features needs
 #' to be the label-column.
@@ -230,6 +231,7 @@ bayesRegress <- function(
 #' and you will find good documentation there.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords full-dependency, regression
 #' @param dfTrain data.frame that holds the training data.
 #' @param dfValid data.frame that holds the validation samples, for each of which
 #' a probability is sought. The convention is, that if you attempt to assign a

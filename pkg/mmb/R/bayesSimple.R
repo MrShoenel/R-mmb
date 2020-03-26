@@ -1,4 +1,4 @@
-bayesSimpleCheckData <- function(df, features, labelCol) {
+bayesSimpleCheckData <- function(df, features, targetCol) {
   if (!is.data.frame(df) || !is.data.frame(features)) {
     stop("No data or no features were given.")
   }
@@ -15,6 +15,13 @@ bayesSimpleCheckData <- function(df, features, labelCol) {
   if (nrow(df) == 1 && mmb::getWarnings()) {
     warning("Only one data point given.")
   }
+  if (sum(features$isLabel) == 0) {
+    stop("No feature with isLabel was given.")
+  }
+  if (features[features$isLabel, ]$name != targetCol) {
+    stop(paste("The feature being the designated label", features[features$isLabel, ]$name,
+         "is not the same as the chosen label-feature", targetCol))
+  }
 }
 
 
@@ -26,6 +33,8 @@ bayesSimpleCheckData <- function(df, features, labelCol) {
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param df data.frame to be used for bayesian inferencing.
 #' @return the same data.frame with all factors converted to character.
+#' @examples
+#' df <- mmb::bayesConvertData(df = iris)
 #' @export
 bayesConvertData <- function(df) {
   if (!is.data.frame(df)) stop("Given object is not a data.frame")
@@ -62,6 +71,10 @@ bayesConvertData <- function(df) {
 #' its relative likelihood.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords simple, regression, inferencing
+#' @importFrom Rdpack reprompt
+#' @references
+#' \insertRef{rpkg:bnlearn_4.5}{mmb}
 #' @param df data.frame
 #' @param features data.frame with bayes-features. One of the features needs
 #' to be the label-column.
@@ -91,6 +104,24 @@ bayesConvertData <- function(df) {
 #' @return numeric probability (inferring discrete labels) or relative
 #' likelihood (regression, inferring likelihood of continuous value) or most
 #' likely value given the conditional features.
+#' @examples
+#' feat1 <- mmb::createFeatureForBayes(
+#'   name = "Petal.Length", value = mean(iris$Petal.Length))
+#' feat2 <- mmb::createFeatureForBayes(
+#'   name = "Petal.Width", value = mean(iris$Petal.Width))
+#' featT <- mmb::createFeatureForBayes(
+#'   name = "Species", iris[1,]$Species, isLabel = TRUE)
+#'
+#' # Infer likelihood of featT's label:
+#' feats <- rbind(feat1, feat2, featT)
+#' mmb::bayesInferSimple(df = iris, features = feats, targetCol = featT$name)
+#'
+#' # Infer likelihood of feat1's value:
+#' featT$isLabel = FALSE
+#' feat1$isLabel = TRUE
+#' # We do not bind featT this time:
+#' feats <- rbind(feat1, feat2)
+#' mmb::bayesInferSimple(df = iris, features = feats, targetCol = feat1$name)
 #' @export
 bayesInferSimple <- function(
   df, features, targetCol, selectedFeatureNames = c(),
@@ -190,6 +221,10 @@ bayesInferSimple <- function(
 #' relative likelihood or a discrete label or continuous value.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords simple, inferencing
+#' @importFrom Rdpack reprompt
+#' @references
+#' \insertRef{rpkg:bnlearn_4.5}{mmb}
 #' @seealso \code{mmb::bayesInferSimple()}
 #' @param df data.frame
 #' @param features data.frame with bayes-features. One of the features needs to
@@ -206,6 +241,15 @@ bayesInferSimple <- function(
 #' feature. If false, uses the empirical PDF to return the rel. likelihood.
 #' @return double the probability of the target-label, using the maximum a
 #' posteriori estimate.
+#' @examples
+#' feat1 <- mmb::createFeatureForBayes(
+#'   name = "Sepal.Length", value = mean(iris$Sepal.Length))
+#' feat2 <- mmb::createFeatureForBayes(
+#'   name = "Sepal.Width", value = mean(iris$Sepal.Width), isLabel = TRUE)
+#'
+#' # Assign a probability to a continuous variable (also works with nominal):
+#' mmb::bayesProbabilitySimple(df = iris, features = rbind(feat1, feat2),
+#'   targetCol = feat2$name, retainMinValues = 5, doEcdf = TRUE)
 #' @export
 bayesProbabilitySimple <- function(
   df, features, targetCol,
@@ -227,6 +271,10 @@ bayesProbabilitySimple <- function(
 #' estimate of the kernel (returning its mode).
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords simple, regression
+#' @importFrom Rdpack reprompt
+#' @references
+#' \insertRef{rpkg:bnlearn_4.5}{mmb}
 #' @seealso \code{mmb::bayesInferSimple()}
 #' @param df data.frame
 #' @param features data.frame with bayes-features. One of the features needs to
@@ -245,6 +293,15 @@ bayesProbabilitySimple <- function(
 #' However, any other function can be used, too, such as min, max, median,
 #' average etc. You may also use this function to obtain the raw values
 #' for further processing.
+#' @examples
+#' feat1 <- mmb::createFeatureForBayes(
+#'   name = "Sepal.Length", value = mean(iris$Sepal.Length))
+#' feat2 <- mmb::createFeatureForBayes(
+#'   name = "Sepal.Width", value = mean(iris$Sepal.Width))
+#'
+#' # Note how we do not require "Petal.Length" among the features when regressing:
+#' mmb::bayesRegressSimple(df = iris, features = rbind(feat1, feat2),
+#'   targetCol = "Petal.Length")
 #' @export
 bayesRegressSimple <- function(
   df, features, targetCol,

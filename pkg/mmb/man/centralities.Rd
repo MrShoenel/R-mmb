@@ -42,6 +42,17 @@ of probabilities. The result is a vector that holds a probability for each
 sample. That probability (or relative likelihood) then represents the
 vicinity (or similarity) of the sample to the given neighborhood.
 }
+\examples{
+# Create a neighborhood:
+nbh <- mmb::neighborhood(df = iris, features = mmb::createFeatureForBayes(
+  name = "Sepal.Width", value = mean(iris$Sepal.Width)))
+
+cent <- mmb::centralities(dfNeighborhood = nbh, shiftAmount = 0.1,
+  doEcdf = TRUE, ecdfMinusOne = TRUE)
+
+# Plot the ordered samples to get an idea of the centralities in the neighborhood:
+plot(x = names(cent), y=cent)
+}
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }

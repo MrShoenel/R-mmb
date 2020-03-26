@@ -65,11 +65,36 @@ each label (or, for n-1 labels or until a label with >.5 probability is
 found). For obtaining the probability of a continuous value, this function
 is useful for deciding between picking among a finite set of values. The
 empirical CDF may be used to obtain an actual probability for a given
-continuous value, otherwise, the empirical PDF is estimated and a rela-
-tive likelihood is returned.
-regression, set \code{doRegress = T} to obtain the most likely value of
-the target feature, instead of obtaining its relative likelihood.
+continuous value, otherwise, the empirical PDF is estimated and a relative
+likelihood is returned. For regression, set \code{doRegress = TRUE} to
+obtain the most likely value of the target feature, instead of obtaining
+its relative likelihood.
+}
+\examples{
+feat1 <- mmb::createFeatureForBayes(
+  name = "Petal.Length", value = mean(iris$Petal.Length))
+feat2 <- mmb::createFeatureForBayes(
+  name = "Petal.Width", value = mean(iris$Petal.Width))
+featT <- mmb::createFeatureForBayes(
+  name = "Species", iris[1,]$Species, isLabel = TRUE)
+
+# Infer likelihood of featT's label:
+feats <- rbind(feat1, feat2, featT)
+mmb::bayesInferSimple(df = iris, features = feats, targetCol = featT$name)
+
+# Infer likelihood of feat1's value:
+featT$isLabel = FALSE
+feat1$isLabel = TRUE
+# We do not bind featT this time:
+feats <- rbind(feat1, feat2)
+mmb::bayesInferSimple(df = iris, features = feats, targetCol = feat1$name)
+}
+\references{
+\insertRef{rpkg:bnlearn_4.5}{mmb}
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{inferencing}
+\keyword{regression,}
+\keyword{simple,}

@@ -23,6 +23,12 @@ If no observations are given, then this function will warn and return
 a probability of zero for the value given. While we could technically return
 positive infinity, 0 is more suitable in the context of Bayesian inferencing.
 }
+\examples{
+mmb::getProbForDiscrete(data = c(), value = iris[1,]$Species)
+mmb::getProbForDiscrete(data = iris$Species, value = iris[1,]$Species)
+}
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{likelihood}
+\keyword{probability,}

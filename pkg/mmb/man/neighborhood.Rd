@@ -13,8 +13,8 @@ neighborhood(df, features, selectedFeatureNames = c(), retainMinValues = 0)
 \item{features}{data.frame of Bayes-features, used to segment/select the
 rows that should make up the neighborhood.}
 
-\item{selectedFeatureNames}{vector of names of features to use to demar-
-cate the neighborhood. If empty, uses all features' names.}
+\item{selectedFeatureNames}{vector of names of features to use to demarcate
+the neighborhood. If empty, uses all features' names.}
 
 \item{retainMinValues}{DEFAULT 0 the amount of samples to retain during
 segmentation. For separating a neighborhood, this value typically should
@@ -32,6 +32,12 @@ have a similarity greater than zero to the given sample \eqn{s_i}. Segmentation
 is done using equality (\code{==}) for discrete features and less than or equal
 (\code{<=}) for continuous features. Note that feature values \code{NA} and \code{NaN}
 are also supported using \code{is.na()} and \code{is.nan()}.
+}
+\examples{
+nbh <- mmb::neighborhood(df = iris, features = mmb::createFeatureForBayes(
+  name = "Sepal.Width", value = mean(iris$Sepal.Width)))
+
+print(nrow(nbh))
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}

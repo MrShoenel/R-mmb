@@ -4,6 +4,7 @@
 #' Each range is delimited by an exclusive minimum value and an inclusive maximum value.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords discretization
 #' @param data a vector with numeric data
 #' @param openEndRanges boolean default True. If true, then the minimum value
 #' of the first range will be set to @seealso \code{.Machine$double.xmin} and
@@ -22,6 +23,12 @@
 #' being the exclusive minimum value of the range, and the second being the
 #' inclusive maximum value of the range. The list will be as long as the number
 #' of buckets requested.
+#' @examples
+#' buckets <- mmb::discretizeVariableToRanges(
+#'   data = iris$Sepal.Length, openEndRanges = TRUE)
+#'
+#' length(buckets)
+#' buckets[[5]]
 #' @export
 discretizeVariableToRanges <- function(
   data, openEndRanges = TRUE, numRanges = NA,
@@ -106,10 +113,17 @@ discretizeVariableToRanges <- function(
 #' range's minimum and less than or equal to its maximum.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords discretization
 #' @param ranges list of ranges, as obtained by @seealso \code{discretizeVariableToRanges}
 #' @param value numeric a value drawn from the previously discretized
 #' random variable.
 #' @return integer the index of the range the given value falls into.
+#' @examples
+#' buckets <- mmb::discretizeVariableToRanges(
+#'   data = iris$Sepal.Length, openEndRanges = TRUE)
+#'
+#' mmb::getRangeForDiscretizedValue(
+#'   ranges = buckets, value = mean(iris$Sepal.Length))
 #' @export
 getRangeForDiscretizedValue <- function(ranges, value) {
   for (i in 1:length(ranges)) {

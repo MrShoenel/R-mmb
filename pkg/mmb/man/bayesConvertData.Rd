@@ -16,6 +16,9 @@ the same data.frame with all factors converted to character.
 Converts all columns in a data.frame that are factors to
 character, except for the target column.
 }
+\examples{
+df <- mmb::bayesConvertData(df = iris)
+}
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }

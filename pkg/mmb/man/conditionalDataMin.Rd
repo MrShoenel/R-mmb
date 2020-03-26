@@ -43,9 +43,20 @@ variables. Only rows satisfying all conditions are kept. Supports discrete
 and continuous variables. Supports NA, NaN and NULL by using is.na, is.nan
 and is.null as comparator.
 }
+\examples{
+feat1 <- mmb::createFeatureForBayes(
+  name = "Petal.Length", value = mean(iris$Petal.Length))
+feat2 <- mmb::createFeatureForBayes(
+  name = "Petal.Width", value = mean(iris$Petal.Width))
+feats <- rbind(feat1, feat2)
+
+data <- mmb::conditionalDataMin(df = iris, features = feats,
+  selectedFeatureNames = feats$name, retainMinValues = 1)
+}
 \seealso{
 \code{getValueKeyOfBayesFeatures()}
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{segmentation}

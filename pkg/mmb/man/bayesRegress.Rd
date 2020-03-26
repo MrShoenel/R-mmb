@@ -99,3 +99,5 @@ mmb::bayesRegress(dfTrain, tf, "Sepal.Length")
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{full-dependency,}
+\keyword{regression}

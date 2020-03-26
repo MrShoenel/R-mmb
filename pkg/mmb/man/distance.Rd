@@ -47,6 +47,20 @@ The distance of two samples x,y from each other within a given
 neighborhood is defined as the absolute value of the subtraction of each
 sample's centrality to the neighborhood.
 }
+\examples{
+# Show the distance between two samples using all their features:
+mmb::distance(dfNeighborhood = iris, rowNrOfSample1 = 10, rowNrOfSample2 = 99)
+
+# Let's use an actual neighborhood:
+nbh <- mmb::neighborhood(df = iris, features = mmb::createFeatureForBayes(
+  name = "Sepal.Length", value = mean(iris$Sepal.Length)))
+mmb::distance(dfNeighborhood = nbh, rowNrOfSample1 = 1, rowNrOfSample2 = 30,
+  selectedFeatureNames = colnames(iris)[1:3])
+
+# Let's compare this to the distances as they are in iris (should be smaller):
+mmb::distance(dfNeighborhood = iris, rowNrOfSample1 = 1, rowNrOfSample2 = 30,
+  selectedFeatureNames = colnames(iris)[1:3])
+}
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }

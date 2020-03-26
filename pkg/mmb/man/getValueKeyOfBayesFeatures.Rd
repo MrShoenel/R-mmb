@@ -22,6 +22,18 @@ constructed by @seealso \code{createFeatureForBayes} and a name,
 extracts the type of the feature specified by name. Note that this
 is only used internally.
 }
+\examples{
+feats <- rbind(
+  mmb::createFeatureForBayes(
+    "Petal.Width", value = mean(iris$Petal.Width)),
+  mmb::createFeatureForBayes(
+    name = "Species", iris[1,]$Species, isLabel = TRUE)
+)
+
+print(mmb::getValueKeyOfBayesFeatures(feats, "Species"))
+print(mmb::getValueKeyOfBayesFeatures(feats, "Petal.Width"))
+}
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{feature}

@@ -41,9 +41,24 @@ posteriori estimate.
 Uses simple Bayesian inference to return the probability or
 relative likelihood or a discrete label or continuous value.
 }
+\examples{
+feat1 <- mmb::createFeatureForBayes(
+  name = "Sepal.Length", value = mean(iris$Sepal.Length))
+feat2 <- mmb::createFeatureForBayes(
+  name = "Sepal.Width", value = mean(iris$Sepal.Width), isLabel = TRUE)
+
+# Assign a probability to a continuous variable (also works with nominal):
+mmb::bayesProbabilitySimple(df = iris, features = rbind(feat1, feat2),
+  targetCol = feat2$name, retainMinValues = 5, doEcdf = TRUE)
+}
+\references{
+\insertRef{rpkg:bnlearn_4.5}{mmb}
+}
 \seealso{
 \code{mmb::bayesInferSimple()}
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{inferencing}
+\keyword{simple,}

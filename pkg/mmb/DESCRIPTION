@@ -31,9 +31,11 @@ Suggests:
     Rtsne
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.0
-Imports: 
+Imports:
+    Rdpack,
     datasets,
     stats,
     foreach,
     parallel,
     doParallel
+RdMacros: Rdpack

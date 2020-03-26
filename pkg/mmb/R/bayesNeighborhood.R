@@ -24,6 +24,11 @@ utils::globalVariables("rn", package = c("mmb"))
 #' sense to retain samples.
 #' @return data.frame with rows that were selected as neighborhood. It is
 #' guaranteed that the rownames are maintained.
+#' @examples
+#' nbh <- mmb::neighborhood(df = iris, features = mmb::createFeatureForBayes(
+#'   name = "Sepal.Width", value = mean(iris$Sepal.Width)))
+#'
+#' print(nrow(nbh))
 #' @export
 neighborhood <- function(df, features, selectedFeatureNames = c(), retainMinValues = 0) {
   if (length(selectedFeatureNames) == 0) {
@@ -63,6 +68,16 @@ neighborhood <- function(df, features, selectedFeatureNames = c(), retainMinValu
 #' value. Depending on the interpretation of what you try to do, this may be of use.
 #' @return a named vector, where the names correspond to the rownames of the rows
 #' in the given neighborhood, and the value is the centrality of that row.
+#' @examples
+#' # Create a neighborhood:
+#' nbh <- mmb::neighborhood(df = iris, features = mmb::createFeatureForBayes(
+#'   name = "Sepal.Width", value = mean(iris$Sepal.Width)))
+#'
+#' cent <- mmb::centralities(dfNeighborhood = nbh, shiftAmount = 0.1,
+#'   doEcdf = TRUE, ecdfMinusOne = TRUE)
+#'
+#' # Plot the ordered samples to get an idea of the centralities in the neighborhood:
+#' plot(x = names(cent), y=cent)
 #' @export
 centralities <- function(
   dfNeighborhood, selectedFeatureNames = c(),
@@ -158,16 +173,29 @@ centralities <- function(
 #' used. If true, uses 1 minus the ECDF to find the probability of a continuous
 #' value. Depending on the interpretation of what you try to do, this may be of use.
 #' @return numeric the distance as a positive number.
+#' @examples
+#' # Show the distance between two samples using all their features:
+#' mmb::distance(dfNeighborhood = iris, rowNrOfSample1 = 10, rowNrOfSample2 = 99)
+#'
+#' # Let's use an actual neighborhood:
+#' nbh <- mmb::neighborhood(df = iris, features = mmb::createFeatureForBayes(
+#'   name = "Sepal.Length", value = mean(iris$Sepal.Length)))
+#' mmb::distance(dfNeighborhood = nbh, rowNrOfSample1 = 1, rowNrOfSample2 = 30,
+#'   selectedFeatureNames = colnames(iris)[1:3])
+#'
+#' # Let's compare this to the distances as they are in iris (should be smaller):
+#' mmb::distance(dfNeighborhood = iris, rowNrOfSample1 = 1, rowNrOfSample2 = 30,
+#'   selectedFeatureNames = colnames(iris)[1:3])
 #' @export
 distance <- function(
   dfNeighborhood, rowNrOfSample1, rowNrOfSample2, selectedFeatureNames = c(),
   shiftAmount = 0.1, doEcdf = FALSE, ecdfMinusOne = FALSE
 ) {
-  c <- mmb::centralities(
+  cent <- mmb::centralities(
     dfNeighborhood = dfNeighborhood, selectedFeatureNames = selectedFeatureNames,
     shiftAmount = shiftAmount, doEcdf = doEcdf, ecdfMinusOne = ecdfMinusOne
   )
-  return(abs(c[[rowNrOfSample1]] - c[[rowNrOfSample2]]))
+  return(abs(cent[[rowNrOfSample1]] - cent[[rowNrOfSample2]]))
 }
 
 
@@ -204,6 +232,13 @@ distance <- function(
 #' sense to retain samples.
 #' @return data.frame with a single column 'vicinity' and the same rownames as the
 #' given data.frame. Each row then holds the vicinity for the corresponding row.
+#' @examples
+#' vic <- mmb::vicinitiesForSample(
+#'   df = iris, sampleFromDf = iris[1,], shiftAmount = 0.1)
+#' vic$vicinity
+#'
+#' # Plot the ordered samples to get an idea which ones have a vicinity > 0
+#' plot(x=rownames(vic), y=vic$vicinity)
 #' @export
 vicinitiesForSample <- function(
   df, sampleFromDf,
@@ -284,6 +319,11 @@ vicinitiesForSample <- function(
 #' is the vicinity of sample \eqn{s_j} to that neighborhood. No value of the diagonal
 #' is zero, because each neighborhood always contains the sample it was demarcated
 #' by, and that sample has a similarity greater than zero to it.
+#' @examples
+#' mmb::vicinities(df = iris[1:10,])
+#'
+#' # Run the same, but use the ECDF and retain more values:
+#' mmb::vicinities(df = iris[1:10,], doEcdf = T, retainMinValues = 10)
 #' @export
 vicinities <- function(
   df, selectedFeatureNames = c(),

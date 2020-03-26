@@ -22,6 +22,14 @@ belongs to (i.e., in which bucket it belongs). The indexes start R-typically
 at 1. Per definition, a value is within a range, if it is larger than the
 range's minimum and less than or equal to its maximum.
 }
+\examples{
+buckets <- mmb::discretizeVariableToRanges(
+  data = iris$Sepal.Length, openEndRanges = TRUE)
+
+mmb::getRangeForDiscretizedValue(
+  ranges = buckets, value = mean(iris$Sepal.Length))
+}
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{discretization}

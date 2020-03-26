@@ -229,3 +229,22 @@ test_that("simple Bayesian regression using one or more features work", {
 })
 
 
+test_that("an error is thrown if there is a discrepancy in target-features", {
+  w <- mmb::getWarnings()
+  mmb::setWarnings(FALSE)
+
+  feat1 <- mmb::createFeatureForBayes(
+    name = "Sepal.Length", value = mean(iris$Sepal.Length))
+  feat2 <- mmb::createFeatureForBayes(
+    name = "Sepal.Width", value = mean(iris$Sepal.Width), isLabel = TRUE)
+
+  expect_does_throw({
+    mmb::bayesProbabilitySimple(df = iris, features = rbind(feat1, feat2), targetCol = feat1$name)
+  })
+  expect_does_not_throw({
+    mmb::bayesProbabilitySimple(df = iris, features = rbind(feat1, feat2), targetCol = feat2$name)
+  })
+
+  mmb::setWarnings(w)
+})
+

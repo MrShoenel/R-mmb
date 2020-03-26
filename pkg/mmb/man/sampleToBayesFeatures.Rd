@@ -23,6 +23,13 @@ each row corresponds to one feature (and its value) of the sample.
 This is done using @seealso \code{createFeatureForBayes}. This
 operation can be thought of transposing a matrix.
 }
+\examples{
+# Converts all features of iris; the result is a data.frame of length
+# equal to the amount of features in iris (5). The first feature is
+# targetCol (has isLabel=TRUE).
+samp <- mmb::sampleToBayesFeatures(dfRow = iris[15,], targetCol = "Species")
+}
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{feature}

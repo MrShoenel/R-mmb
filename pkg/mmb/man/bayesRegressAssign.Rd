@@ -49,8 +49,8 @@ feature.}
 do inferencing. If zero, then only the initially given data.frame dfTrain is
 used. If > 0, then each inferenced sample will be attached to it and the
 resulting data.frame is truncated to this number. Use an integer large enough
-(i.e., sum of training and validation rows) to keep all samples during infer-
-encing. A smaller amount as, e.g., in dfTrain, will keep the amount of data
+(i.e., sum of training and validation rows) to keep all samples during
+inferencing. A smaller amount as, e.g., in dfTrain, will keep the amount of data
 restricted, discarding older rows. A larger amount than, e.g., in dfTrain is
 also fine; dfTrain will grow to it and then discard rows.}
 
@@ -105,3 +105,5 @@ and you will find good documentation there.
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{full-dependency,}
+\keyword{regression}

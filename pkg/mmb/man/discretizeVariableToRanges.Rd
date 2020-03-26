@@ -42,6 +42,14 @@ of buckets requested.
 Discretizes a continuous random variable into buckets (ranges).
 Each range is delimited by an exclusive minimum value and an inclusive maximum value.
 }
+\examples{
+buckets <- mmb::discretizeVariableToRanges(
+  data = iris$Sepal.Length, openEndRanges = TRUE)
+
+length(buckets)
+buckets[[5]]
+}
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{discretization}
