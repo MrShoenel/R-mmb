@@ -52,6 +52,22 @@ utils::globalVariables("fn", package = c("mmb"))
 #' likelihood (regression, inferring likelihood of continuous value) or most
 #' likely value given the conditional features. If using a positive
 #' \code{shiftAmount}, the result is a 'probability score'.
+#' @examples
+#' feat1 <- mmb::createFeatureForBayes(
+#'   name = "Petal.Length", value = mean(iris$Petal.Length))
+#' feat2 <- mmb::createFeatureForBayes(
+#'   name = "Petal.Width", value = mean(iris$Petal.Width))
+#' featT <- mmb::createFeatureForBayes(
+#'   name = "Species", iris[1,]$Species, isLabel = TRUE)
+#'
+#' # Check the probability of Species=setosa, given the other 2 features:
+#' mmb::bayesProbabilityNaive(
+#'   df = iris, features = rbind(feat1, feat2, featT), targetCol = "Species")
+#'
+#' # Now check the probability of Species=versicolor:
+#' featT$valueChar <- "versicolor"
+#' mmb::bayesProbabilityNaive(
+#'   df = iris, features = rbind(feat1, feat2, featT), targetCol = "Species")
 #' @export
 bayesProbabilityNaive <- function(
   df, features, targetCol, selectedFeatureNames = c(),

@@ -20,8 +20,8 @@
 #' featT <- mmb::createFeatureForBayes(
 #'   name = "Species", iris[1,]$Species, isLabel = TRUE)
 #'
-#' mmb::bayesToLatex(conditionalFeatures = rbind(feat1, feat2),
-#'   targetFeature = featT, includeValues = TRUE)
+#' cat(mmb::bayesToLatex(conditionalFeatures = rbind(feat1, feat2),
+#'   targetFeature = featT, includeValues = TRUE))
 #' @export
 bayesToLatex <- function(conditionalFeatures, targetFeature, includeValues = FALSE) {
   if (nrow(conditionalFeatures) == 0 || nrow(targetFeature) == 0) {

@@ -374,11 +374,16 @@ bayesProbability <- function(
 #' only has one column "probability". The first column of this table is always
 #' called "rowname" and corresponds to the rownames of dfValid.
 #' @examples
+#' w <- mmb::getWarnings()
+#' mmb::setWarnings(FALSE)
+#'
 #' set.seed(84735)
 #' rn <- base::sample(rownames(iris), 150)
 #' dfTrain <- iris[rn[1:120], ]
 #' dfValid <- iris[rn[121:150], !(colnames(iris) %in% "Species") ]
 #' mmb::bayesProbabilityAssign(dfTrain, dfValid, "Species")
+#'
+#' mmb::setWarnings(w)
 #' @export
 bayesProbabilityAssign <- function(
   dfTrain, dfValid, targetCol, selectedFeatureNames = c(),

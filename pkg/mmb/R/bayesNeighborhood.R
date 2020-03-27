@@ -284,7 +284,7 @@ vicinitiesForSample <- function(
 
 
 #' @title Segment a dataset by each row once, then compute vicinities of
-#' samples in the neighborhood. Uses @seealso \code{vicinitiesForSample()}.
+#' samples in the neighborhood.
 #'
 #' @description Given an entire dataset, uses each instance in it to demarcate
 #' a neighborhood using the selected features. Then, for each neighborhood,
@@ -294,6 +294,7 @@ vicinitiesForSample <- function(
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @keywords network
+#' @seealso \code{vicinitiesForSample()}
 #' @param df data.frame to compute the matrix of vicinites for.
 #' @param selectedFeatureNames vector of names of features to use for computing
 #' the vicinity/centrality of each sample to each neighborhood.
@@ -320,10 +321,13 @@ vicinitiesForSample <- function(
 #' is zero, because each neighborhood always contains the sample it was demarcated
 #' by, and that sample has a similarity greater than zero to it.
 #' @examples
+#' w <- mmb::getWarnings()
+#' mmb::setWarnings(FALSE)
 #' mmb::vicinities(df = iris[1:10,])
 #'
 #' # Run the same, but use the ECDF and retain more values:
 #' mmb::vicinities(df = iris[1:10,], doEcdf = T, retainMinValues = 10)
+#' mmb::setWarnings(w)
 #' @export
 vicinities <- function(
   df, selectedFeatureNames = c(),

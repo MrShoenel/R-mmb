@@ -80,11 +80,16 @@ It mostly forwards the given arguments to these functions, and you will find
 good documentation there.
 }
 \examples{
+w <- mmb::getWarnings()
+mmb::setWarnings(FALSE)
+
 set.seed(84735)
 rn <- base::sample(rownames(iris), 150)
 dfTrain <- iris[rn[1:120], ]
 dfValid <- iris[rn[121:150], !(colnames(iris) \%in\% "Species") ]
 mmb::bayesProbabilityAssign(dfTrain, dfValid, "Species")
+
+mmb::setWarnings(w)
 }
 \references{
 \insertRef{bayes1763lii}{mmb}

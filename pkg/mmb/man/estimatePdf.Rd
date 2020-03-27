@@ -46,7 +46,7 @@ is returned that returns 1 iff the value supplied is the same as the
 observation. Otherwise, that function will return zero.
 }
 \examples{
-epdf <- mmb::mmb::estimatePdf(data = iris$Petal.Width)
+epdf <- mmb::estimatePdf(data = iris$Petal.Width)
 print(epdf$argmax)
 plot(epdf)
 

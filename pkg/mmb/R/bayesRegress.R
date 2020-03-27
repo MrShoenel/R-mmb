@@ -92,6 +92,9 @@ getDefaultRegressor <- function() varDefaultRegressor$get()
 #' average etc. You may also use this function to obtain the raw values
 #' for further processing.
 #' @examples
+#' w <- mmb::getWarnings()
+#' mmb::setWarnings(FALSE)
+#'
 #' df <- iris[, ]
 #' set.seed(84735)
 #' rn <- base::sample(rownames(df), 150)
@@ -99,6 +102,8 @@ getDefaultRegressor <- function() varDefaultRegressor$get()
 #' dfValid <- df[121:150, ]
 #' tf <- mmb::sampleToBayesFeatures(dfValid[1,], "Sepal.Length")
 #' mmb::bayesRegress(dfTrain, tf, "Sepal.Length")
+#'
+#' mmb::setWarnings(w)
 #' @export
 bayesRegress <- function(
   df, features, targetCol, selectedFeatureNames = c(),
@@ -277,7 +282,8 @@ bayesRegress <- function(
 #' However, any other function can be used, too, such as min, max, median,
 #' average etc. You may also use this function to obtain the raw values
 #' for further processing.#'
-#' @examples \dontrun{
+#' @examples
+#' \dontrun{
 #' df <- iris[, ]
 #' set.seed(84735)
 #' rn <- base::sample(rownames(df), 150)

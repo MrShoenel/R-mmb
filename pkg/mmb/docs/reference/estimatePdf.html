@@ -174,7 +174,11 @@ is returned that returns 1 iff the value supplied is the same as the
 observation. Otherwise, that function will return zero.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"></pre>
+    <pre class="examples"><div class='input'><span class='no'>epdf</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/mmb/man/estimatePdf.html'>estimatePdf</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>iris</span>$<span class='no'>Petal.Width</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>epdf</span>$<span class='no'>argmax</span>)</div><div class='output co'>#&gt; [1] 0.206581</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>epdf</span>)</div><div class='img'><img src='estimatePdf-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Get relative likelihood of some values:</span>
+<span class='no'>rl1</span> <span class='kw'>&lt;-</span> <span class='no'>epdf</span>$<span class='fu'>fun</span>(<span class='fl'>0.5</span>)
+<span class='no'>rl2</span> <span class='kw'>&lt;-</span> <span class='no'>epdf</span>$<span class='fu'>fun</span>(<span class='fl'>1.7</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

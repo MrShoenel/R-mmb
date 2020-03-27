@@ -34,8 +34,8 @@ feat2 <- mmb::createFeatureForBayes(
 featT <- mmb::createFeatureForBayes(
   name = "Species", iris[1,]$Species, isLabel = TRUE)
 
-mmb::bayesToLatex(conditionalFeatures = rbind(feat1, feat2),
-  targetFeature = featT, includeValues = TRUE)
+cat(mmb::bayesToLatex(conditionalFeatures = rbind(feat1, feat2),
+  targetFeature = featT, includeValues = TRUE))
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}

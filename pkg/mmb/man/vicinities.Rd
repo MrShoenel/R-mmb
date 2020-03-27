@@ -3,7 +3,7 @@
 \name{vicinities}
 \alias{vicinities}
 \title{Segment a dataset by each row once, then compute vicinities of
-samples in the neighborhood. Uses @seealso \code{vicinitiesForSample()}.}
+samples in the neighborhood.}
 \usage{
 vicinities(
   df,
@@ -58,10 +58,16 @@ N x N matrix, where the entry \eqn{m_{i,j}} corresponds to the vicinity of
 sample \eqn{s_j} in neighborhood \eqn{N_i}.
 }
 \examples{
+w <- mmb::getWarnings()
+mmb::setWarnings(FALSE)
 mmb::vicinities(df = iris[1:10,])
 
 # Run the same, but use the ECDF and retain more values:
 mmb::vicinities(df = iris[1:10,], doEcdf = T, retainMinValues = 10)
+mmb::setWarnings(w)
+}
+\seealso{
+\code{vicinitiesForSample()}
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}

@@ -216,12 +216,28 @@ likelihood (regression, inferring likelihood of continuous value) or most
 likely value given the conditional features. If using a positive
 <code>shiftAmount</code>, the result is a 'probability score'.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>feat1</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/mmb/man/createFeatureForBayes.html'>createFeatureForBayes</a></span>(
+  <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"Petal.Length"</span>, <span class='kw'>value</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>iris</span>$<span class='no'>Petal.Length</span>))
+<span class='no'>feat2</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/mmb/man/createFeatureForBayes.html'>createFeatureForBayes</a></span>(
+  <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"Petal.Width"</span>, <span class='kw'>value</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>iris</span>$<span class='no'>Petal.Width</span>))
+<span class='no'>featT</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/mmb/man/createFeatureForBayes.html'>createFeatureForBayes</a></span>(
+  <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"Species"</span>, <span class='no'>iris</span>[<span class='fl'>1</span>,]$<span class='no'>Species</span>, <span class='kw'>isLabel</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+<span class='co'># Check the probability of Species=setosa, given the other 2 features:</span>
+<span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/mmb/man/bayesProbabilityNaive.html'>bayesProbabilityNaive</a></span>(
+  <span class='kw'>df</span> <span class='kw'>=</span> <span class='no'>iris</span>, <span class='kw'>features</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span>(<span class='no'>feat1</span>, <span class='no'>feat2</span>, <span class='no'>featT</span>), <span class='kw'>targetCol</span> <span class='kw'>=</span> <span class='st'>"Species"</span>)</div><div class='output co'>#&gt; [1] 0.004333333</div><div class='input'>
+<span class='co'># Now check the probability of Species=versicolor:</span>
+<span class='no'>featT</span>$<span class='no'>valueChar</span> <span class='kw'>&lt;-</span> <span class='st'>"versicolor"</span>
+<span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/mmb/man/bayesProbabilityNaive.html'>bayesProbabilityNaive</a></span>(
+  <span class='kw'>df</span> <span class='kw'>=</span> <span class='no'>iris</span>, <span class='kw'>features</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span>(<span class='no'>feat1</span>, <span class='no'>feat2</span>, <span class='no'>featT</span>), <span class='kw'>targetCol</span> <span class='kw'>=</span> <span class='st'>"Species"</span>)</div><div class='output co'>#&gt; [1] 0.283568</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>

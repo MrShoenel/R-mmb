@@ -30,13 +30,13 @@
 #' filled from its estimate. 'argmax' is then set to that 'x', where 'y'
 #' becomes max.
 #' @examples
-#' epdf <- mmb::mmb::estimatePdf(data = iris$Petal.Width)
+#' epdf <- mmb::estimatePdf(data = iris$Petal.Width)
 #' print(epdf$argmax)
 #' plot(epdf)
 #'
 #' # Get relative likelihood of some values:
-#' rl1 <- epdf$fun(0.5)
-#' rl2 <- epdf$fun(1.7)
+#' epdf$fun(0.5)
+#' epdf$fun(1.7)
 #' @export
 estimatePdf <- function(data = c(), densFun = function(vec) {
   stats::density(vec, bw = "SJ")
