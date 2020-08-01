@@ -214,12 +214,12 @@ We define a couple of helper-functions:
       
       if (nrow(ds) > max_rows_dataset) {
         tempPart <- createDataPartition(
-          ds[[dsLabel]], p = max_rows_dataset / nrow(ds), list = F)
+          ds[[dsLabel]], p = max_rows_dataset / nrow(ds), list = FALSE)
         ds <- ds[tempPart, ]
       }
       
       part <- createDataPartition(
-        ds[[dsLabel]], p = ifelse(nrow(ds) < 800, 0.7, 0.85), list = F)
+        ds[[dsLabel]], p = ifelse(nrow(ds) < 800, 0.7, 0.85), list = FALSE)
       
       return(list(
         ds = ds,
@@ -533,7 +533,7 @@ continuing with our Bayesian results.
       ggsave(fileName, ggplotInstance,
              width = floor(width * 100) / 100,
              height = floor(height * 100) / 100,
-             limitsize = F, device = cairo_pdf)
+             limitsize = FALSE, device = cairo_pdf)
       return(ggplotInstance)
     }
 
