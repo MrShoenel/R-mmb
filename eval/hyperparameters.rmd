@@ -26,7 +26,7 @@ In the following block, we can globally disable attempts to compute results. If 
 
 ```{r}
 DISABLE_COMPUTATIONS <- TRUE
-# Used with many qualititave values as brewer color palette:
+# Used with many qualitative values as brewer color palette:
 QPALETTE <- "Set3"
 # This is in inches!
 tikzWidthFull <- 6.1 # 6.12619 original/maximal for JSS article
@@ -41,15 +41,16 @@ options(repos="https://cran.rstudio.com")
 options(java.parameters = "-Xmx2g")
 
 install.packages_cond <- function(name) {
-  if (!DISABLE_COMPUTATIONS && !(name %in% rownames(installed.packages()))) {
+  if (!(name %in% rownames(installed.packages()))) {
     install.packages(name)
   }
   if (!(name %in% .packages())) {
-    library(name, character.only = T)
+    library(name, character.only = TRUE)
   }
 }
 
 packages_required <- c(
+  "devtools", "Rdpack",
   "e1071", "lattice", "ggplot2", "bnclassify", "mlbench",
   "neuralnet", "gbm", "plyr", "foreach", "iterators", "doParallel",
   "parallel", "doSNOW", "snow", "scatterplot3d", "MASS",
@@ -255,12 +256,12 @@ get_dataset <- function(name, seedMult, useDs = NULL, useLabel = NULL) {
   
   if (nrow(ds) > max_rows_dataset) {
     tempPart <- createDataPartition(
-      ds[[dsLabel]], p = max_rows_dataset / nrow(ds), list = F)
+      ds[[dsLabel]], p = max_rows_dataset / nrow(ds), list = FALSE)
     ds <- ds[tempPart, ]
   }
   
   part <- createDataPartition(
-    ds[[dsLabel]], p = ifelse(nrow(ds) < 800, 0.7, 0.85), list = F)
+    ds[[dsLabel]], p = ifelse(nrow(ds) < 800, 0.7, 0.85), list = FALSE)
   
   return(list(
     ds = ds,
@@ -552,7 +553,7 @@ saveAndPlotAsEPS <- function(ggplotInstance, fileName, width = tikzWidthFull, he
   ggsave(fileName, ggplotInstance,
          width = floor(width * 100) / 100,
          height = floor(height * 100) / 100,
-         limitsize = F, device = cairo_pdf)
+         limitsize = FALSE, device = cairo_pdf)
   return(ggplotInstance)
 }
 ```
