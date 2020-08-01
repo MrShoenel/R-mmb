@@ -2,8 +2,7 @@
 % Please edit documentation in R/warnings.R
 \name{setMessages}
 \alias{setMessages}
-\title{Setter for enabling or disabling messages. Messages are disabled by default.
-Use these to enable high verbosity.}
+\title{Enable or disable messages system-wide.}
 \usage{
 setMessages(enable = TRUE)
 }
@@ -14,8 +13,8 @@ setMessages(enable = TRUE)
 Boolean the state of enabled
 }
 \description{
-Setter for enabling or disabling messages. Messages are disabled by default.
-Use these to enable high verbosity.
+Setter for enabling or disabling messages. Messages are
+disabled by default. Use these to enable high verbosity.
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}

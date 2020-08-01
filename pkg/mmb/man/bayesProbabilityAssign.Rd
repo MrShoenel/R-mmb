@@ -4,10 +4,20 @@
 \alias{bayesProbabilityAssign}
 \title{Assign probabilities to one or more samples, given some training data.}
 \usage{
-bayesProbabilityAssign(dfTrain, dfValid, targetCol,
-  selectedFeatureNames = c(), shiftAmount = 0.1, retainMinValues = 1,
-  doEcdf = FALSE, online = 0, simple = FALSE, naive = FALSE,
-  useParallel = NULL, returnProbabilityTable = FALSE)
+bayesProbabilityAssign(
+  dfTrain,
+  dfValid,
+  targetCol,
+  selectedFeatureNames = c(),
+  shiftAmount = 0.1,
+  retainMinValues = 1,
+  doEcdf = FALSE,
+  online = 0,
+  simple = FALSE,
+  naive = FALSE,
+  useParallel = NULL,
+  returnProbabilityTable = FALSE
+)
 }
 \arguments{
 \item{dfTrain}{data.frame that holds the training data.}
@@ -38,8 +48,8 @@ feature.}
 do inferencing. If zero, then only the initially given data.frame dfTrain is
 used. If > 0, then each inferenced sample will be attached to it and the
 resulting data.frame is truncated to this number. Use an integer large enough
-(i.e., sum of training and validation rows) to keep all samples during infer-
-encing. A smaller amount as, e.g., in dfTrain, will keep the amount of data
+(i.e., sum of training and validation rows) to keep all samples during
+inferencing. A smaller amount as, e.g., in dfTrain, will keep the amount of data
 restricted, discarding older rows. A larger amount than, e.g., in dfTrain is
 also fine; dfTrain will grow to it and then discard rows.}
 
@@ -70,12 +80,23 @@ It mostly forwards the given arguments to these functions, and you will find
 good documentation there.
 }
 \examples{
+w <- mmb::getWarnings()
+mmb::setWarnings(FALSE)
+
 set.seed(84735)
 rn <- base::sample(rownames(iris), 150)
 dfTrain <- iris[rn[1:120], ]
 dfValid <- iris[rn[121:150], !(colnames(iris) \%in\% "Species") ]
 mmb::bayesProbabilityAssign(dfTrain, dfValid, "Species")
+
+mmb::setWarnings(w)
+}
+\references{
+\insertRef{bayes1763lii}{mmb}
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{classification}
+\keyword{full-dependency}
+\keyword{inferencing}

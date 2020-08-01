@@ -3,10 +3,17 @@
 \name{vicinities}
 \alias{vicinities}
 \title{Segment a dataset by each row once, then compute vicinities of
-samples in the neighborhood. Uses @seealso \code{vicinitiesForSample()}.}
+samples in the neighborhood.}
 \usage{
-vicinities(df, selectedFeatureNames = c(), shiftAmount = 0.1,
-  doEcdf = FALSE, ecdfMinusOne = FALSE, useParallel = NULL)
+vicinities(
+  df,
+  selectedFeatureNames = c(),
+  shiftAmount = 0.1,
+  doEcdf = FALSE,
+  ecdfMinusOne = FALSE,
+  retainMinValues = 0,
+  useParallel = NULL
+)
 }
 \arguments{
 \item{df}{data.frame to compute the matrix of vicinites for.}
@@ -26,6 +33,12 @@ to find the likelihood of continuous values.}
 used. If true, uses 1 minus the ECDF to find the probability of a continuous
 value. Depending on the interpretation of what you try to do, this may be of use.}
 
+\item{retainMinValues}{DEFAULT 0 the amount of samples to retain during
+segmentation. For separating a neighborhood, this value typically should
+be 0, so that no samples are included that are not within it. However,
+for very sparse data or a great amount of variables, it might still make
+sense to retain samples.}
+
 \item{useParallel}{boolean DEFAULT NULL whether to use parallelism or not. Setting this to
 true requires also having previously registered a parallel backend. If parallel
 computing is enabled, then each neighborhood is computed separately.}
@@ -43,6 +56,18 @@ a neighborhood using the selected features. Then, for each neighborhood,
 the vicinity of all samples to it is computed. The result of this is an
 N x N matrix, where the entry \eqn{m_{i,j}} corresponds to the vicinity of
 sample \eqn{s_j} in neighborhood \eqn{N_i}.
+}
+\examples{
+w <- mmb::getWarnings()
+mmb::setWarnings(FALSE)
+mmb::vicinities(df = iris[1:10,])
+
+# Run the same, but use the ECDF and retain more values:
+mmb::vicinities(df = iris[1:10,], doEcdf = TRUE, retainMinValues = 10)
+mmb::setWarnings(w)
+}
+\seealso{
+\code{vicinitiesForSample()}
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}

@@ -28,7 +28,7 @@ test_that("invalid arguments in simple bayes lead to warn/stop", {
   })
 
   w <- mmb::getWarnings()
-  mmb::setWarnings(T)
+  mmb::setWarnings(TRUE)
 
   expect_warning({
     mmb::bayesInferSimple(iris[1,], features, "Species")
@@ -52,7 +52,7 @@ test_that("invalid arguments in simple bayes lead to warn/stop", {
 
   m <- mmb::getMessages()
 
-  mmb::setMessages(T)
+  mmb::setMessages(TRUE)
   expect_message({
     featSpe <- mmb::createFeatureForBayes("Species", iris$Species[1])
     res <- mmb::bayesInferSimple(
@@ -97,7 +97,7 @@ test_that("invalid arguments in simple bayes lead to warn/stop", {
 
 test_that("a warning for ordered factors is issued", {
   w <- mmb::getWarnings()
-  mmb::setWarnings(T)
+  mmb::setWarnings(TRUE)
 
   fac <- factor(c("A", "B"), levels = c("A", "B"), ordered = TRUE)
   expect_warning({
@@ -228,4 +228,40 @@ test_that("simple Bayesian regression using one or more features work", {
   expect_equal(res, pdf$x[which.max(pdf$y)], epsilon = 1e-15)
 })
 
+
+test_that("an error is thrown if there is a discrepancy in target-features", {
+  w <- mmb::getWarnings()
+  mmb::setWarnings(FALSE)
+
+  feat1 <- mmb::createFeatureForBayes(
+    name = "Sepal.Length", value = mean(iris$Sepal.Length))
+  feat2 <- mmb::createFeatureForBayes(
+    name = "Sepal.Width", value = mean(iris$Sepal.Width), isLabel = TRUE)
+
+  expect_does_throw({
+    mmb::bayesProbabilitySimple(df = iris, features = rbind(feat1, feat2), targetCol = feat1$name)
+  })
+  expect_does_not_throw({
+    mmb::bayesProbabilitySimple(df = iris, features = rbind(feat1, feat2), targetCol = feat2$name)
+  })
+
+  mmb::setWarnings(w)
+})
+
+
+test_that("one features as designated label is always required", {
+  w <- mmb::getWarnings()
+  mmb::setWarnings(FALSE)
+
+  feat1 <- mmb::createFeatureForBayes(
+    name = "Sepal.Length", value = mean(iris$Sepal.Length), isLabel = FALSE)
+  feat2 <- mmb::createFeatureForBayes(
+    name = "Sepal.Width", value = mean(iris$Sepal.Width), isLabel = FALSE)
+
+  expect_does_throw({
+    mmb::bayesProbabilitySimple(df = iris, features = rbind(feat1, feat2), targetCol = feat1$name)
+  })
+
+  mmb::setWarnings(w)
+})
 

@@ -12,7 +12,7 @@ test_that("we can obtain a neighborhood for any sample", {
   q <- setdiff(rownames(iris), n)
 
   w <- mmb::getWarnings()
-  mmb::setWarnings(F)
+  mmb::setWarnings(FALSE)
 
   for (x in n) {
     s <- mmb::sampleToBayesFeatures(iris[x, ], "Species")
@@ -30,7 +30,7 @@ test_that("we can obtain a neighborhood for any sample", {
 
 test_that("we get errors and warnins for centralities", {
   w <- mmb::getWarnings()
-  mmb::setWarnings(T)
+  mmb::setWarnings(TRUE)
 
   expect_does_throw({
     mmb::centralities(dfNeighborhood = c())
@@ -57,7 +57,7 @@ test_that("we can obtain centralities", {
 
   for (n in 1:10) {
     temp <- iris[sample(rownames(iris), 50), ]
-    c <- mmb::centralities(temp, selectedFeatureNames = colnames(iris), shiftAmount = 0, doEcdf = T)
+    c <- mmb::centralities(temp, selectedFeatureNames = colnames(iris), shiftAmount = 0, doEcdf = TRUE)
 
     expect_equal(length(setdiff(rownames(temp), names(c))), 0)
     expect_true(sum(c < 0) + sum(c > 1) == 0)
@@ -77,19 +77,33 @@ test_that("getting vicinities for one sample works", {
   })
 
   w <- mmb::getWarnings()
-  mmb::setWarnings(T)
+  mmb::setWarnings(TRUE)
 
   expect_warning({
     mmb::vicinitiesForSample(iris, sampleFromDf = iris[1:2, ])
   }, "More than one")
+
+  mmb::setWarnings(w)
+})
+
+
+test_that("we can obtain the distance between 2 samples", {
+  w <- mmb::getWarnings()
+  mmb::setWarnings(FALSE)
+
+  d <- mmb::distance(
+    dfNeighborhood = iris, rowNrOfSample1 = "1", rowNrOfSample2 = "20"
+  )
+  expect_gte(d, 0)
+  mmb::setWarnings(w)
 })
 
 
 test_that("we can obtain the entire matrix of vicinities", {
   m <- mmb::getMessages()
-  mmb::setMessages(T)
+  mmb::setMessages(TRUE)
   w <- mmb::getWarnings()
-  mmb::setWarnings(F)
+  mmb::setWarnings(FALSE)
 
   l <- nrow(iris)
   vic <- expect_message({
@@ -118,13 +132,13 @@ test_that("we can obtain the entire matrix of vicinities", {
 
   # Check special cases:
   expect_does_throw({
-    mmb::vicinities(df = c(), useParallel = F)
+    mmb::vicinities(df = c(), useParallel = FALSE)
   })
   expect_does_throw({
-    mmb::vicinities(df = iris[0, ], useParallel = F)
+    mmb::vicinities(df = iris[0, ], useParallel = FALSE)
   })
   expect_does_not_throw({
-    mmb::vicinities(df = iris[5, ], useParallel = F)
+    mmb::vicinities(df = iris[5, ], useParallel = FALSE)
   })
 
   mmb::setMessages(m)

@@ -4,10 +4,14 @@
 \alias{make.varClosure}
 \title{Creates a closure over a variable and returns its getter and setter.}
 \usage{
-make.varClosure(initVarVal = NULL)
+make.varClosure(initVarVal = NULL, valValidator = NULL)
 }
 \arguments{
 \item{initVarVal}{the initial value of the closed variable.}
+
+\item{valValidator}{an optional function to validate each value. Function
+must return boolean. If this function returns FALSE for any value, an
+error is thrown.}
 }
 \value{
 list with entries 'get' and 'set' which are getter/setter for the

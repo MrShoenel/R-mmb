@@ -2,12 +2,12 @@
 % Please edit documentation in R/bayesLatex.R
 \name{bayesToLatex}
 \alias{bayesToLatex}
-\title{Creates a string that can be used in Latex in an e.g. equation-environment.}
+\title{Create a string that can be used in Latex in an e.g. equation-environment.}
 \usage{
 bayesToLatex(conditionalFeatures, targetFeature, includeValues = FALSE)
 }
 \arguments{
-\item{conditionalFeatures}{data.frame of Bayesian features, the target-
+\item{conditionalFeatures}{data.frame of Bayesian features, the target
 feature depends on.}
 
 \item{targetFeature}{data.frame that holds exactly one Bayesian feature,
@@ -20,10 +20,22 @@ the features' values or not, i.e. "A" vs. "A = setosa".}
 a string that can be used in Latex documents.
 }
 \description{
-Creates a string that can be used in Latex in an e.g. equation-environment.
+This function can be used to generate Latex-markup that models the
+full dependency between covariates and a target variable.
 }
 \note{
 Use \code{cat()} to print a string that can be copy-pasted.
+}
+\examples{
+feat1 <- mmb::createFeatureForBayes(
+  name = "Petal.Length", value = mean(iris$Petal.Length))
+feat2 <- mmb::createFeatureForBayes(
+  name = "Petal.Width", value = mean(iris$Petal.Width))
+featT <- mmb::createFeatureForBayes(
+  name = "Species", iris[1,]$Species, isLabel = TRUE)
+
+cat(mmb::bayesToLatex(conditionalFeatures = rbind(feat1, feat2),
+  targetFeature = featT, includeValues = TRUE))
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}

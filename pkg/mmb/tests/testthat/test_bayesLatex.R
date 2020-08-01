@@ -21,7 +21,7 @@ test_that("conversion to latex-equations work", {
   tf <- mmb::createFeatureForBayes("A", df$A[1], isLabel = TRUE)
 
   w <- mmb::getWarnings()
-  mmb::setWarnings(T)
+  mmb::setWarnings(TRUE)
 
   expect_warning({
     mmb::bayesToLatex(tf, cf)

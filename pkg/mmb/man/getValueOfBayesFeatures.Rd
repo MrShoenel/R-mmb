@@ -2,7 +2,7 @@
 % Please edit documentation in R/bayesFeature.R
 \name{getValueOfBayesFeatures}
 \alias{getValueOfBayesFeatures}
-\title{Given a data.frame with one or multiple features as constructed by}
+\title{Obtain the value of a Bayesian feature.}
 \usage{
 getValueOfBayesFeatures(dfFeature, featName)
 }
@@ -17,12 +17,22 @@ obtain the value.}
 the value of the feature.
 }
 \description{
-Given a data.frame with one or multiple features as constructed by
+Given a data.frame with one or multiple features as
+constructed by @seealso \code{createFeatureForBayes} and a name,
+extracts the value of the feature specified by name.
 }
-\seealso{
-\code{createFeatureForBayes} and a name, extracts the
-value of the feature specified by name.
+\examples{
+feats <- rbind(
+  mmb::createFeatureForBayes(
+    "Petal.Width", value = mean(iris$Petal.Width)),
+  mmb::createFeatureForBayes(
+    name = "Species", iris[1,]$Species, isLabel = TRUE)
+)
+
+print(mmb::getValueOfBayesFeatures(feats, "Species"))
+print(mmb::getValueOfBayesFeatures(feats, "Petal.Width"))
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{feature}

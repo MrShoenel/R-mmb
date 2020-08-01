@@ -2,11 +2,15 @@
 % Please edit documentation in R/discretization.R
 \name{discretizeVariableToRanges}
 \alias{discretizeVariableToRanges}
-\title{Discretizes a continuous random variable into buckets (ranges). Each range
-is delimited by an exclusive minimum value and an inclusive maximum value.}
+\title{Discretize a continuous random variable to ranges/buckets.}
 \usage{
-discretizeVariableToRanges(data, openEndRanges = TRUE, numRanges = NA,
-  exclMinVal = NULL, inclMaxVal = NULL)
+discretizeVariableToRanges(
+  data,
+  openEndRanges = TRUE,
+  numRanges = NA,
+  exclMinVal = NULL,
+  inclMaxVal = NULL
+)
 }
 \arguments{
 \item{data}{a vector with numeric data}
@@ -35,9 +39,17 @@ inclusive maximum value of the range. The list will be as long as the number
 of buckets requested.
 }
 \description{
-Discretizes a continuous random variable into buckets (ranges). Each range
-is delimited by an exclusive minimum value and an inclusive maximum value.
+Discretizes a continuous random variable into buckets (ranges).
+Each range is delimited by an exclusive minimum value and an inclusive maximum value.
+}
+\examples{
+buckets <- mmb::discretizeVariableToRanges(
+  data = iris$Sepal.Length, openEndRanges = TRUE)
+
+length(buckets)
+buckets[[5]]
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{discretization}

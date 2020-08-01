@@ -2,7 +2,7 @@
 % Please edit documentation in R/bayesFeature.R
 \name{getValueKeyOfBayesFeatures}
 \alias{getValueKeyOfBayesFeatures}
-\title{Given a data.frame with one or multiple features as constructed by}
+\title{Obtain the type of the value of a Bayesian feature.}
 \usage{
 getValueKeyOfBayesFeatures(dfFeature, featName)
 }
@@ -17,13 +17,23 @@ obtain the type.}
 the (internal) type of the feature.
 }
 \description{
-Given a data.frame with one or multiple features as constructed by
+Given a data.frame with one or multiple features as
+constructed by @seealso \code{createFeatureForBayes} and a name,
+extracts the type of the feature specified by name. Note that this
+is only used internally.
 }
-\seealso{
-\code{createFeatureForBayes} and a name, extracts the
-type of the feature specified by name. Note that this is only
-used internally.
+\examples{
+feats <- rbind(
+  mmb::createFeatureForBayes(
+    "Petal.Width", value = mean(iris$Petal.Width)),
+  mmb::createFeatureForBayes(
+    name = "Species", iris[1,]$Species, isLabel = TRUE)
+)
+
+print(mmb::getValueKeyOfBayesFeatures(feats, "Species"))
+print(mmb::getValueKeyOfBayesFeatures(feats, "Petal.Width"))
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{feature}

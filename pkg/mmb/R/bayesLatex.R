@@ -1,13 +1,27 @@
-#' Creates a string that can be used in Latex in an e.g. equation-environment.
-#' @note Use \code{cat()} to print a string that can be copy-pasted.
+#' @title Create a string that can be used in Latex in an e.g. equation-environment.
+#'
+#' @description This function can be used to generate Latex-markup that models the
+#' full dependency between covariates and a target variable.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
-#' @param conditionalFeatures data.frame of Bayesian features, the target-
+#' @note Use \code{cat()} to print a string that can be copy-pasted.
+#' @param conditionalFeatures data.frame of Bayesian features, the target
 #' feature depends on.
 #' @param targetFeature data.frame that holds exactly one Bayesian feature,
 #' that is supposed to be the target-feture for Bayesian inferencing.
 #' @param includeValues default FALSE boolean to indicate whether to include
 #' the features' values or not, i.e. "A" vs. "A = setosa".
 #' @return a string that can be used in Latex documents.
+#' @examples
+#' feat1 <- mmb::createFeatureForBayes(
+#'   name = "Petal.Length", value = mean(iris$Petal.Length))
+#' feat2 <- mmb::createFeatureForBayes(
+#'   name = "Petal.Width", value = mean(iris$Petal.Width))
+#' featT <- mmb::createFeatureForBayes(
+#'   name = "Species", iris[1,]$Species, isLabel = TRUE)
+#'
+#' cat(mmb::bayesToLatex(conditionalFeatures = rbind(feat1, feat2),
+#'   targetFeature = featT, includeValues = TRUE))
 #' @export
 bayesToLatex <- function(conditionalFeatures, targetFeature, includeValues = FALSE) {
   if (nrow(conditionalFeatures) == 0 || nrow(targetFeature) == 0) {

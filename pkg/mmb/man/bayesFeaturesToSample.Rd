@@ -2,8 +2,7 @@
 % Please edit documentation in R/bayesFeature.R
 \name{bayesFeaturesToSample}
 \alias{bayesFeaturesToSample}
-\title{Counter operation to @seealso \code{mmb::sampleToBayesFeatures()}.
-Takes a Bayes-feature data.frame and transforms it back to a row.}
+\title{Transform a collection of Bayesian features back to a sample.}
 \usage{
 bayesFeaturesToSample(dfOrg, features)
 }
@@ -22,6 +21,14 @@ data.frame the sample as 1-row data.frame.
 Counter operation to @seealso \code{mmb::sampleToBayesFeatures()}.
 Takes a Bayes-feature data.frame and transforms it back to a row.
 }
+\examples{
+samp <- mmb::sampleToBayesFeatures(dfRow = iris[15,], targetCol = "Species")
+
+# Convert the sample (as features) back to a sample that can be, e.g.,
+# appended to the data again:
+row <- mmb::bayesFeaturesToSample(dfOrg = iris, features = samp)
+}
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{feature}

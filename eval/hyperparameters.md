@@ -214,12 +214,12 @@ We define a couple of helper-functions:
       
       if (nrow(ds) > max_rows_dataset) {
         tempPart <- createDataPartition(
-          ds[[dsLabel]], p = max_rows_dataset / nrow(ds), list = F)
+          ds[[dsLabel]], p = max_rows_dataset / nrow(ds), list = FALSE)
         ds <- ds[tempPart, ]
       }
       
       part <- createDataPartition(
-        ds[[dsLabel]], p = ifelse(nrow(ds) < 800, 0.7, 0.85), list = F)
+        ds[[dsLabel]], p = ifelse(nrow(ds) < 800, 0.7, 0.85), list = FALSE)
       
       return(list(
         ds = ds,
@@ -470,33 +470,34 @@ Let’s print some table/overview of datasets that we actually use.
         Name = d,
         NumTrain = nrow(dsList$train),
         NumValid = nrow(dsList$valid),
-        Predictors = length(colnames(dsList$train)),
+        NumTotal = nrow(dsList$ds),
+        Predictors = length(colnames(dsList$train)) - 1,
         Classes = if (isReg) "Regression" else length(unique(as.character(dsList$ds[[dsList$label]])))
       ))
     }))
 
     print(datasets_overview)
 
-    ##          Name NumTrain NumValid Predictors    Classes
-    ## 1        iris      105       45          5          3
-    ## 2       chick      405      173          4          4
-    ## 3      credit      850      150         10          2
-    ## 4       glass      153       61         10          6
-    ## 5      breast      479      204         10          2
-    ## 6       sonar      146       62         61          2
-    ## 7        iono      247      104         34          2
-    ## 8     vehicle      722      124         19          4
-    ## 9   mortality      281      119          6 Regression
-    ## 10 sacramento      795      137          8 Regression
-    ## 11     boston      356      150         14 Regression
-    ## 12      seals      983      172          4 Regression
-    ## 13   faithful     1701      300          3 Regression
-    ## 14   diamonds     1703      299         10 Regression
-    ## 15       pima      539      229          9 Regression
-    ## 16  txhousing     1704      298          9 Regression
+    ##          Name NumTrain NumValid NumTotal Predictors    Classes
+    ## 1        iris      105       45      150          4          3
+    ## 2       chick      405      173      578          3          4
+    ## 3      credit      850      150     1000          9          2
+    ## 4       glass      153       61      214          9          6
+    ## 5      breast      479      204      683          9          2
+    ## 6       sonar      146       62      208         60          2
+    ## 7        iono      247      104      351         33          2
+    ## 8     vehicle      722      124      846         18          4
+    ## 9   mortality      281      119      400          5 Regression
+    ## 10 sacramento      795      137      932          7 Regression
+    ## 11     boston      356      150      506         13 Regression
+    ## 12      seals      983      172     1155          3 Regression
+    ## 13   faithful     1701      300     2001          2 Regression
+    ## 14   diamonds     1703      299     2002          9 Regression
+    ## 15       pima      539      229      768          8 Regression
+    ## 16  txhousing     1704      298     2002          8 Regression
 
-Evaluation
-==========
+Comparison to other Models
+==========================
 
 In this section, we will load the results and aggregate all data, so
 that we can then continue with visualizations and statistical analyses.
@@ -532,7 +533,7 @@ continuing with our Bayesian results.
       ggsave(fileName, ggplotInstance,
              width = floor(width * 100) / 100,
              height = floor(height * 100) / 100,
-             limitsize = F, device = cairo_pdf)
+             limitsize = FALSE, device = cairo_pdf)
       return(ggplotInstance)
     }
 
@@ -768,8 +769,8 @@ models as well.
 
     # Next, we want to order the models:
     modelsFirst_c <- c("ZeroR", "mmb:Simple", "mmb:Full", "mmb:Naive")
-    modelsFirst_c <- c(
-      modelsFirst_c, sort(setdiff(unique(as.character(gridresults_c_all$Model)), modelsFirst_c)))
+    modelsFirst_c <- rev(c(
+      modelsFirst_c, sort(setdiff(unique(as.character(gridresults_c_all$Model)), modelsFirst_c))))
     gridresults_c_all$Model <- factor(
       as.character(gridresults_c_all$Model), levels = modelsFirst_c, ordered = TRUE)
 
@@ -786,8 +787,8 @@ models as well.
         coord_flip() +
         facet_wrap(Dataset ~., nrow = 2, scales = scales) +
         scale_y +
-        scale_color_brewer(palette = QPALETTE) +
-        scale_fill_brewer(palette = QPALETTE) +
+        scale_color_brewer(palette = QPALETTE, guide = guide_legend(reverse = TRUE)) +
+        scale_fill_brewer(palette = QPALETTE, guide = guide_legend(reverse = TRUE)) +
         labs(fill = "Method") +
         theme_light(base_size = 9) +
         theme(plot.subtitle = element_text(size = 7, margin = margin(b=5)),
@@ -805,11 +806,23 @@ models as well.
 
 Let’s make some combined Box-plots:
 
-    facettedBoxplot(gridresults_c_all, "Accuracy") %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_Accuracy", height = 3.2)
+    facettedBoxplot(gridresults_c_all, "Accuracy") %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_Accuracy", height = 3.4)
+
+    ## Warning: Use of `dataset[[metric]]` is discouraged. Use `.data[[metric]]`
+    ## instead.
+
+    ## Warning: Use of `dataset[[metric]]` is discouraged. Use `.data[[metric]]`
+    ## instead.
 
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-14-1.png)
 
-    facettedBoxplot(gridresults_c_all, "Kappa") %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_Kappa", height = 3.2)
+    facettedBoxplot(gridresults_c_all, "Kappa") %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_Kappa", height = 3.4)
+
+    ## Warning: Use of `dataset[[metric]]` is discouraged. Use `.data[[metric]]`
+    ## instead.
+
+    ## Warning: Use of `dataset[[metric]]` is discouraged. Use `.data[[metric]]`
+    ## instead.
 
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-14-2.png)
 
@@ -838,8 +851,8 @@ need to create a common dataset first:
 
     # Next, we want to order the models:
     modelsFirst_r <- c("ZeroR", "mmb:Simple", "mmb:Full")
-    modelsFirst_r <- c(
-      modelsFirst_r, sort(setdiff(unique(as.character(gridresults_r_all$Model)), modelsFirst_r)))
+    modelsFirst_r <- rev(c(
+      modelsFirst_r, sort(setdiff(unique(as.character(gridresults_r_all$Model)), modelsFirst_r))))
     gridresults_r_all$Model <- factor(
       as.character(gridresults_r_all$Model), levels = modelsFirst_r, ordered = TRUE)
 
@@ -924,54 +937,23 @@ The above plots show only the mean of RMSE, R^2 and MAE. Let’s make a
 facetted boxplot for each of these metrics. For that, we need to
 transform and present the data in another shape.
 
-    # x-axis: dataset, y-axis: value, vertical-facet: model, horizontal-facet: metric
-    tempDs2 <- data.frame(matrix(nrow = 0, ncol = 4))
-    colnames(tempDs2) <- c("Dataset", "Value", "Model", "Metric")
-
-    temp <- do.call(rbind, lapply(caret_models_r, function(m) {
-      if (m == "bayesCaret") {
-        # Let's subdivide this with simple=T/F
-        tempS <- gridresults_r_bc[gridresults_r_bc$hyper.mode == "simple", tempDsCols_r]
-        tempS$Model <- "Simple"
-        tempF <- gridresults_r_bc[gridresults_r_bc$hyper.mode == "full", tempDsCols_r]
-        tempF$Model <- "Full"
-        
-        return(rbind(tempS, tempF))
-      }
-      return(gridresults_r_others[, tempDsCols_r])
-    }))
-
-    for (ds in datasets_r) {
-      for (mod in c("Simple", "Full", caret_models_r)) {
-        for (met in c("RMSE", "Rsquared", "MAE")) {
-          data <- temp[temp$Model == mod, met]
-          dLen <- length(data)
-          if (dLen == 0) next
-          tempDs2 <- rbind(tempDs2, data.frame(
-            Dataset = rep(ds, dLen),
-            Value = data,
-            Model = rep(mod, dLen),
-            Metric = rep(met, dLen)
-          ))
-        }
-      }
-    }
-
-    # x-axis: dataset, y-axis: value, vertical-facet: model, horizontal-facet: metric
-    temp <- ggplot(tempDs2, aes(x=Dataset, y=Value)) +
-      geom_boxplot() +
-      facet_grid(Metric ~ Model, scales = "free") +
-      theme_light(base_size = 9) +
-      theme(text = element_text(family="Consolas"))
-
-    #saveAndPlotAsEPS(temp, "Bayes-all-datasets-all-metrics", width = 1570, height = 1570)
+### Plot RMSE and R^2, compared to other classifiers.
 
 The previous plot is not terribly useful, unfortunately. Let’s show a
-facetted box-plot matrix per metric instead.
+facetted box-plot matrix per metric instead. Also it is noteworthy, that
+we trained the entire grid for our `mmb`-based models, whereas the other
+models use an optimized grid. Therefore, the results of other models are
+overall better, as they do not cover the entire spectrum.
 
-    facettedBoxplot(gridresults_r_all, "Rsquared", "R^2 (cov^2)") %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_RSQ", height = 3.2)
+    facettedBoxplot(gridresults_r_all, "Rsquared", "R^2 (cov^2)") %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_RSQ", height = 3.3)
+
+    ## Warning: Use of `dataset[[metric]]` is discouraged. Use `.data[[metric]]`
+    ## instead.
 
     ## Warning: Removed 56 rows containing non-finite values (stat_boxplot).
+
+    ## Warning: Use of `dataset[[metric]]` is discouraged. Use `.data[[metric]]`
+    ## instead.
 
     ## Warning: Removed 56 rows containing non-finite values (stat_boxplot).
 
@@ -980,18 +962,25 @@ facetted box-plot matrix per metric instead.
     facettedBoxplot(gridresults_r_all, "RMSE", scales = "free_x", scale_y = scale_y_log10(
       breaks = scales::trans_breaks("log10", function(x) 10^x),
       labels = scales::trans_format("log10", scales::math_format(10^.x))
-    )) %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_RMSE", height = 3.2)
+    )) %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_RMSE", height = 3.3)
+
+    ## Warning: Use of `dataset[[metric]]` is discouraged. Use `.data[[metric]]`
+    ## instead.
+
+    ## Warning: Use of `dataset[[metric]]` is discouraged. Use `.data[[metric]]`
+    ## instead.
 
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-19-2.png)
 
-Evaluation of the effects of Hyperparameters
---------------------------------------------
+The effects of Hyperparameters
+==============================
 
 In this section, we will outline the effects of various hyperparameters
 in our Bayesian models. Since the type and amount of hyperparameters
 varies for classification and regression, we do them separately.
 
-### Classification
+Classification
+--------------
 
 In classification, we distinguish the three modes simple, full and
 naive. We have 4 hyperparameters (list below). For assessing the effect,
@@ -1000,13 +989,13 @@ Kappa have a correlation coefficient of 0.74.
 
 -   `shiftAmount`: Either `0` or `0.1`, so we could treat it as if it
     were boolean,
--   `retainMinValues`: Integer between `0` and 101 (2, 4, 6, 8, 10, 11,
-    12, 20, 21, 26, 39, 47, 58, 101),
+-   `retainMinValues`: Integer between `0` and 50 (0, 1, 2, 3, 4, 6, 7,
+    8, 9, 10, 11, 18, 29, 35, 43, 50),
 -   `doEcdf`: Boolean,
 -   `online`: Integer between `0` (off) and 2147483647. Note that the
     maximum value is chosen so that all possible data is used. The
-    values in use are: 0, 480, 607, 922, 1118, 1386, 2401,
-    2402, 2147483647.
+    values in use are: 0, 180, 250, 257, 421, 694, 820, 1015,
+    1200, 2147483647.
 
 Per each of the three modes, we will print a facetted density plot.
 
@@ -1097,7 +1086,35 @@ Per each of the three modes, we will print a facetted density plot.
       metricName = "Accuracy",
       form = doEcdf ~ Var,
       subtitle = "Effect of Hyperparameters in simple Bayesian classification."
-    ) %>% saveAndPlotAsEPS("Bayes-hps-c-simple", height = 3.2)
+    ) %>% saveAndPlotAsEPS("Bayes-hps-c-simple", height = 3)
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
 
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-22-1.png)
 
@@ -1107,7 +1124,35 @@ Per each of the three modes, we will print a facetted density plot.
       metricName = "Accuracy",
       form = doEcdf ~ Var,
       subtitle = "Effect of Hyperparameters in naive Bayesian classification."
-    ) %>% saveAndPlotAsEPS("Bayes-hps-c-naive", height = 3.2)
+    ) %>% saveAndPlotAsEPS("Bayes-hps-c-naive", height = 3)
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
 
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-22-2.png)
 
@@ -1117,11 +1162,52 @@ Per each of the three modes, we will print a facetted density plot.
       metricName = "Accuracy",
       form = doEcdf ~ Var,
       subtitle = "Effect of Hyperparameters in full Bayesian classification."
-    ) %>% saveAndPlotAsEPS("Bayes-hps-c-full", height = 3.2)
+    ) %>% saveAndPlotAsEPS("Bayes-hps-c-full", height = 3)
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
 
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-22-3.png)
 
-### Regression
+Regression
+----------
+
+For regression, there are only simple and full Bayesian models. However,
+we have the following additional hyperparameters:
+
+-   `numBuckets`: Used for discretization, the amount of ranges for
+    discretization. The values in use are 5, 10 and NA. If `NA`, then
+    the amount of buckets is calculated as `ceiling(log2(nrow(data)))`.
+-   `sampleFromAllBuckets`: Boolean, whether to sample from all buckets.
+    Otherwise, only takes the values from the most likely range/bucket.
+
+Note that for `retainMinValues`, we use different values: 2, 4, 6, 8,
+10, 11, 12, 20, 21, 26, 39, 47, 58, 101
 
     trainCounts_r <- sapply(datasets_r, function(d) {
       return(nrow(get_dataset(d, 1)$train))
@@ -1199,7 +1285,107 @@ Per each of the three modes, we will print a facetted density plot.
       grad_high = "#2C2749",
       grad_low = "#BEBADA",
       scale_y = scale_y_sqrt()
-    ) %>% saveAndPlotAsEPS("Bayes-hps-r-simple")
+    ) %>% saveAndPlotAsEPS("Bayes-hps-r-simple", height = 4.6)
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
 
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-24-1.png)
 
@@ -1212,7 +1398,179 @@ Per each of the three modes, we will print a facetted density plot.
       grad_high = "#2C2749",
       grad_low = "#BEBADA",
       scale_y = scale_y_sqrt()
-    ) #%>% saveAndPlotAsEPS("Bayes-hps-r-full")
+    ) %>% saveAndPlotAsEPS("Bayes-hps-r-full", height = 4.6)
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
 
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-24-2.png)
 
@@ -1237,4 +1595,680 @@ this column:
       ))
     ) %>% saveAndPlotAsEPS("Bayes-hps-r-full", height = 4.6)
 
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-25-1.png)
+
+Neighborhood Search
+-------------------
+
+The evaluation for the Neighborhood Search is two-fold. The first part
+is an analytical approach, while in the second part, we do a visual
+evaluation, based on dimensionality reduction.
+
+### Analytical Evaluation
+
+In this section, we will focus on evaluating how the hyperparameters
+affect the vicinity of randomly chosen samples and their neighborhood.
+Assigning the vicinity to a dataset based on the attributes of a
+randomly chosen sample can be thought of selecting those samples, that
+are close to the random sample. All other samples should be classified
+as not relevant. We will therefore design an evaluation where the
+assigned vicinity is used as a binary classifier. We then measure which
+of the samples are classified to be in the neighborhood (here: same
+class) using accuracy, Kappa, F1, precision and recall.
+
+This will require us to do some grid-searching again. For that, we
+define the grid manually and then run it across the classification
+datasets.
+
+    #get_other_models_results(modelsAndDatasets = df)
+    get_vicinity_results <- function(hpsAndDatasets = data.frame()) {
+      dataName <- paste("results_n/vicinities.csv", sep = "")
+      if (file.exists(dataName)) {
+        return(read.csv(dataName))
+      }
+      
+      if (DISABLE_COMPUTATIONS) {
+        return(0)
+      }
+      
+      # shuffle deterministically
+      perms <- hpsAndDatasets[order(hpsAndDatasets$dataset), ]
+      set.seed(0xbeef42)
+      perms <- perms[sample(rownames(perms)), ]
+      
+      
+      numCores <- parallel::detectCores()
+      cl <- parallel::makeCluster(round(numCores * 1.25), outfile = "")
+      clusterExport(cl, as.list(names(.GlobalEnv)))
+      registerDoSNOW(cl)
+      pb <- txtProgressBar(min = 0, max = nrow(perms), style = 3)
+      
+      
+      allResults <- foreach(
+        permRowIdx = rownames(perms),
+        .combine = rbind,
+        .packages = packages_required,
+        .options.snow = list(
+          progress = function(n) {
+            writeLines(paste(n, Sys.time(), sep = "  --  "), con = "progress.txt")
+            setTxtProgressBar(pb, n)
+          }
+        )
+      ) %dopar% {
+        permRow <- perms[permRowIdx, ]
+        dsList <- get_dataset(permRow$dataset, seedMult = permRow$seedMult)
+        
+        # Let's choose a random sample from the dataset. All other samples
+        # carrying the same label will be marked as "1" (included), and all
+        # other samples will be marked "0". The vicinity should assign an
+        # "0" to all samples not having the same label, and that's what we measure.
+        
+        df <- dsList$ds[,]
+        # Pick the sample and then assign "1" and "0":
+        s <- df[sample(rownames(df), 1), ]
+        s$vicGroup <- 1
+        df$vicGroup <- 0
+        df[df[[dsList$label]] == s[[dsList$label]], ]$vicGroup <- 1
+        
+        selFeats <- colnames(s)[!(colnames(s) %in% c(dsList$label, "vicGroup"))]
+        
+        vic <- mmb::vicinitiesForSample(
+          df = df[, selFeats],
+          sampleFromDf = s[, selFeats, ],
+          selectedFeatureNames = selFeats,
+          shiftAmount = permRow$shiftAmount,
+          doEcdf = permRow$doEcdf,
+          ecdfMinusOne = permRow$ecdfMinusOne,
+          retainMinValues = permRow$retainMinValues
+        )
+        
+        # The ground-truth is now in df$vicGroup, and we assign the
+        # group again where vic > 0. Actually, for shiftAmount > 0,
+        # the condition is vic > shiftAmount^length(selFeats).
+        vicMin <- permRow$shiftAmount^length(selFeats)
+        gt <- df$vicGroup
+        pred <- sapply(vic$vicinity, function(v) {
+          if (v > vicMin) return(1)
+          return(0)
+        })
+        
+        permRow$Precision <- Metrics::precision(gt, pred)
+        permRow$Recall <- Metrics::recall(gt, pred)
+        permRow$F1 <- Metrics::f1(gt, pred)
+        permRow$Fbeta <- Metrics::fbeta_score(gt, pred)
+        permRow$Accuracy <- Metrics::accuracy(gt, pred)
+        permRow$Kappa <- Metrics::ScoreQuadraticWeightedKappa(gt, pred)
+        permRow$AUC <- Metrics::auc(gt, pred)
+        
+        return(permRow)
+      }
+      
+      stopCluster(cl)
+      registerDoSEQ()
+      
+      write.csv(allResults, dataName)
+      return(allResults)
+    }
+
+Do the computation for all sets of hyperparameters and datasets:
+
+    set.seed(42)
+    hpsAndDatasets <- expand.grid(
+      Dataset = datasets_c,
+      seedMult = sample.int(.Machine$integer.max, 25),
+      hyper.shiftAmount = c(0, 0.1, 1),
+      hyper.doEcdf = c(TRUE, FALSE),
+      hyper.ecdfMinusOne = c(TRUE, FALSE),
+      hyper.retainMinValues = c(0, 1, 3, 5, 10)
+    )
+    # Remove some cases that make no sense:
+    hpsAndDatasets <- hpsAndDatasets[!(hpsAndDatasets$hyper.ecdfMinusOne & !hpsAndDatasets$hyper.doEcdf), ]
+
+    gridresults_n <- get_vicinity_results(hpsAndDatasets)
+
+Some evaluation:
+
+    # Let's show some boxplots per dataset and metric!
+    tempDs_n <- rbind(
+      data.frame(
+        Val = gridresults_n$Precision,
+        Metric = rep("Precision", nrow(gridresults_n)),
+        Dataset = gridresults_n$Dataset
+      ),
+      
+      data.frame(
+        Val = gridresults_n$Recall,
+        Metric = rep("Recall", nrow(gridresults_n)),
+        Dataset = gridresults_n$Dataset
+      ),
+      
+      data.frame(
+        Val = gridresults_n$F1,
+        Metric = rep("F1", nrow(gridresults_n)),
+        Dataset = gridresults_n$Dataset
+      ),
+      
+      data.frame(
+        Val = gridresults_n$Fbeta,
+        Metric = rep("Fbeta", nrow(gridresults_n)),
+        Dataset = gridresults_n$Dataset
+      ),
+      
+      data.frame(
+        Val = gridresults_n$Accuracy,
+        Metric = rep("Accuracy", nrow(gridresults_n)),
+        Dataset = gridresults_n$Dataset
+      ),
+      
+      data.frame(
+        Val = gridresults_n$Kappa,
+        Metric = rep("Kappa", nrow(gridresults_n)),
+        Dataset = gridresults_n$Dataset
+      ),
+      
+      data.frame(
+        Val = gridresults_n$AUC,
+        Metric = rep("AUC", nrow(gridresults_n)),
+        Dataset = gridresults_n$Dataset
+      )
+    )
+
+    # We should assign a good order to the metrics:
+    tempDs_n$Metric <- factor(x = as.character(tempDs_n$Metric), levels = c("Accuracy", "Kappa", "Precision", "Recall", "F1", "Fbeta", "AUC"), ordered = TRUE)
+
+
+    (ggplot(tempDs_n, aes(y = Val, x = Metric, fill = Metric)) +
+      labs(subtitle = paste("Comparison of various metrics using mmb::vicinity() as a binary classifier.")) +
+      geom_boxplot(lwd = .2,
+                   outlier.colour = "#666666",
+                   outlier.size = 2,
+                   outlier.shape = 16,
+                   outlier.alpha = .75,
+                   outlier.stroke = 0) +
+      facet_wrap(Dataset ~., nrow = 2, scales = "free_x") +
+      coord_flip() +
+      scale_color_brewer(palette = QPALETTE) +
+      scale_fill_brewer(palette = QPALETTE) +
+      labs(fill = "Metric") +
+      theme_light(base_size = 9) +
+      theme(plot.subtitle = element_text(size = 7, margin = margin(b=5)),
+            text = element_text(family="Consolas"),
+            axis.text.y = element_text(margin = margin(r=5)),
+            axis.title.y.left = element_blank(),
+            axis.text.x = element_text(
+              angle = 90, margin = margin(t=5), hjust = 1, vjust = .4),
+            axis.title.x = element_blank(),
+            legend.margin = margin(l=5),
+            legend.text = element_text(size = 7),
+            legend.key.height = unit(14, "pt"),
+            panel.spacing.y = unit(1, "lines"),
+            strip.background = element_rect(fill="#dfdfdf"),
+            strip.text = element_text(color="black", size = 8))
+    ) %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_vicinity", height = 3.2)
+
+    ## Warning: Removed 2975 rows containing non-finite values (stat_boxplot).
+
+    ## Warning: Removed 2975 rows containing non-finite values (stat_boxplot).
+
+![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-28-1.png)
+
+What is left is to show how each hyperparameter affects the metrics. We
+have a handfull metrics but let’s make an evaluation for the metric with
+the greatest variance:
+
+    metricVar <- unlist(lapply(unique(as.character(tempDs_n$Metric)), function(m) {
+      temp <- list()
+      temp[[m]] <- var(abs(gridresults_n[[m]]), na.rm = TRUE)
+      return(temp)
+    }))
+
+    metricVarMax <- names(which.max(metricVar))
+
+The metric with the greatest variance is Precision.
+
+    # Let's first introduce a category based on our two booleans:
+    gridresults_n$Category <- ""
+    for (doEcdf in c(TRUE, FALSE)) {
+      for (ecdfMinusOne in c(TRUE, FALSE)) {
+        temp <- gridresults_n[gridresults_n$hyper.doEcdf == doEcdf & gridresults_n$hyper.ecdfMinusOne == ecdfMinusOne, ]
+        if (nrow(temp) == 0) next
+        
+        theCat <- paste("ecdf:", if (doEcdf) "T" else "F", ", e-1:", if (ecdfMinusOne) "T" else "F", sep = "")
+        gridresults_n[gridresults_n$hyper.doEcdf == doEcdf & gridresults_n$hyper.ecdfMinusOne == ecdfMinusOne, ]$Category <- theCat
+      }
+    }
+
+    tempDsHp_n <- rbind(
+      data.frame(
+        Metric = gridresults_n[[metricVarMax]],
+        Val = gridresults_n$hyper.shiftAmount + runif(nrow(gridresults_n)) * 1e-10,
+        Var = rep("shiftAmount", nrow(gridresults_n)),
+        Cat = gridresults_n$Category
+      ),
+      
+      data.frame(
+        Metric = gridresults_n[[metricVarMax]],
+        Val = gridresults_n$hyper.retainMinValues,
+        Var = rep("retainMinValues", nrow(gridresults_n)),
+        Cat = gridresults_n$Category
+      )
+    )
+
+    (facettedDensityPlot(
+      ds = tempDsHp_n,
+      metric = "Metric",
+      metricName = metricVarMax,
+      form = Cat ~ Var,
+      subtitle = paste("Effect of Hyperparameters on", metricVarMax, "using mmb::vicinity() as a binary classifier."),
+      grad_high = "#142C3A",
+      grad_low = "#80B1D3",
+      labeller = labeller(Cat = c(
+        "ecdf:F, e-1:F" = "ecdf:F",
+        "ecdf:T, e-1:F" = "ecdf:T, e-1:F",
+        "ecdf:T, e-1:T" = "ecdf:T, e-1:T"
+      )))
+    ) %>% saveAndPlotAsEPS(paste("Bayes-hps-n-vicinity", metricVarMax, sep = "_"), height = 3.7)
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: Removed 2876 rows containing non-finite values (stat_density2d).
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: Removed 2876 rows containing non-finite values (stat_density2d).
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-30-1.png)
+
+    tempDsHp_n <- rbind(
+      data.frame(
+        Metric = gridresults_n$Accuracy,
+        Val = gridresults_n$hyper.shiftAmount + runif(nrow(gridresults_n)) * 1e-10,
+        Var = rep("shiftAmount", nrow(gridresults_n)),
+        Cat = gridresults_n$Category
+      ),
+      
+      data.frame(
+        Metric = gridresults_n$Accuracy,
+        Val = gridresults_n$hyper.retainMinValues,
+        Var = rep("retainMinValues", nrow(gridresults_n)),
+        Cat = gridresults_n$Category
+      )
+    )
+
+    # Let's do the same for accuracy:
+    (facettedDensityPlot(
+      ds = tempDsHp_n,
+      metric = "Metric",
+      metricName = "Accuracy",
+      form = Cat ~ Var,
+      subtitle = paste("Effect of Hyperparameters on Accuracy using mmb::vicinity() as a binary classifier."),
+      scale_y = scale_y_continuous(),
+      grad_high = "#142C3A",
+      grad_low = "#80B1D3",
+      labeller = labeller(Cat = c(
+        "ecdf:F, e-1:F" = "ecdf:F",
+        "ecdf:T, e-1:F" = "ecdf:T, e-1:F",
+        "ecdf:T, e-1:T" = "ecdf:T, e-1:T"
+      )))
+    ) %>% saveAndPlotAsEPS("Bayes-hps-n-vicinity_Accuracy", height = 3.7)
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-30-2.png)
+
+### Visual Evaluation using `t-SNE`
+
+In dimensionality reduction, a high-dimensional sample-space is reduced
+to fewer dimensions. Using `t-SNE`, the reduction is usually done
+towards 2 dimensions, so that they can be plotted. While the Cartesian
+coordinates do not have a meaning, we expect to see correct clustering.
+In other words, a good result is when samples that are close in
+high-dimensional space are still close in a lower dimensional space
+(here: 2).
+
+We attempt to validate clusters of the `iris`-dataset, as its clusters,
+which correspond to the species, are well separated. In the following
+tests, we attempt to pick a random sample from `iris`, and then
+calculate its neighborhood, thus selecting all other samples with a
+vicinity greater zero. For comparison, we also compute the *Euclidean*
+distance and then draw our conclusions.
+
+    # Well show the following plots:
+    # - the raw t-SNE result/plot
+    # - the t-SNE plot with gradient color, according to the vicinities
+    # - the plot with a discretized vicinity (number of buckets == number of classes)
+    # - the plot with binary vicinity
+    # - the plot with euclidean-vicinity
+
+    set.seed(1)
+    chooseSample <- 123
+    shiftAmount <- 0.1
+
+    df <- iris[sample(rownames(iris)), ]
+    df$Species <- as.factor(sapply(df$Species, function(l) {
+      if (l == "setosa") return("set.") else if (l == "versicolor") return("vers.") else return("virg.")
+    }))
+    dsCols <- colnames(iris)[1:4]
+    tsne <- Rtsne::Rtsne(df[, dsCols], check_duplicates = FALSE)
+    # Attach:
+    df$X <- tsne$Y[, 1]
+    df$Y <- tsne$Y[, 2]
+
+    # Let's pick one sample to calculate the vicinity for:
+    s <- df[chooseSample, dsCols]
+    vics <- mmb::vicinitiesForSample(doEcdf = FALSE, shiftAmount = shiftAmount,
+      df = df[, dsCols], sampleFromDf = s, selectedFeatureNames = colnames(s),
+      retainMinValues = 0)
+
+    vicMin <- shiftAmount^length(colnames(s))
+
+    # Attach to df:
+    df$vics <- vics$vicinity
+    # TEMP TEMP TEMP: Discretize vics
+    mmbd <- mmb::discretizeVariableToRanges(df$vics, numRanges = length(levels(df$Species)))
+    df$vicsD <- sapply(df$vics, function(v) {
+      for (i in 1:length(mmbd)) {
+        r <- mmbd[[i]]
+        if (v >= r[1] && v < r[2]) return(paste("R", i, sep = ""))
+      }
+    })
+
+    # Also, create a binary classification:
+    df$vicsB <- sapply(df$vics, function(v) {
+      return(if (v > vicMin) "Incl." else "Excl.")
+    })
+
+    # Additionally, compute the Euclidean-distance:
+    df$eucl <- as.vector(philentropy::distance(df[, dsCols])[1,])
+
+    ## Metric: 'euclidean'; comparing: 150 vectors.
+
+    df$eucl <- max(df$eucl) - df$eucl
+
+    # .. and another distance:
+    df$cos <- as.vector(philentropy::distance(df[, dsCols], method = "cosine")[1,])
+
+    ## Metric: 'cosine'; comparing: 150 vectors.
+
+    df$cos <- max(df$cos) - df$cos
+
+    # and two more:
+
+    df$taneja <- as.vector(philentropy::distance(df[, dsCols], method = "taneja")[1,])
+
+    ## Metric: 'taneja' using unit: 'log'; comparing: 150 vectors.
+
+    df$taneja <- max(df$taneja) - df$taneja
+
+    df$ruz <- as.vector(philentropy::distance(df[, dsCols], method = "ruzicka")[1,])
+
+    ## Metric: 'ruzicka'; comparing: 150 vectors.
+
+    df$ruz <- max(df$ruz) - df$ruz
+
+
+    themeCommon <- theme_light(base_size = 9) + theme(
+      legend.position = "bottom",
+      axis.title.x.bottom = element_blank(),
+      axis.title.y.left = element_blank(),
+      legend.title = element_blank(),
+      axis.text.x = element_blank(),
+      axis.text.y = element_blank(),
+      plot.subtitle = element_text(size = 7, margin = margin(b=5))
+    )
+
+    pointCommon <- geom_point(
+      shape=25, size=1.5, color="black", fill="cyan",
+      data=df[chooseSample,],
+      mapping=aes(x=df[chooseSample,]$X, y=df[chooseSample,]$Y))
+
+
+    g1 <- ggplot(df, aes(x=X, y=Y, color=Species)) +
+      geom_point(size = .5) +
+      stat_ellipse() +
+      pointCommon +
+      themeCommon +
+      labs(subtitle = "2D t-SNE embedding.")
+
+    g2 <- ggplot(df, aes(x=X, y=Y)) +
+      geom_point(size = .5, aes(color=vics)) +
+      scale_color_viridis_c() +
+      pointCommon +
+      themeCommon +
+      labs(subtitle = "mmb-vicninities for sample.")
+
+    g3 <- ggplot(df, aes(x=X, y=Y, color=vicsD)) +
+      geom_point(size = .5) +
+      pointCommon +
+      themeCommon +
+      labs(subtitle = "mmb discrete vicinities.")
+
+    g4 <- ggplot(df, aes(x=X, y=Y, color=vicsB)) +
+      geom_point(size = .5) +
+      pointCommon +
+      stat_ellipse() +
+      themeCommon +
+      labs(subtitle = "mmb binary vicinities.")
+
+    g5 <- ggplot(df, aes(x=X, y=Y)) +
+      geom_point(size = .5, aes(color=eucl)) +
+      pointCommon +
+      scale_color_viridis_c() +
+      themeCommon +
+      labs(subtitle = "Euclidean similarities.")
+
+    g6 <- ggplot(df, aes(x=X, y=Y)) +
+      geom_point(size = .5, aes(color=taneja)) +
+      pointCommon +
+      scale_color_viridis_c() +
+      themeCommon +
+      labs(subtitle = "Tanejan similarities.")
+
+    g7 <- ggplot(df, aes(x=X, y=Y)) +
+      geom_point(size = .5, aes(color=cos)) +
+      pointCommon +
+      scale_color_viridis_c() +
+      themeCommon +
+      labs(subtitle = "Cosine similarities.")
+
+    g8 <- ggplot(df, aes(x=X, y=Y)) +
+      geom_point(size = .5, aes(color=ruz)) +
+      pointCommon +
+      scale_color_viridis_c() +
+      themeCommon +
+      labs(subtitle = "Ruzicka similarities.")
+
+    #ggarrange(g1, g2, g3, g4, g5)
+
+    cowplot::plot_grid(
+        cowplot::plot_grid(
+            g1 + theme(legend.position = "none"),
+            g2 + theme(legend.position = "none"),
+            g3 + theme(legend.position = "none"),
+            g4 + theme(legend.position = "none"),
+            nrow = 1
+        ),
+        cowplot::plot_grid(
+            cowplot::get_legend(g1),
+            cowplot::get_legend(g2),
+            cowplot::get_legend(g3),
+            cowplot::get_legend(g4),
+            nrow = 1
+        ),
+
+        cowplot::plot_grid(NULL, nrow = 1),
+        
+        cowplot::plot_grid(
+            g5 + theme(legend.position = "none"),
+            g6 + theme(legend.position = "none"),
+            g7 + theme(legend.position = "none"),
+            g8 + theme(legend.position = "none"),
+            nrow = 1
+        ),
+    #    cowplot::plot_grid(
+    #        get_legend(g5),
+    #        get_legend(g6),
+    #        get_legend(g7),
+    #        get_legend(g8),
+    #        nrow = 1
+    #    ),
+        nrow = 4,
+        align = "hv",
+        rel_heights = c(4, 1, .25, 4)#, 1)
+    ) %>% saveAndPlotAsEPS("Bayes-compare-vicinities", height = 3.2)
+
+    ## Warning in MASS::cov.trob(data[, vars]): Probable convergence failure
+
+    ## Warning in MASS::cov.trob(data[, vars]): Probable convergence failure
+
+![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-31-1.png)

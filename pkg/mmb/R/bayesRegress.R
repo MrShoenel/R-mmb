@@ -2,6 +2,7 @@ varDefaultRegressor <- make.varClosure(function(data) mmb::estimatePdf(data)$arg
 
 
 #' @title Set a system-wide default regressor.
+#'
 #' @description Getting and setting the default regressor affects all functions
 #' that have an overridable regressor. If this is not given, the default has
 #' defined here will be obtained.
@@ -17,9 +18,12 @@ setDefaultRegressor <- function(func) {
 
 
 #' @title Get the system-wide default regressor.
+#'
 #' @description Getting and setting the default regressor affects all functions
 #' that have an overridable regressor. If this is not given, the default has
 #' defined here will be obtained.
+#'
+#' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @return Function the function used as the regressor. Defaults to
 #' \code{function(data) mmb::estimatePdf(data)$argmax}.
 #' @export
@@ -34,7 +38,9 @@ getDefaultRegressor <- function() varDefaultRegressor$get()
 #' then finding the most probable ranges. It can either regress on
 #' the values in the most likely range or sample from all ranges,
 #' according to their likelihood.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords full-dependency regression
 #' @param df data.frame that contains all the feature's data
 #' @param features data.frame with bayes-features. One of the features needs
 #' to be the label-column.
@@ -86,6 +92,9 @@ getDefaultRegressor <- function() varDefaultRegressor$get()
 #' average etc. You may also use this function to obtain the raw values
 #' for further processing.
 #' @examples
+#' w <- mmb::getWarnings()
+#' mmb::setWarnings(FALSE)
+#'
 #' df <- iris[, ]
 #' set.seed(84735)
 #' rn <- base::sample(rownames(df), 150)
@@ -93,6 +102,8 @@ getDefaultRegressor <- function() varDefaultRegressor$get()
 #' dfValid <- df[121:150, ]
 #' tf <- mmb::sampleToBayesFeatures(dfValid[1,], "Sepal.Length")
 #' mmb::bayesRegress(dfTrain, tf, "Sepal.Length")
+#'
+#' mmb::setWarnings(w)
 #' @export
 bayesRegress <- function(
   df, features, targetCol, selectedFeatureNames = c(),
@@ -225,6 +236,7 @@ bayesRegress <- function(
 #' and you will find good documentation there.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords full-dependency regression
 #' @param dfTrain data.frame that holds the training data.
 #' @param dfValid data.frame that holds the validation samples, for each of which
 #' a probability is sought. The convention is, that if you attempt to assign a
@@ -246,8 +258,8 @@ bayesRegress <- function(
 #' do inferencing. If zero, then only the initially given data.frame dfTrain is
 #' used. If > 0, then each inferenced sample will be attached to it and the
 #' resulting data.frame is truncated to this number. Use an integer large enough
-#' (i.e., sum of training and validation rows) to keep all samples during infer-
-#' encing. A smaller amount as, e.g., in dfTrain, will keep the amount of data
+#' (i.e., sum of training and validation rows) to keep all samples during
+#' inferencing. A smaller amount as, e.g., in dfTrain, will keep the amount of data
 #' restricted, discarding older rows. A larger amount than, e.g., in dfTrain is
 #' also fine; dfTrain will grow to it and then discard rows.
 #' @param simple default FALSE boolean to indicate whether or not to use simple
@@ -270,7 +282,8 @@ bayesRegress <- function(
 #' However, any other function can be used, too, such as min, max, median,
 #' average etc. You may also use this function to obtain the raw values
 #' for further processing.#'
-#' @examples \dontrun{
+#' @examples
+#' \dontrun{
 #' df <- iris[, ]
 #' set.seed(84735)
 #' rn <- base::sample(rownames(df), 150)
@@ -342,5 +355,4 @@ bayesRegressAssign <- function(
 
   return(predicted)
 }
-
 

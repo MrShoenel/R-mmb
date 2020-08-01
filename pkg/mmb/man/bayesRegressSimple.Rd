@@ -2,13 +2,16 @@
 % Please edit documentation in R/bayesSimple.R
 \name{bayesRegressSimple}
 \alias{bayesRegressSimple}
-\title{Uses simple Bayesian inferencing to segment the data given the conditional
-features. Then estimates a density over the remaining values of the target
-feature and returns the most likely value using a maximum a posteriori
-estimate of the kernel (returning its mode).}
+\title{Perform simple (network) Bayesian regression.}
 \usage{
-bayesRegressSimple(df, features, targetCol, selectedFeatureNames = c(),
-  retainMinValues = 2, regressor = NULL)
+bayesRegressSimple(
+  df,
+  features,
+  targetCol,
+  selectedFeatureNames = c(),
+  retainMinValues = 2,
+  regressor = NULL
+)
 }
 \arguments{
 \item{df}{data.frame}
@@ -35,10 +38,23 @@ average etc. You may also use this function to obtain the raw values
 for further processing.}
 }
 \description{
-Uses simple Bayesian inferencing to segment the data given the conditional
-features. Then estimates a density over the remaining values of the target
-feature and returns the most likely value using a maximum a posteriori
+Uses simple Bayesian inferencing to segment the data given the
+conditional features. Then estimates a density over the remaining values of
+the target feature and returns the most likely value using a maximum a posteriori
 estimate of the kernel (returning its mode).
+}
+\examples{
+feat1 <- mmb::createFeatureForBayes(
+  name = "Sepal.Length", value = mean(iris$Sepal.Length))
+feat2 <- mmb::createFeatureForBayes(
+  name = "Sepal.Width", value = mean(iris$Sepal.Width))
+
+# Note how we do not require "Petal.Length" among the features when regressing:
+mmb::bayesRegressSimple(df = iris, features = rbind(feat1, feat2),
+  targetCol = "Petal.Length")
+}
+\references{
+\insertRef{rpkg:bnlearn_4.5}{mmb}
 }
 \seealso{
 \code{mmb::bayesInferSimple()}
@@ -46,3 +62,5 @@ estimate of the kernel (returning its mode).
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{regression}
+\keyword{simple}

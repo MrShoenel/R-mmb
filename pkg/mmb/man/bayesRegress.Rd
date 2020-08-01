@@ -4,10 +4,19 @@
 \alias{bayesRegress}
 \title{Perform full-dependency Bayesian regression for a sample.}
 \usage{
-bayesRegress(df, features, targetCol, selectedFeatureNames = c(),
-  shiftAmount = 0.1, retainMinValues = 2, doEcdf = FALSE,
-  useParallel = NULL, numBuckets = ceiling(log2(nrow(df))),
-  sampleFromAllBuckets = TRUE, regressor = NULL)
+bayesRegress(
+  df,
+  features,
+  targetCol,
+  selectedFeatureNames = c(),
+  shiftAmount = 0.1,
+  retainMinValues = 2,
+  doEcdf = FALSE,
+  useParallel = NULL,
+  numBuckets = ceiling(log2(nrow(df))),
+  sampleFromAllBuckets = TRUE,
+  regressor = NULL
+)
 }
 \arguments{
 \item{df}{data.frame that contains all the feature's data}
@@ -79,6 +88,9 @@ the values in the most likely range or sample from all ranges,
 according to their likelihood.
 }
 \examples{
+w <- mmb::getWarnings()
+mmb::setWarnings(FALSE)
+
 df <- iris[, ]
 set.seed(84735)
 rn <- base::sample(rownames(df), 150)
@@ -86,7 +98,11 @@ dfTrain <- df[1:120, ]
 dfValid <- df[121:150, ]
 tf <- mmb::sampleToBayesFeatures(dfValid[1,], "Sepal.Length")
 mmb::bayesRegress(dfTrain, tf, "Sepal.Length")
+
+mmb::setWarnings(w)
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{full-dependency}
+\keyword{regression}

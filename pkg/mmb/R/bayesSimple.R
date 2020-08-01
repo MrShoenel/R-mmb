@@ -1,4 +1,4 @@
-bayesSimpleCheckData <- function(df, features, labelCol) {
+bayesSimpleCheckData <- function(df, features, targetCol) {
   if (!is.data.frame(df) || !is.data.frame(features)) {
     stop("No data or no features were given.")
   }
@@ -15,14 +15,26 @@ bayesSimpleCheckData <- function(df, features, labelCol) {
   if (nrow(df) == 1 && mmb::getWarnings()) {
     warning("Only one data point given.")
   }
+  if (sum(features$isLabel) == 0) {
+    stop("No feature with isLabel was given.")
+  }
+  if (features[features$isLabel, ]$name != targetCol) {
+    stop(paste("The feature being the designated label", features[features$isLabel, ]$name,
+         "is not the same as the chosen label-feature", targetCol))
+  }
 }
 
 
-#' Converts all columns in a data.frame that are factors to character,
-#' except for the target column.
+#' @title Convert data for usage within Bayesian models.
+#'
+#' @description Converts all columns in a data.frame that are factors to
+#' character, except for the target column.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param df data.frame to be used for bayesian inferencing.
 #' @return the same data.frame with all factors converted to character.
+#' @examples
+#' df <- mmb::bayesConvertData(df = iris)
 #' @export
 bayesConvertData <- function(df) {
   if (!is.data.frame(df)) stop("Given object is not a data.frame")
@@ -42,7 +54,9 @@ bayesConvertData <- function(df) {
 }
 
 
-#' Uses simple Bayesian inference to determine the probability or relative
+#' @title Perform simple (network) Bayesian inferencing and regression.
+#'
+#' @description Uses simple Bayesian inference to determine the probability or relative
 #' likelihood of a given value. This function can also regress to the most
 #' likely value instead. Simple means that segmented data is used in a way
 #' that is equal to how a Bayesian network works. For a finite set of labels,
@@ -51,11 +65,16 @@ bayesConvertData <- function(df) {
 #' found). For obtaining the probability of a continuous value, this function
 #' is useful for deciding between picking among a finite set of values. The
 #' empirical CDF may be used to obtain an actual probability for a given
-#' continuous value, otherwise, the empirical PDF is estimated and a rela-
-#' tive likelihood is returned.
-#' regression, set \code{doRegress = T} to obtain the most likely value of
-#' the target feature, instead of obtaining its relative likelihood.
+#' continuous value, otherwise, the empirical PDF is estimated and a relative
+#' likelihood is returned. For regression, set \code{doRegress = TRUE} to
+#' obtain the most likely value of the target feature, instead of obtaining
+#' its relative likelihood.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords simple regression inferencing
+#' @importFrom Rdpack reprompt
+#' @references
+#' \insertRef{rpkg:bnlearn_4.5}{mmb}
 #' @param df data.frame
 #' @param features data.frame with bayes-features. One of the features needs
 #' to be the label-column.
@@ -85,6 +104,24 @@ bayesConvertData <- function(df) {
 #' @return numeric probability (inferring discrete labels) or relative
 #' likelihood (regression, inferring likelihood of continuous value) or most
 #' likely value given the conditional features.
+#' @examples
+#' feat1 <- mmb::createFeatureForBayes(
+#'   name = "Petal.Length", value = mean(iris$Petal.Length))
+#' feat2 <- mmb::createFeatureForBayes(
+#'   name = "Petal.Width", value = mean(iris$Petal.Width))
+#' featT <- mmb::createFeatureForBayes(
+#'   name = "Species", iris[1,]$Species, isLabel = TRUE)
+#'
+#' # Infer likelihood of featT's label:
+#' feats <- rbind(feat1, feat2, featT)
+#' mmb::bayesInferSimple(df = iris, features = feats, targetCol = featT$name)
+#'
+#' # Infer likelihood of feat1's value:
+#' featT$isLabel = FALSE
+#' feat1$isLabel = TRUE
+#' # We do not bind featT this time:
+#' feats <- rbind(feat1, feat2)
+#' mmb::bayesInferSimple(df = iris, features = feats, targetCol = feat1$name)
 #' @export
 bayesInferSimple <- function(
   df, features, targetCol, selectedFeatureNames = c(),
@@ -178,9 +215,16 @@ bayesInferSimple <- function(
 
 
 
-#' Uses simple Bayesian inference to return the probability or relative likeli-
-#' hood or a discrete labe or continuous value.
+#' @title Assign a probability using a simple (network) Bayesian classifier.
+#'
+#' @description Uses simple Bayesian inference to return the probability or
+#' relative likelihood or a discrete label or continuous value.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords simple inferencing
+#' @importFrom Rdpack reprompt
+#' @references
+#' \insertRef{rpkg:bnlearn_4.5}{mmb}
 #' @seealso \code{mmb::bayesInferSimple()}
 #' @param df data.frame
 #' @param features data.frame with bayes-features. One of the features needs to
@@ -197,6 +241,15 @@ bayesInferSimple <- function(
 #' feature. If false, uses the empirical PDF to return the rel. likelihood.
 #' @return double the probability of the target-label, using the maximum a
 #' posteriori estimate.
+#' @examples
+#' feat1 <- mmb::createFeatureForBayes(
+#'   name = "Sepal.Length", value = mean(iris$Sepal.Length))
+#' feat2 <- mmb::createFeatureForBayes(
+#'   name = "Sepal.Width", value = mean(iris$Sepal.Width), isLabel = TRUE)
+#'
+#' # Assign a probability to a continuous variable (also works with nominal):
+#' mmb::bayesProbabilitySimple(df = iris, features = rbind(feat1, feat2),
+#'   targetCol = feat2$name, retainMinValues = 5, doEcdf = TRUE)
 #' @export
 bayesProbabilitySimple <- function(
   df, features, targetCol,
@@ -210,11 +263,18 @@ bayesProbabilitySimple <- function(
 }
 
 
-#' Uses simple Bayesian inferencing to segment the data given the conditional
-#' features. Then estimates a density over the remaining values of the target
-#' feature and returns the most likely value using a maximum a posteriori
+#' @title Perform simple (network) Bayesian regression.
+#'
+#' @description Uses simple Bayesian inferencing to segment the data given the
+#' conditional features. Then estimates a density over the remaining values of
+#' the target feature and returns the most likely value using a maximum a posteriori
 #' estimate of the kernel (returning its mode).
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords simple regression
+#' @importFrom Rdpack reprompt
+#' @references
+#' \insertRef{rpkg:bnlearn_4.5}{mmb}
 #' @seealso \code{mmb::bayesInferSimple()}
 #' @param df data.frame
 #' @param features data.frame with bayes-features. One of the features needs to
@@ -233,6 +293,15 @@ bayesProbabilitySimple <- function(
 #' However, any other function can be used, too, such as min, max, median,
 #' average etc. You may also use this function to obtain the raw values
 #' for further processing.
+#' @examples
+#' feat1 <- mmb::createFeatureForBayes(
+#'   name = "Sepal.Length", value = mean(iris$Sepal.Length))
+#' feat2 <- mmb::createFeatureForBayes(
+#'   name = "Sepal.Width", value = mean(iris$Sepal.Width))
+#'
+#' # Note how we do not require "Petal.Length" among the features when regressing:
+#' mmb::bayesRegressSimple(df = iris, features = rbind(feat1, feat2),
+#'   targetCol = "Petal.Length")
 #' @export
 bayesRegressSimple <- function(
   df, features, targetCol,
@@ -249,5 +318,4 @@ bayesRegressSimple <- function(
     retainMinValues = retainMinValues,
     doRegress = TRUE, doEcdf = FALSE, regressor = regressor))
 }
-
 

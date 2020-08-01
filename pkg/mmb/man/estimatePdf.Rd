@@ -2,11 +2,12 @@
 % Please edit documentation in R/pdfAndProb.R
 \name{estimatePdf}
 \alias{estimatePdf}
-\title{Given a few observations of a random variable, this function returns an
-approximation of the PDF as a function.}
+\title{Safe PDF estimation that works also for sparse random variables.}
 \usage{
-estimatePdf(data = c(), densFun = function(vec) {    
-  stats::density(vec, bw = "SJ") })
+estimatePdf(
+  data = c(),
+  densFun = function(vec) {     stats::density(vec, bw = "SJ") }
+)
 }
 \arguments{
 \item{data}{vector of numeric data. Used to compute the empirical density
@@ -31,8 +32,10 @@ filled from its estimate. 'argmax' is then set to that 'x', where 'y'
 becomes max.
 }
 \description{
-Given a few observations of a random variable, this function returns an
-approximation of the PDF as a function.
+Given a few observations of a random variable, this function
+returns an approximation of the PDF as a function. Returns also the PDF's
+support and argmax and works when only zero or one value was given. Depending
+on the used density function, two values are often enough to estimate a PDF.
 }
 \note{
 If the given vector is empty, warns and returns a constant function
@@ -42,6 +45,17 @@ If the given vector contains only one observation, then a function
 is returned that returns 1 iff the value supplied is the same as the
 observation. Otherwise, that function will return zero.
 }
+\examples{
+epdf <- mmb::estimatePdf(data = iris$Petal.Width)
+print(epdf$argmax)
+plot(epdf)
+
+# Get relative likelihood of some values:
+epdf$fun(0.5)
+epdf$fun(1.7)
+}
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{density-estimation}
+\keyword{likelihood}

@@ -2,8 +2,7 @@
 % Please edit documentation in R/bayesSimple.R
 \name{bayesConvertData}
 \alias{bayesConvertData}
-\title{Converts all columns in a data.frame that are factors to character,
-except for the target column.}
+\title{Convert data for usage within Bayesian models.}
 \usage{
 bayesConvertData(df)
 }
@@ -14,8 +13,11 @@ bayesConvertData(df)
 the same data.frame with all factors converted to character.
 }
 \description{
-Converts all columns in a data.frame that are factors to character,
-except for the target column.
+Converts all columns in a data.frame that are factors to
+character, except for the target column.
+}
+\examples{
+df <- mmb::bayesConvertData(df = iris)
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}

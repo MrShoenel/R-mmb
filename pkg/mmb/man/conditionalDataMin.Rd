@@ -2,13 +2,14 @@
 % Please edit documentation in R/conditionaData.R
 \name{conditionalDataMin}
 \alias{conditionalDataMin}
-\title{Takes a data.frame and segments it, according to the selected variables.
-Only rows satisfying all conditions are kept. Supports discrete and con-
-tinuous variables. Supports NA, NaN and NULL by using is.na, is.nan and
-is.null as comparator.}
+\title{Segment data according to one or more random variables.}
 \usage{
-conditionalDataMin(df, features, selectedFeatureNames = c(),
-  retainMinValues = 1)
+conditionalDataMin(
+  df,
+  features,
+  selectedFeatureNames = c(),
+  retainMinValues = 1
+)
 }
 \arguments{
 \item{df}{data.frame with data to segment. If it contains less than or
@@ -37,10 +38,20 @@ data.frame that is segmented according to the selected variables
 and the minimum amount of rows to retain.
 }
 \description{
-Takes a data.frame and segments it, according to the selected variables.
-Only rows satisfying all conditions are kept. Supports discrete and con-
-tinuous variables. Supports NA, NaN and NULL by using is.na, is.nan and
-is.null as comparator.
+Takes a data.frame and segments it, according to the selected
+variables. Only rows satisfying all conditions are kept. Supports discrete
+and continuous variables. Supports NA, NaN and NULL by using is.na, is.nan
+and is.null as comparator.
+}
+\examples{
+feat1 <- mmb::createFeatureForBayes(
+  name = "Petal.Length", value = mean(iris$Petal.Length))
+feat2 <- mmb::createFeatureForBayes(
+  name = "Petal.Width", value = mean(iris$Petal.Width))
+feats <- rbind(feat1, feat2)
+
+data <- mmb::conditionalDataMin(df = iris, features = feats,
+  selectedFeatureNames = feats$name, retainMinValues = 1)
 }
 \seealso{
 \code{getValueKeyOfBayesFeatures()}
@@ -48,3 +59,4 @@ is.null as comparator.
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{segmentation}

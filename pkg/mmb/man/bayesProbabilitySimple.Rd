@@ -2,11 +2,16 @@
 % Please edit documentation in R/bayesSimple.R
 \name{bayesProbabilitySimple}
 \alias{bayesProbabilitySimple}
-\title{Uses simple Bayesian inference to return the probability or relative likeli-
-hood or a discrete labe or continuous value.}
+\title{Assign a probability using a simple (network) Bayesian classifier.}
 \usage{
-bayesProbabilitySimple(df, features, targetCol,
-  selectedFeatureNames = c(), retainMinValues = 1, doEcdf = FALSE)
+bayesProbabilitySimple(
+  df,
+  features,
+  targetCol,
+  selectedFeatureNames = c(),
+  retainMinValues = 1,
+  doEcdf = FALSE
+)
 }
 \arguments{
 \item{df}{data.frame}
@@ -33,8 +38,21 @@ double the probability of the target-label, using the maximum a
 posteriori estimate.
 }
 \description{
-Uses simple Bayesian inference to return the probability or relative likeli-
-hood or a discrete labe or continuous value.
+Uses simple Bayesian inference to return the probability or
+relative likelihood or a discrete label or continuous value.
+}
+\examples{
+feat1 <- mmb::createFeatureForBayes(
+  name = "Sepal.Length", value = mean(iris$Sepal.Length))
+feat2 <- mmb::createFeatureForBayes(
+  name = "Sepal.Width", value = mean(iris$Sepal.Width), isLabel = TRUE)
+
+# Assign a probability to a continuous variable (also works with nominal):
+mmb::bayesProbabilitySimple(df = iris, features = rbind(feat1, feat2),
+  targetCol = feat2$name, retainMinValues = 5, doEcdf = TRUE)
+}
+\references{
+\insertRef{rpkg:bnlearn_4.5}{mmb}
 }
 \seealso{
 \code{mmb::bayesInferSimple()}
@@ -42,3 +60,5 @@ hood or a discrete labe or continuous value.
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{inferencing}
+\keyword{simple}

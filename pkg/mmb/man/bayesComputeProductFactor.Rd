@@ -2,15 +2,16 @@
 % Please edit documentation in R/bayes.R
 \name{bayesComputeProductFactor}
 \alias{bayesComputeProductFactor}
-\title{Computes one single factor that is needed for full Bayesian inferencing.
-In an equation such as P(A|B) = P(B|A) * P(A) / P(B), the target-feature
-is A, while the conditional feature is B. There are three factors in that
-equation (two in the numerator and one in the denominator). This function
-calculates exactly one factor and expects all features to be given in the
-right order. If computing the denominator, no target-feature is required.}
+\title{Computes one single factor that is needed for full Bayesian inferencing.}
 \usage{
-bayesComputeProductFactor(df, conditionalFeatures, targetFeature,
-  computeNumerator, retainMinValues = 1, doEcdf = FALSE)
+bayesComputeProductFactor(
+  df,
+  conditionalFeatures,
+  targetFeature,
+  computeNumerator,
+  retainMinValues = 1,
+  doEcdf = FALSE
+)
 }
 \arguments{
 \item{df}{data.frame with data that is used to segment}
@@ -19,8 +20,8 @@ bayesComputeProductFactor(df, conditionalFeatures, targetFeature,
 by @seealso \code{mmb::createFeatureForBayes()}. This data.frame must not
 be empty, as we need to depend on at least one feature.}
 
-\item{targetFeature}{data.frame with exactly one Bayesian feature. Any ex-
-cessive features are discarded and a warning is produced. If computing a
+\item{targetFeature}{data.frame with exactly one Bayesian feature. Any
+excessive features are discarded and a warning is produced. If computing a
 factor for the denominator, this data.frame may be empty.}
 
 \item{computeNumerator}{boolean to indicate whether a factor for the
@@ -39,16 +40,18 @@ with a non-zero shiftAmount must be done with caution.}
 }
 \value{
 numeric the factor as probability or relative likelihood. If the
-target feature is discrete, a probability is returned; a relative like-
-lihood, otherwise.
+target feature is discrete, a probability is returned; a relative
+likelihood, otherwise.
 }
 \description{
-Computes one single factor that is needed for full Bayesian inferencing.
-In an equation such as P(A|B) = P(B|A) * P(A) / P(B), the target-feature
-is A, while the conditional feature is B. There are three factors in that
+In an equation such as P(A|B) = P(B|A) * P(A) / P(B), the target
+feature is A, while the conditional feature is B. There are three factors in that
 equation (two in the numerator and one in the denominator). This function
 calculates exactly one factor and expects all features to be given in the
 right order. If computing the denominator, no target-feature is required.
+}
+\references{
+\insertRef{bayes1763lii}{mmb}
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}

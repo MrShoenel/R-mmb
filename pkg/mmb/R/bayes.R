@@ -2,19 +2,24 @@
 utils::globalVariables("featIdx", package = c("mmb"))
 
 
-#' Computes one single factor that is needed for full Bayesian inferencing.
-#' In an equation such as P(A|B) = P(B|A) * P(A) / P(B), the target-feature
-#' is A, while the conditional feature is B. There are three factors in that
+#' @title Computes one single factor that is needed for full Bayesian inferencing.
+#'
+#' @description In an equation such as P(A|B) = P(B|A) * P(A) / P(B), the target
+#' feature is A, while the conditional feature is B. There are three factors in that
 #' equation (two in the numerator and one in the denominator). This function
 #' calculates exactly one factor and expects all features to be given in the
 #' right order. If computing the denominator, no target-feature is required.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @importFrom Rdpack reprompt
+#' @references
+#' \insertRef{bayes1763lii}{mmb}
 #' @param df data.frame with data that is used to segment
 #' @param conditionalFeatures data.frame with Bayesian features, as produced
 #' by @seealso \code{mmb::createFeatureForBayes()}. This data.frame must not
 #' be empty, as we need to depend on at least one feature.
-#' @param targetFeature data.frame with exactly one Bayesian feature. Any ex-
-#' cessive features are discarded and a warning is produced. If computing a
+#' @param targetFeature data.frame with exactly one Bayesian feature. Any
+#' excessive features are discarded and a warning is produced. If computing a
 #' factor for the denominator, this data.frame may be empty.
 #' @param computeNumerator boolean to indicate whether a factor for the
 #' numerator is build. In that case, the target feature is required.
@@ -28,8 +33,8 @@ utils::globalVariables("featIdx", package = c("mmb"))
 #' given value is returned. Setting this parameter to true in conjunction
 #' with a non-zero shiftAmount must be done with caution.
 #' @return numeric the factor as probability or relative likelihood. If the
-#' target feature is discrete, a probability is returned; a relative like-
-#' lihood, otherwise.
+#' target feature is discrete, a probability is returned; a relative
+#' likelihood, otherwise.
 #' @keywords internal
 bayesComputeProductFactor <- function(
   df, conditionalFeatures, targetFeature,
@@ -88,8 +93,11 @@ bayesComputeProductFactor <- function(
 }
 
 
-#' Computes the probability (discrete feature) or relative likelihood
+#' @title Compute a marginal factor (continuous or discrete random variable).
+#'
+#' @description Computes the probability (discrete feature) or relative likelihood
 #' (continuous feature) of one given feature and a concrete value for it.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
 #' @param df data.frame that contains all the feature's data
 #' @param feature data.frame containing the designated feature as created
@@ -102,6 +110,11 @@ bayesComputeProductFactor <- function(
 #' given value is returned.
 #' @return numeric the probability or likelihood of the given feature
 #' assuming its given value.
+#' @examples
+#' feat <- mmb::createFeatureForBayes(
+#'   name = "Petal.Length", value = mean(iris$Petal.Length))
+#' mmb::bayesComputeMarginalFactor(df = iris, feature = feat)
+#' mmb::bayesComputeMarginalFactor(df = iris, feature = feat, doEcdf = TRUE)
 #' @export
 bayesComputeMarginalFactor <- function(df, feature, doEcdf = FALSE) {
   prob <- 0
@@ -147,7 +160,12 @@ bayesComputeMarginalFactor <- function(df, feature, doEcdf = FALSE) {
 #' function is a relative likelihood of the target feature's value. If
 #' all of the features are discrete or the empirical CDF is used instead
 #' of the PDF, the result of this function is a probability.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords full-dependency classification inferencing
+#' @importFrom Rdpack reprompt
+#' @references
+#' \insertRef{bayes1763lii}{mmb}
 #' @param df data.frame that contains all the feature's data
 #' @param features data.frame with bayes-features. One of the features needs
 #' to be the label-column.
@@ -188,6 +206,22 @@ bayesComputeMarginalFactor <- function(df, feature, doEcdf = FALSE) {
 #' likelihood (regression, inferring likelihood of continuous value) or most
 #' likely value given the conditional features. If using a positive
 #' \code{shiftAmount}, the result is a 'probability score'.
+#' @examples
+#' feat1 <- mmb::createFeatureForBayes(
+#'   name = "Petal.Length", value = mean(iris$Petal.Length))
+#' feat2 <- mmb::createFeatureForBayes(
+#'   name = "Petal.Width", value = mean(iris$Petal.Width))
+#' featT <- mmb::createFeatureForBayes(
+#'   name = "Species", iris[1,]$Species, isLabel = TRUE)
+#'
+#' # Check the probability of Species=setosa, given the other 2 features:
+#' mmb::bayesProbability(
+#'   df = iris, features = rbind(feat1, feat2, featT), targetCol = "Species")
+#'
+#' # Now check the probability of Species=versicolor:
+#' featT$valueChar <- "versicolor"
+#' mmb::bayesProbability(
+#'   df = iris, features = rbind(feat1, feat2, featT), targetCol = "Species")
 #' @export
 bayesProbability <- function(
   df, features, targetCol, selectedFeatureNames = c(),
@@ -242,7 +276,7 @@ bayesProbability <- function(
     .packages = c("mmb", "utils"),
     .combine = c
   ), {
-    return(computeFac(T, featIdx, rowOfLabelFeature))
+    return(computeFac(TRUE, featIdx, rowOfLabelFeature))
   })
 
   # Add the marginal:
@@ -266,7 +300,7 @@ bayesProbability <- function(
   ), {
     # Here, we do almost the same, except for that we
     # do not require the target feature.
-    return(computeFac(F, featIdx))
+    return(computeFac(FALSE, featIdx))
   })
 
 
@@ -296,6 +330,10 @@ bayesProbability <- function(
 #' good documentation there.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords full-dependency classification inferencing
+#' @importFrom Rdpack reprompt
+#' @references
+#' \insertRef{bayes1763lii}{mmb}
 #' @param dfTrain data.frame that holds the training data.
 #' @param dfValid data.frame that holds the validation samples, for each of which
 #' a probability is sought. The convention is, that if you attempt to assign a
@@ -317,8 +355,8 @@ bayesProbability <- function(
 #' do inferencing. If zero, then only the initially given data.frame dfTrain is
 #' used. If > 0, then each inferenced sample will be attached to it and the
 #' resulting data.frame is truncated to this number. Use an integer large enough
-#' (i.e., sum of training and validation rows) to keep all samples during infer-
-#' encing. A smaller amount as, e.g., in dfTrain, will keep the amount of data
+#' (i.e., sum of training and validation rows) to keep all samples during
+#' inferencing. A smaller amount as, e.g., in dfTrain, will keep the amount of data
 #' restricted, discarding older rows. A larger amount than, e.g., in dfTrain is
 #' also fine; dfTrain will grow to it and then discard rows.
 #' @param simple default FALSE boolean to indicate whether or not to use simple
@@ -336,11 +374,16 @@ bayesProbability <- function(
 #' only has one column "probability". The first column of this table is always
 #' called "rowname" and corresponds to the rownames of dfValid.
 #' @examples
+#' w <- mmb::getWarnings()
+#' mmb::setWarnings(FALSE)
+#'
 #' set.seed(84735)
 #' rn <- base::sample(rownames(iris), 150)
 #' dfTrain <- iris[rn[1:120], ]
 #' dfValid <- iris[rn[121:150], !(colnames(iris) %in% "Species") ]
 #' mmb::bayesProbabilityAssign(dfTrain, dfValid, "Species")
+#'
+#' mmb::setWarnings(w)
 #' @export
 bayesProbabilityAssign <- function(
   dfTrain, dfValid, targetCol, selectedFeatureNames = c(),

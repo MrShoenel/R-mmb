@@ -5,9 +5,16 @@
 \title{Full Bayesian inferencing for determining the probability or
 relative likelihood of a given value.}
 \usage{
-bayesProbability(df, features, targetCol, selectedFeatureNames = c(),
-  shiftAmount = 0.1, retainMinValues = 1, doEcdf = FALSE,
-  useParallel = NULL)
+bayesProbability(
+  df,
+  features,
+  targetCol,
+  selectedFeatureNames = c(),
+  shiftAmount = 0.1,
+  retainMinValues = 1,
+  doEcdf = FALSE,
+  useParallel = NULL
+)
 }
 \arguments{
 \item{df}{data.frame that contains all the feature's data}
@@ -74,9 +81,32 @@ function is a relative likelihood of the target feature's value. If
 all of the features are discrete or the empirical CDF is used instead
 of the PDF, the result of this function is a probability.
 }
+\examples{
+feat1 <- mmb::createFeatureForBayes(
+  name = "Petal.Length", value = mean(iris$Petal.Length))
+feat2 <- mmb::createFeatureForBayes(
+  name = "Petal.Width", value = mean(iris$Petal.Width))
+featT <- mmb::createFeatureForBayes(
+  name = "Species", iris[1,]$Species, isLabel = TRUE)
+
+# Check the probability of Species=setosa, given the other 2 features:
+mmb::bayesProbability(
+  df = iris, features = rbind(feat1, feat2, featT), targetCol = "Species")
+
+# Now check the probability of Species=versicolor:
+featT$valueChar <- "versicolor"
+mmb::bayesProbability(
+  df = iris, features = rbind(feat1, feat2, featT), targetCol = "Species")
+}
+\references{
+\insertRef{bayes1763lii}{mmb}
+}
 \seealso{
 test-case "a zero denominator can happen"
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}
 }
+\keyword{classification}
+\keyword{full-dependency}
+\keyword{inferencing}

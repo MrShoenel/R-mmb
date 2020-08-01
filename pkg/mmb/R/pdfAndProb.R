@@ -1,6 +1,12 @@
-#' Given a few observations of a random variable, this function returns an
-#' approximation of the PDF as a function.
+#' @title Safe PDF estimation that works also for sparse random variables.
+#'
+#' @description Given a few observations of a random variable, this function
+#' returns an approximation of the PDF as a function. Returns also the PDF's
+#' support and argmax and works when only zero or one value was given. Depending
+#' on the used density function, two values are often enough to estimate a PDF.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords density-estimation likelihood
 #' @note If the given vector is empty, warns and returns a constant function
 #' that always returns zero for all values.
 #' @note If the given vector contains only one observation, then a function
@@ -23,6 +29,14 @@
 #' points given, then the empirical density is estimated and 'x' and y' are
 #' filled from its estimate. 'argmax' is then set to that 'x', where 'y'
 #' becomes max.
+#' @examples
+#' epdf <- mmb::estimatePdf(data = iris$Petal.Width)
+#' print(epdf$argmax)
+#' plot(epdf)
+#'
+#' # Get relative likelihood of some values:
+#' epdf$fun(0.5)
+#' epdf$fun(1.7)
 #' @export
 estimatePdf <- function(data = c(), densFun = function(vec) {
   stats::density(vec, bw = "SJ")
@@ -83,15 +97,22 @@ estimatePdf <- function(data = c(), densFun = function(vec) {
 
 
 
-#' Similar to @seealso \code{estimatePdf}, this function returns the probability
-#' for a discrete value, given some observations.
+#' @title Get a probability of a discrete value.
+#'
+#' @description Similar to @seealso \code{estimatePdf}, this function returns
+#' the probability for a discrete value, given some observations.
+#'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
+#' @keywords probability likelihood
 #' @note If no observations are given, then this function will warn and return
 #' a probability of zero for the value given. While we could technically return
 #' positive infinity, 0 is more suitable in the context of Bayesian inferencing.
 #' @param data vector of observations that have the same type as the given value.
 #' @param value a single observation of the same type as the data vector.
 #' @return the probability of value given data.
+#' @examples
+#' mmb::getProbForDiscrete(data = c(), value = iris[1,]$Species)
+#' mmb::getProbForDiscrete(data = iris$Species, value = iris[1,]$Species)
 #' @export
 getProbForDiscrete <- function(data, value) {
   if (length(data) == 0) {
