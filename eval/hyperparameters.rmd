@@ -778,7 +778,7 @@ gridresults_c_all$Model <- factor(
 
 
 facettedBoxplot <- function(dataset, metric, metricName = metric, scales = "fixed", scale_y = scale_y_continuous()) {
-  ggplot(dataset, aes(y = dataset[[metric]], x = Model, fill = Model)) +
+  ggplot(dataset, aes(y = .data[[metric]], x = Model, fill = Model)) +
     labs(subtitle = paste("Comparison of", metricName, "against the baseline (ZeroR) and other models.")) +
     geom_boxplot(lwd = .2,
                  outlier.colour = "#666666",
@@ -1042,7 +1042,7 @@ tempDs_c <- rbind(
 
 ```{r}
 facettedDensityPlot <- function(ds, metric, metricName = metric, form, subtitle, scale_y = scale_y_continuous(), labeller = label_both, grad_high = "#102723", grad_low = "#8DD3C7") {
-  ggplot(ds, aes(x=Val, y=ds[[metric]])) +
+  ggplot(ds, aes(x=Val, y=.data[[metric]])) +
     stat_density_2d(aes(fill = ..level..), geom="polygon", color = "white") +
     facet_grid(form, scales = "free", labeller = labeller) +
     theme_light() +
