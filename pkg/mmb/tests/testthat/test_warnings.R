@@ -15,7 +15,7 @@ test_that("en-/disabling warnings/errors works", {
   # Check defaults
   expect_true(mmb::getWarnings())
 
-  mmb::setWarnings(F)
+  mmb::setWarnings(FALSE)
 
   expect_false(mmb::getWarnings())
 })

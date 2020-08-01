@@ -8,7 +8,7 @@ data("iris")
 
 test_that("conditioning does nothing if called wrong", {
   w <- mmb::getWarnings()
-  mmb::setWarnings(T)
+  mmb::setWarnings(TRUE)
 
   expect_warning({
     mmb::conditionalDataMin(data.frame())
@@ -74,7 +74,7 @@ test_that("conditioning stops early", {
   )
 
   w <- mmb::getWarnings()
-  mmb::setWarnings(T)
+  mmb::setWarnings(TRUE)
   dfResMin <- expect_warning({
     mmb::conditionalDataMin(
       iris,

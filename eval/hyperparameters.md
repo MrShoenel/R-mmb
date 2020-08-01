@@ -808,9 +808,21 @@ Let’s make some combined Box-plots:
 
     facettedBoxplot(gridresults_c_all, "Accuracy") %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_Accuracy", height = 3.4)
 
+    ## Warning: Use of `dataset[[metric]]` is discouraged. Use `.data[[metric]]`
+    ## instead.
+
+    ## Warning: Use of `dataset[[metric]]` is discouraged. Use `.data[[metric]]`
+    ## instead.
+
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-14-1.png)
 
     facettedBoxplot(gridresults_c_all, "Kappa") %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_Kappa", height = 3.4)
+
+    ## Warning: Use of `dataset[[metric]]` is discouraged. Use `.data[[metric]]`
+    ## instead.
+
+    ## Warning: Use of `dataset[[metric]]` is discouraged. Use `.data[[metric]]`
+    ## instead.
 
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-14-2.png)
 
@@ -935,7 +947,13 @@ overall better, as they do not cover the entire spectrum.
 
     facettedBoxplot(gridresults_r_all, "Rsquared", "R^2 (cov^2)") %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_RSQ", height = 3.3)
 
+    ## Warning: Use of `dataset[[metric]]` is discouraged. Use `.data[[metric]]`
+    ## instead.
+
     ## Warning: Removed 56 rows containing non-finite values (stat_boxplot).
+
+    ## Warning: Use of `dataset[[metric]]` is discouraged. Use `.data[[metric]]`
+    ## instead.
 
     ## Warning: Removed 56 rows containing non-finite values (stat_boxplot).
 
@@ -945,6 +963,12 @@ overall better, as they do not cover the entire spectrum.
       breaks = scales::trans_breaks("log10", function(x) 10^x),
       labels = scales::trans_format("log10", scales::math_format(10^.x))
     )) %>% saveAndPlotAsEPS("Bayes-all-datasets_bp_RMSE", height = 3.3)
+
+    ## Warning: Use of `dataset[[metric]]` is discouraged. Use `.data[[metric]]`
+    ## instead.
+
+    ## Warning: Use of `dataset[[metric]]` is discouraged. Use `.data[[metric]]`
+    ## instead.
 
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-19-2.png)
 
@@ -1064,6 +1088,34 @@ Per each of the three modes, we will print a facetted density plot.
       subtitle = "Effect of Hyperparameters in simple Bayesian classification."
     ) %>% saveAndPlotAsEPS("Bayes-hps-c-simple", height = 3)
 
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-22-1.png)
 
     facettedDensityPlot(
@@ -1074,6 +1126,34 @@ Per each of the three modes, we will print a facetted density plot.
       subtitle = "Effect of Hyperparameters in naive Bayesian classification."
     ) %>% saveAndPlotAsEPS("Bayes-hps-c-naive", height = 3)
 
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-22-2.png)
 
     facettedDensityPlot(
@@ -1083,6 +1163,34 @@ Per each of the three modes, we will print a facetted density plot.
       form = doEcdf ~ Var,
       subtitle = "Effect of Hyperparameters in full Bayesian classification."
     ) %>% saveAndPlotAsEPS("Bayes-hps-c-full", height = 3)
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
 
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-22-3.png)
 
@@ -1179,6 +1287,106 @@ Note that for `retainMinValues`, we use different values: 2, 4, 6, 8,
       scale_y = scale_y_sqrt()
     ) %>% saveAndPlotAsEPS("Bayes-hps-r-simple", height = 4.6)
 
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-24-1.png)
 
     facettedDensityPlot(
@@ -1191,6 +1399,178 @@ Note that for `retainMinValues`, we use different values: 2, 4, 6, 8,
       grad_low = "#BEBADA",
       scale_y = scale_y_sqrt()
     ) %>% saveAndPlotAsEPS("Bayes-hps-r-full", height = 4.6)
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
 
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-24-2.png)
 
@@ -1214,6 +1594,106 @@ this column:
         "ecdf:T, s.A.:T" = "ecdf:T, sA:T"
       ))
     ) %>% saveAndPlotAsEPS("Bayes-hps-r-full", height = 4.6)
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
 
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-25-1.png)
 
@@ -1489,9 +1969,25 @@ The metric with the greatest variance is Precision.
       )))
     ) %>% saveAndPlotAsEPS(paste("Bayes-hps-n-vicinity", metricVarMax, sep = "_"), height = 3.7)
 
-    ## Warning: Removed 2876 rows containing non-finite values (stat_density2d).
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
 
     ## Warning: Removed 2876 rows containing non-finite values (stat_density2d).
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: Removed 2876 rows containing non-finite values (stat_density2d).
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
 
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-30-1.png)
 
@@ -1527,6 +2023,46 @@ The metric with the greatest variance is Precision.
         "ecdf:T, e-1:T" = "ecdf:T, e-1:T"
       )))
     ) %>% saveAndPlotAsEPS("Bayes-hps-n-vicinity_Accuracy", height = 3.7)
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: Use of `ds[[metric]]` is discouraged. Use `.data[[metric]]` instead.
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning: stat_contour(): Zero contours were generated
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
 
 ![](hyperparameters_files/figure-markdown_strict/unnamed-chunk-30-2.png)
 

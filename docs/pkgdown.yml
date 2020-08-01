@@ -1,7 +1,8 @@
 pandoc: 2.9.1.1
-pkgdown: 1.4.1
+pkgdown: 1.5.1
 pkgdown_sha: ~
 articles:
   Cluster-Analysis: Cluster-Analysis.html
   Hyperparameter-Evaluation: Hyperparameter-Evaluation.html
+last_built: 2020-08-01T10:36Z
 

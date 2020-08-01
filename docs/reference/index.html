@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -53,7 +57,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-index">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -67,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.13.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.13.1</span>
       </span>
     </div>
 
@@ -131,6 +135,11 @@
           <p class="section-desc"></p>
         </th>
       </tr>
+      
+      
+    </tbody><tbody>
+      
+      
       <tr>
         
         <td>
@@ -143,40 +152,25 @@ and regression, as implemented by mmb.</p></td>
         <td>
           <p><code><a href="bayesComputeMarginalFactor.html">bayesComputeMarginalFactor()</a></code> </p>
         </td>
-        <td><p>Computes the probability (discrete feature) or relative likelihood
-(continuous feature) of one given feature and a concrete value for it.</p></td>
+        <td><p>Compute a marginal factor (continuous or discrete random variable).</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="bayesConvertData.html">bayesConvertData()</a></code> </p>
         </td>
-        <td><p>Converts all columns in a data.frame that are factors to character,
-except for the target column.</p></td>
+        <td><p>Convert data for usage within Bayesian models.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="bayesFeaturesToSample.html">bayesFeaturesToSample()</a></code> </p>
         </td>
-        <td><p>Counter operation to @seealso <code>mmb::sampleToBayesFeatures()</code>.
-Takes a Bayes-feature data.frame and transforms it back to a row.</p></td>
+        <td><p>Transform a collection of Bayesian features back to a sample.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="bayesInferSimple.html">bayesInferSimple()</a></code> </p>
         </td>
-        <td><p>Uses simple Bayesian inference to determine the probability or relative
-likelihood of a given value. This function can also regress to the most
-likely value instead. Simple means that segmented data is used in a way
-that is equal to how a Bayesian network works. For a finite set of labels,
-this function needs to be called for each, to obtain the probability of
-each label (or, for n-1 labels or until a label with &gt;.5 probability is
-found). For obtaining the probability of a continuous value, this function
-is useful for deciding between picking among a finite set of values. The
-empirical CDF may be used to obtain an actual probability for a given
-continuous value, otherwise, the empirical PDF is estimated and a rela-
-tive likelihood is returned.
-regression, set <code>doRegress = T</code> to obtain the most likely value of
-the target feature, instead of obtaining its relative likelihood.</p></td>
+        <td><p>Perform simple (network) Bayesian inferencing and regression.</p></td>
       </tr><tr>
         
         <td>
@@ -202,8 +196,7 @@ relative likelihood of a given value.</p></td>
         <td>
           <p><code><a href="bayesProbabilitySimple.html">bayesProbabilitySimple()</a></code> </p>
         </td>
-        <td><p>Uses simple Bayesian inference to return the probability or relative likeli-
-hood or a discrete labe or continuous value.</p></td>
+        <td><p>Assign a probability using a simple (network) Bayesian classifier.</p></td>
       </tr><tr>
         
         <td>
@@ -221,16 +214,13 @@ hood or a discrete labe or continuous value.</p></td>
         <td>
           <p><code><a href="bayesRegressSimple.html">bayesRegressSimple()</a></code> </p>
         </td>
-        <td><p>Uses simple Bayesian inferencing to segment the data given the conditional
-features. Then estimates a density over the remaining values of the target
-feature and returns the most likely value using a maximum a posteriori
-estimate of the kernel (returning its mode).</p></td>
+        <td><p>Perform simple (network) Bayesian regression.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="bayesToLatex.html">bayesToLatex()</a></code> </p>
         </td>
-        <td><p>Creates a string that can be used in Latex in an e.g. equation-environment.</p></td>
+        <td><p>Create a string that can be used in Latex in an e.g. equation-environment.</p></td>
       </tr><tr>
         
         <td>
@@ -241,35 +231,21 @@ in the neighborhood to the neighborhood.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="checkBayesFeature.html">checkBayesFeature()</a></code> </p>
-        </td>
-        <td><p>Internal function to check common arguments for function that
-use samples transformed to bayes-features.</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="conditionalDataMin.html">conditionalDataMin()</a></code> </p>
         </td>
-        <td><p>Takes a data.frame and segments it, according to the selected variables.
-Only rows satisfying all conditions are kept. Supports discrete and con-
-tinuous variables. Supports NA, NaN and NULL by using is.na, is.nan and
-is.null as comparator.</p></td>
+        <td><p>Segment data according to one or more random variables.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="createFeatureForBayes.html">createFeatureForBayes()</a></code> </p>
         </td>
-        <td><p>Transforms a sample's feature's value into a dataframe, that holds
-its name, type and value. Currently supports numeric, factor, character
-and boolean values. Note that factor is internally converted to
-character.</p></td>
+        <td><p>Create a Bayesian feature by name and value.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="discretizeVariableToRanges.html">discretizeVariableToRanges()</a></code> </p>
         </td>
-        <td><p>Discretizes a continuous random variable into buckets (ranges). Each range
-is delimited by an exclusive minimum value and an inclusive maximum value.</p></td>
+        <td><p>Discretize a continuous random variable to ranges/buckets.</p></td>
       </tr><tr>
         
         <td>
@@ -282,8 +258,7 @@ calculates the distance between the samples.</p></td>
         <td>
           <p><code><a href="estimatePdf.html">estimatePdf()</a></code> </p>
         </td>
-        <td><p>Given a few observations of a random variable, this function returns an
-approximation of the PDF as a function.</p></td>
+        <td><p>Safe PDF estimation that works also for sparse random variables.</p></td>
       </tr><tr>
         
         <td>
@@ -295,42 +270,37 @@ approximation of the PDF as a function.</p></td>
         <td>
           <p><code><a href="getMessages.html">getMessages()</a></code> </p>
         </td>
-        <td><p>Getter for the state of messages. Returns true if enabled.</p></td>
+        <td><p>Get a boolean indicating whether messages are enabled system-wide.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="getProbForDiscrete.html">getProbForDiscrete()</a></code> </p>
         </td>
-        <td><p>Similar to @seealso <code>estimatePdf</code>, this function returns the probability
-for a discrete value, given some observations.</p></td>
+        <td><p>Get a probability of a discrete value.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="getRangeForDiscretizedValue.html">getRangeForDiscretizedValue()</a></code> </p>
         </td>
-        <td><p>Given a list of previously computed ranges for a random variable, this
-function returns the index of the range the given value belongs to (i.e.,
-in which bucket it belongs). The indexes start R-typically at 1. Per
-definition, a value is within a range, if it is larger than the range's
-minimum and less than or equal to its maximum.</p></td>
+        <td><p>Get the range-/bucket-ID of a given value.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="getValueKeyOfBayesFeatures.html">getValueKeyOfBayesFeatures()</a></code> </p>
         </td>
-        <td><p>Given a data.frame with one or multiple features as constructed by</p></td>
+        <td><p>Obtain the type of the value of a Bayesian feature.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="getValueOfBayesFeatures.html">getValueOfBayesFeatures()</a></code> </p>
         </td>
-        <td><p>Given a data.frame with one or multiple features as constructed by</p></td>
+        <td><p>Obtain the value of a Bayesian feature.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="getWarnings.html">getWarnings()</a></code> </p>
         </td>
-        <td><p>Getter for the state of warnings. Returns true if enabled.</p></td>
+        <td><p>Get a boolean indicating whether warnings are enabled system-wide.</p></td>
       </tr><tr>
         
         <td>
@@ -343,11 +313,7 @@ exhibit a similarity (i.e., the neighborhood).</p></td>
         <td>
           <p><code><a href="sampleToBayesFeatures.html">sampleToBayesFeatures()</a></code> </p>
         </td>
-        <td><p>Helper function that takes one sample (e.g., a row of a dataframe
-with validation data) and transforms it into a data.frame where
-each row corresponds to one feature (and its value) of the sample.
-This is done using @seealso <code>createFeatureForBayes</code>. This
-operation can be thought of transposing a matrix.</p></td>
+        <td><p>Transform an entire sample into a collection of Bayesian features.</p></td>
       </tr><tr>
         
         <td>
@@ -359,21 +325,20 @@ operation can be thought of transposing a matrix.</p></td>
         <td>
           <p><code><a href="setMessages.html">setMessages()</a></code> </p>
         </td>
-        <td><p>Setter for enabling or disabling messages. Messages are disabled by default.
-Use these to enable high verbosity.</p></td>
+        <td><p>Enable or disable messages system-wide.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="setWarnings.html">setWarnings()</a></code> </p>
         </td>
-        <td><p>Setter for enabling or disabling warnings. Warnings are enabled by default.</p></td>
+        <td><p>Enable or disable warnings system-wide.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="vicinities.html">vicinities()</a></code> </p>
         </td>
         <td><p>Segment a dataset by each row once, then compute vicinities of
-samples in the neighborhood. Uses @seealso <code>vicinitiesForSample()</code>.</p></td>
+samples in the neighborhood.</p></td>
       </tr><tr>
         
         <td>
@@ -386,11 +351,10 @@ the remaining samples in the neighborhood.</p></td>
     </table>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
-    </ul>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -401,7 +365,7 @@ the remaining samples in the neighborhood.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

@@ -51,8 +51,8 @@ print(epdf$argmax)
 plot(epdf)
 
 # Get relative likelihood of some values:
-rl1 <- epdf$fun(0.5)
-rl2 <- epdf$fun(1.7)
+epdf$fun(0.5)
+epdf$fun(1.7)
 }
 \author{
 Sebastian Hönel \href{mailto:sebastian.honel@lnu.se}{sebastian.honel@lnu.se}

@@ -326,7 +326,7 @@ vicinitiesForSample <- function(
 #' mmb::vicinities(df = iris[1:10,])
 #'
 #' # Run the same, but use the ECDF and retain more values:
-#' mmb::vicinities(df = iris[1:10,], doEcdf = T, retainMinValues = 10)
+#' mmb::vicinities(df = iris[1:10,], doEcdf = TRUE, retainMinValues = 10)
 #' mmb::setWarnings(w)
 #' @export
 vicinities <- function(

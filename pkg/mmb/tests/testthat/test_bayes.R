@@ -111,7 +111,7 @@ test_that("marginal factors are calculated correctly", {
     iris, mmb::createFeatureForBayes("Species", iris$Species[1])), 1/3, tolerance = 1e-10)
 
   w <- mmb::getWarnings()
-  mmb::setWarnings(T)
+  mmb::setWarnings(TRUE)
 
   expect_warning({
     # ecdf has no effect for discrete
@@ -209,7 +209,7 @@ test_that("the full Bayesian works for discrete, serial and parallel", {
   expect_equal(res, p_AB_pdf_s, tolerance = 1e-15)
 
   m <- mmb::getMessages()
-  mmb::setMessages(T)
+  mmb::setMessages(TRUE)
   res <- expect_message({
     # using seq. comp.
     mmb::bayesProbability(
@@ -230,7 +230,7 @@ test_that("the full Bayesian works for discrete, serial and parallel", {
     expect_equal(res, p_AB_pdf, tolerance = 1e-15)
 
     m <- mmb::getMessages()
-    mmb::setMessages(T)
+    mmb::setMessages(TRUE)
     res <- expect_message({
       # no expl. feat. sel.
       mmb::bayesProbability(
@@ -313,7 +313,7 @@ test_that("the full Bayesian works for continuous", {
   expect_equal(res, p_AB_pdf_s, tolerance = 1e-15)
 
   m <- mmb::getMessages()
-  mmb::setMessages(T)
+  mmb::setMessages(TRUE)
   res <- expect_message({
     # using seq. comp.
     mmb::bayesProbability(
@@ -395,7 +395,7 @@ test_that("assigning probability for numeric values works (also using simple)", 
   dfValid <- iris[rn[121:150], ]
 
   w <- mmb::getWarnings()
-  mmb::setWarnings(F)
+  mmb::setWarnings(FALSE)
 
   probs <- mmb::bayesProbabilityAssign(
     dfTrain, dfValid, targetCol = "Sepal.Length", shiftAmount = 0,
@@ -422,7 +422,7 @@ test_that("assigning for multiple works using naive Bayes", {
   dfValid <- iris[rn[121:150], ]
 
   w <- mmb::getWarnings()
-  mmb::setWarnings(F)
+  mmb::setWarnings(FALSE)
 
   probs <- mmb::bayesProbabilityAssign(
     dfTrain, dfValid, targetCol = "Species",
@@ -455,7 +455,7 @@ test_that("we can do online learning and return factors", {
   dfValid <- iris[141:150, ]
 
   w <- mmb::getWarnings()
-  mmb::setWarnings(F)
+  mmb::setWarnings(FALSE)
 
   pred <- mmb::bayesProbabilityAssign(
     dfTrain, dfValid, targetCol = "Species",

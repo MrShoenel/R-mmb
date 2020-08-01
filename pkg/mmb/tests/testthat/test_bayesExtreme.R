@@ -20,9 +20,9 @@ test_that("a zero numerator can happen", {
   )
 
   w <- mmb::getWarnings()
-  mmb::setWarnings(T)
+  mmb::setWarnings(TRUE)
   m <- mmb::getMessages()
-  mmb::setMessages(T)
+  mmb::setMessages(TRUE)
 
   expect_warning({
     expect_message({
@@ -46,7 +46,7 @@ test_that("a zero denominator can happen", {
   # with a bimodal distribution. However, these do not work because the
   # default method for KDE uses bw="SJ". The part that would produce the
   # message in bayesProbability() was disabled, too.
-  expect_true(T) # dummy
+  expect_true(TRUE) # dummy
 
   # Using the PDF on this data.frame, where A=1 and PDF_B_A(1.5) yields > 0,
   # if unconditional (PDF_B(1.5)) it yields 0!

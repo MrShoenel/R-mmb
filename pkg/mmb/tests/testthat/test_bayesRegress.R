@@ -12,9 +12,9 @@ test_that("it fails for invalid arguments", {
   })
 
   m <- mmb::getMessages()
-  mmb::setMessages(T)
+  mmb::setMessages(TRUE)
   w <- mmb::getWarnings()
-  mmb::setWarnings(F)
+  mmb::setWarnings(FALSE)
 
   expect_message({
     mmb::bayesRegress(
@@ -30,7 +30,7 @@ test_that("it fails for invalid arguments", {
 
 test_that("we can also sample from the most likely range only", {
   w <- mmb::getWarnings()
-  mmb::setWarnings(T)
+  mmb::setWarnings(TRUE)
 
   res <- expect_warning({
     mmb::bayesRegress(
@@ -47,7 +47,7 @@ test_that("we can also sample from the most likely range only", {
 
 test_that("custom regressor errors are handled properly", {
   w <- mmb::getWarnings()
-  mmb::setWarnings(T)
+  mmb::setWarnings(TRUE)
 
   res <- expect_warning({
     mmb::bayesRegress(
@@ -89,7 +89,7 @@ test_that("custom regressor errors are handled properly", {
 
 test_that("we can do regression for multiple values", {
   w <- mmb::getWarnings()
-  mmb::setWarnings(F)
+  mmb::setWarnings(FALSE)
 
   df <- iris[, ]
   set.seed(84735)
@@ -109,7 +109,7 @@ test_that("we can do regression for multiple values", {
 
 test_that("regression for multiple values works in simple and online, too", {
   w <- mmb::getWarnings()
-  mmb::setWarnings(F)
+  mmb::setWarnings(FALSE)
 
   df <- iris[, ]
   set.seed(84735)

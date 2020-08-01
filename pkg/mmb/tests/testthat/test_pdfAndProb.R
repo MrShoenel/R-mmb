@@ -45,7 +45,7 @@ test_that("overriding the density function works", {
 
 test_that("errors are handled as warnings when estimating density", {
   w <- mmb::getWarnings()
-  mmb::setWarnings(T)
+  mmb::setWarnings(TRUE)
 
   expect_warning({
     mmb::estimatePdf(c(1,1))
@@ -57,7 +57,7 @@ test_that("errors are handled as warnings when estimating density", {
 
 test_that("probability for discrete is correct", {
   w <- mmb::getWarnings()
-  mmb::setWarnings(T)
+  mmb::setWarnings(TRUE)
 
   expect_warning({
     mmb::getProbForDiscrete(c(), "foo")
