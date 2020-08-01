@@ -5,7 +5,7 @@ Title: Arbitrary Dependency Mixed Multivariate Bayesian Models for Inferencing, 
 Version: 0.13.1
 Author: Sebastian Hönel
 Maintainer: Sebastian Hönel <sebastian.honel@lnu.se>
-Description: This package supports Bayesian models with full and partial (hence arbitrary)
+Description: Provides Bayesian models with full and partial (hence arbitrary)
     dependencies between variables. Discrete and continuous variables are supported,
     and conditional joint probabilities and probability densities are estimated
     using Kernel Density Estimation. The full general form, which implements an
