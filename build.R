@@ -184,7 +184,7 @@ tryCatch({
 
   if (doAll) {
     devtools::build_readme() # only applies if we have a readme.rmd in the package
-    buildEvalVignette(compute = TRUE)
+    #buildEvalVignette(compute = TRUE)
     devtools::build_vignettes()
 
     buildSite()
