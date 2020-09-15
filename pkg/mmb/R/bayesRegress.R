@@ -283,7 +283,6 @@ bayesRegress <- function(
 #' average etc. You may also use this function to obtain the raw values
 #' for further processing.#'
 #' @examples
-#' \dontrun{
 #' df <- iris[, ]
 #' set.seed(84735)
 #' rn <- base::sample(rownames(df), 150)
@@ -293,7 +292,6 @@ bayesRegress <- function(
 #'   dfTrain, dfValid[, !(colnames(dfValid) %in% "Sepal.Length")],
 #'   "Sepal.Length", sampleFromAllBuckets = TRUE, doEcdf = TRUE)
 #' cov(res, iris[121:150,]$Sepal.Length)^2
-#' }
 #' @export
 bayesRegressAssign <- function(
   dfTrain, dfValid, targetCol, selectedFeatureNames = c(),

@@ -5,7 +5,7 @@
 #' Supports regression and classification and an extensive default grid.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
-#' @examples \dontrun{
+#' @examples
 #' trainIndex <- caret::createDataPartition(
 #'   iris$Species, p = .8, list = FALSE, times = 1)
 #' train <- iris[ trainIndex, ]
@@ -17,7 +17,6 @@
 #' fit <- caret::train(
 #'   Species ~ ., data = train, method = mmb::bayesCaret,
 #'   trControl = fitControl)
-#' }
 #' @export
 bayesCaret <- list(
   # Basics
