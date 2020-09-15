@@ -1,7 +1,6 @@
 Package: mmb
 Type: Package
-Title: Arbitrary Dependency Mixed Multivariate Bayesian Models for Inferencing, Regression,
-    and Neighborhood Search using Joint Probabilities and Kernel Density Estimation
+Title: Arbitrary Dependency Mixed Multivariate Bayesian Models
 Version: 0.13.1
 Author: Sebastian Hönel
 Maintainer: Sebastian Hönel <sebastian.honel@lnu.se>
