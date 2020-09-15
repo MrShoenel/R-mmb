@@ -4,13 +4,17 @@ Title: Arbitrary Dependency Mixed Multivariate Bayesian Models
 Version: 0.13.1
 Author: Sebastian Hönel
 Maintainer: Sebastian Hönel <sebastian.honel@lnu.se>
-Description: This package supports Bayesian models with full and partial (hence arbitrary)
-    dependencies between variables. Discrete and continuous variables are supported,
-    and conditional joint probabilities and probability densities are estimated
-    using Kernel Density Estimation. The full general form, which implements an
-    extension to Bayes' theorem, as well as the simple form, which is just a
-    Bayesian network, both support regression through segmentation and KDE and estimation
-    of probability or relative likelihood of discrete or continuous target random variables.
+Description: This package supports Bayesian models with full and partial (hence
+    arbitrary) dependencies between random variables. Discrete and continuous
+    variables are supported, and conditional joint probabilities and probability
+    densities are estimated using Kernel Density Estimation (KDE). The full
+    general form, which implements an extension to Bayes' theorem, as well as
+    the simple form, which is just a Bayesian network, both support regression
+    through segmentation and KernelDE and estimation of probability or relative
+    likelihood of discrete or continuous target random variables. This package
+    also provides true statistical distance measures based on Bayesian models.
+    Furthermore, these measures can be facilitated on neighborhood searches,
+    and to estimate the similarity and distance between data points.
 License: GPL-3
 Encoding: UTF-8
 URL: https://github.com/MrShoenel/R-mmb
