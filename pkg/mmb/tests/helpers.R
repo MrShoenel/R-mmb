@@ -30,19 +30,24 @@ install.mmb <- function() {
 
   if (!("mmb" %in% rownames(installed.packages()))) {
     buildPath <- base::normalizePath(devtools::build(vignettes = FALSE), mustWork = TRUE)
+    # Necessary or sometimes the package cannot be installed (in use)
+    remove.mmb(detachOnly = TRUE)
+
     install.packages(buildPath, repos = NULL, type = "source")
     devtools::load_all()
   }
 }
 
-remove.mmb <- function() {
+remove.mmb <- function(detachOnly = FALSE) {
   if (base::Sys.getenv("IS_BUILD_COMMAND") != "TRUE") {
     return(0)
   }
 
-  tryCatch({
-    remove.packages("mmb")
-  }, error=function(cond) {})
+  if (!detachOnly) {
+    tryCatch({
+      remove.packages("mmb")
+    }, error=function(cond) {})
+  }
 
   tryCatch({
     detach("package:mmb", unload = TRUE, character.only = TRUE)
