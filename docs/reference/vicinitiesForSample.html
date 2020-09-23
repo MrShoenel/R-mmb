@@ -78,7 +78,7 @@ mmb::centralities()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.13.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.13.3</span>
       </span>
     </div>
 
@@ -110,7 +110,12 @@ mmb::centralities()." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/MrShoenel/R-mmb/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -126,7 +131,7 @@ mmb::centralities()." />
     <div class="page-header">
     <h1>Segment a dataset by a single sample and compute vicinities for it and
 the remaining samples in the neighborhood.</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/MrShoenel/R-mmb/blob/master/R/bayesNeighborhood.R'><code>R/bayesNeighborhood.R</code></a></small>
     <div class="hidden name"><code>vicinitiesForSample.Rd</code></div>
     </div>
 
@@ -201,13 +206,13 @@ given data.frame. Each row then holds the vicinity for the corresponding row.</p
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>vic</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'>vicinitiesForSample</span>(
-  <span class='kw'>df</span> <span class='kw'>=</span> <span class='no'>iris</span>, <span class='kw'>sampleFromDf</span> <span class='kw'>=</span> <span class='no'>iris</span>[<span class='fl'>1</span>,], <span class='kw'>shiftAmount</span> <span class='kw'>=</span> <span class='fl'>0.1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: No explicit feature selection, using all.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: No explicit feature selection, using all.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Density estimation failed: Error in bw.SJ(x, method = "ste"): sample is too sparse to find TD</span></div><div class='input'><span class='no'>vic</span>$<span class='no'>vicinity</span></div><div class='output co'>#&gt;   [1] 1.980087 9.878297 4.164078 0.000000 0.000000 0.000000 0.000000 0.000000
-#&gt;   [9] 2.811244 0.000000 0.000000 0.000000 9.035200 1.437008 0.000000 0.000000
+  <span class='kw'>df</span> <span class='kw'>=</span> <span class='no'>iris</span>, <span class='kw'>sampleFromDf</span> <span class='kw'>=</span> <span class='no'>iris</span>[<span class='fl'>1</span>,], <span class='kw'>shiftAmount</span> <span class='kw'>=</span> <span class='fl'>0.1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: No explicit feature selection, using all.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: No explicit feature selection, using all.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Density estimation failed: Error in bw.SJ(x, method = "ste"): sample is too sparse to find TD</span></div><div class='output co'>#&gt; <span class='warning'>Warning: provided 11 variables to replace 1 variables</span></div><div class='input'><span class='no'>vic</span>$<span class='no'>vicinity</span></div><div class='output co'>#&gt;   [1] 1.980087 1.980087 1.980087 0.000000 0.000000 0.000000 0.000000 0.000000
+#&gt;   [9] 1.980087 0.000000 0.000000 0.000000 1.980087 1.980087 0.000000 0.000000
 #&gt;  [17] 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
 #&gt;  [25] 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
-#&gt;  [33] 0.000000 0.000000 0.000000 1.655913 0.000000 0.000000 5.114771 0.000000
-#&gt;  [41] 0.000000 0.000000 5.114567 0.000000 0.000000 0.000000 0.000000 8.274239
-#&gt;  [49] 0.000000 2.667860 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+#&gt;  [33] 0.000000 0.000000 0.000000 1.980087 0.000000 0.000000 1.980087 0.000000
+#&gt;  [41] 0.000000 0.000000 1.980087 0.000000 0.000000 0.000000 0.000000 1.980087
+#&gt;  [49] 0.000000 1.980087 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
 #&gt;  [57] 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
 #&gt;  [65] 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
 #&gt;  [73] 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
@@ -221,7 +226,7 @@ given data.frame. Each row then holds the vicinity for the corresponding row.</p
 #&gt; [137] 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
 #&gt; [145] 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</div><div class='input'>
 <span class='co'># Plot the ordered samples to get an idea which ones have a vicinity &gt; 0</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>vic</span>), <span class='kw'>y</span><span class='kw'>=</span><span class='no'>vic</span>$<span class='no'>vicinity</span>)</div><div class='img'><img src='vicinitiesForSample-1.png' alt='' width='700' height='433' /></div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='kw'>x</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>vic</span>), <span class='kw'>y</span><span class='kw'>=</span><span class='no'>vic</span>$<span class='no'>vicinity</span>)</div><div class='img'><img src='vicinitiesForSample-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

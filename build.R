@@ -177,6 +177,12 @@ tryCatch({
     if (file.exists("./Meta/vignette.rds")) {
       unlink("./Meta/vignette.rds")
     }
+    if (file.exists("./vignettes/Hyperparameter-Evaluation.rmd")) {
+      unlink("./vignettes/Hyperparameter-Evaluation.rmd")
+    }
+    if (file.exists("./vignettes/hyperparameters_files")) {
+      unlink("./vignettes/hyperparameters_files", recursive = TRUE)
+    }
     if (file.exists("./doc")) {
       unlink("./doc", recursive = TRUE)
     }

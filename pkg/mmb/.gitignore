@@ -1,2 +1,4 @@
 doc
 Meta
+vignettes/hyperparameters_files/*
+vignettes/Hyperparameter-Evaluation*

@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.13.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.13.3</span>
       </span>
     </div>
 
@@ -62,7 +62,14 @@
   </ul>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/MrShoenel/R-mmb/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -78,9 +85,9 @@
       <h1 data-toc-skip>Cluster Analysis</h1>
                         <h4 class="author">Sebastian Hönel</h4>
             
-            <h4 class="date">2020-08-01</h4>
+            <h4 class="date">2020-09-23</h4>
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/MrShoenel/R-mmb/blob/master/vignettes/Cluster-Analysis.rmd"><code>vignettes/Cluster-Analysis.rmd</code></a></small>
       <div class="hidden name"><code>Cluster-Analysis.rmd</code></div>
 
     </div>
@@ -96,11 +103,8 @@
 <p>Using some gradient-coloring:</p>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mmb</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">Rtsne</span>)
-<span class="co">#&gt; Warning: package 'Rtsne' was built under R version 3.6.3</span>
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ggplot2</span>)
-<span class="co">#&gt; Warning: package 'ggplot2' was built under R version 3.6.3</span>
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ggpubr</span>)
-<span class="co">#&gt; Warning: package 'ggpubr' was built under R version 3.6.3</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1</span>)
 <span class="no">chooseSample</span> <span class="kw">&lt;-</span> <span class="fl">1</span>
@@ -118,6 +122,8 @@
   <span class="kw">df</span> <span class="kw">=</span> <span class="no">df</span>[, <span class="fl">1</span>:<span class="fl">4</span>], <span class="kw">sampleFromDf</span> <span class="kw">=</span> <span class="no">s</span>, <span class="kw">selectedFeatureNames</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">s</span>),
   <span class="kw">retainMinValues</span> <span class="kw">=</span> <span class="fl">5</span>)
 <span class="co">#&gt; Warning in value[[3L]](cond): Density estimation failed: Error in bw.SJ(x, method = "ste"): sample is too sparse to find TD</span>
+<span class="co">#&gt; Warning in `[&lt;-.data.frame`(`*tmp*`, names(centralities), , value = list(:</span>
+<span class="co">#&gt; provided 7 variables to replace 1 variables</span>
 
 <span class="co"># Attach to df:</span>
 <span class="no">df</span>$<span class="no">vics</span> <span class="kw">&lt;-</span> <span class="no">vics</span>$<span class="no">vicinity</span>

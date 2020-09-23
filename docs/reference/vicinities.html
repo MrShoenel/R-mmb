@@ -78,7 +78,7 @@ sample \(s_j\) in neighborhood \(N_i\)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.13.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.13.3</span>
       </span>
     </div>
 
@@ -110,7 +110,12 @@ sample \(s_j\) in neighborhood \(N_i\)." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/MrShoenel/R-mmb/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -126,7 +131,7 @@ sample \(s_j\) in neighborhood \(N_i\)." />
     <div class="page-header">
     <h1>Segment a dataset by each row once, then compute vicinities of
 samples in the neighborhood.</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/MrShoenel/R-mmb/blob/master/R/bayesNeighborhood.R'><code>R/bayesNeighborhood.R</code></a></small>
     <div class="hidden name"><code>vicinities.Rd</code></div>
     </div>
 
@@ -207,17 +212,17 @@ by, and that sample has a similarity greater than zero to it.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>w</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'><a href='getWarnings.html'>getWarnings</a></span>()
-<span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'><a href='setWarnings.html'>setWarnings</a></span>(<span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'>vicinities</span>(<span class='kw'>df</span> <span class='kw'>=</span> <span class='no'>iris</span>[<span class='fl'>1</span>:<span class='fl'>10</span>,])</div><div class='output co'>#&gt;            1         2       3        4         5         6        7         8
-#&gt; 1   5.646927 0.0000000 0.00000   0.0000  0.000000 1.5180463  0.00000 0.0000000
-#&gt; 2  12.828337 0.6764991 0.00000   0.0000 18.232801 1.9147102  0.00000 2.7383581
-#&gt; 3   3.350271 0.0000000 1.61051   0.0000  3.533191 0.4137765  0.00000 1.0138786
-#&gt; 4   0.000000 0.0000000 0.00000 144.9559  0.000000 1.0361244  0.00000 3.6313559
-#&gt; 5   0.000000 0.0000000 0.00000   0.0000  8.101621 1.5022534  0.00000 0.0000000
-#&gt; 6   0.000000 0.0000000 0.00000   0.0000  0.000000 0.0579400  0.00000 0.0000000
-#&gt; 7   0.000000 0.0000000 0.00000   0.0000  0.000000 1.6603650 58.97993 0.0000000
-#&gt; 8   0.000000 0.0000000 0.00000   0.0000  0.000000 1.1844131  0.00000 1.4802166
-#&gt; 9   7.555343 0.6764991 0.00000 144.9559  8.848936 0.7797192 58.97993 0.8845627
-#&gt; 10  0.000000 0.0000000 0.00000   0.0000  0.000000 1.2960413  0.00000 4.7626359
+<span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'><a href='setWarnings.html'>setWarnings</a></span>(<span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'>vicinities</span>(<span class='kw'>df</span> <span class='kw'>=</span> <span class='no'>iris</span>[<span class='fl'>1</span>:<span class='fl'>10</span>,])</div><div class='output co'>#&gt; <span class='warning'>Warning: provided 4 variables to replace 1 variables</span></div><div class='output co'>#&gt; <span class='warning'>Warning: provided 2 variables to replace 1 variables</span></div><div class='output co'>#&gt; <span class='warning'>Warning: provided 2 variables to replace 1 variables</span></div><div class='output co'>#&gt; <span class='warning'>Warning: provided 4 variables to replace 1 variables</span></div><div class='output co'>#&gt; <span class='warning'>Warning: provided 10 variables to replace 1 variables</span></div><div class='output co'>#&gt; <span class='warning'>Warning: provided 2 variables to replace 1 variables</span></div><div class='output co'>#&gt; <span class='warning'>Warning: provided 6 variables to replace 1 variables</span></div><div class='output co'>#&gt;           1         2       3        4       5        6        7        8
+#&gt; 1  5.646927 0.0000000 0.00000   0.0000  0.0000 1.518046  0.00000 0.000000
+#&gt; 2  5.646927 0.6764991 0.00000   0.0000 18.2328 1.518046  0.00000 2.738358
+#&gt; 3  5.646927 0.0000000 1.61051   0.0000 18.2328 1.518046  0.00000 2.738358
+#&gt; 4  0.000000 0.0000000 0.00000 144.9559  0.0000 1.518046  0.00000 2.738358
+#&gt; 5  0.000000 0.0000000 0.00000   0.0000 18.2328 1.518046  0.00000 0.000000
+#&gt; 6  0.000000 0.0000000 0.00000   0.0000  0.0000 1.518046  0.00000 0.000000
+#&gt; 7  0.000000 0.0000000 0.00000   0.0000  0.0000 1.518046 58.97993 0.000000
+#&gt; 8  0.000000 0.0000000 0.00000   0.0000  0.0000 1.518046  0.00000 2.738358
+#&gt; 9  5.646927 0.6764991 0.00000 144.9559 18.2328 1.518046 58.97993 2.738358
+#&gt; 10 0.000000 0.0000000 0.00000   0.0000  0.0000 1.518046  0.00000 2.738358
 #&gt;          9      10
 #&gt; 1  0.00000 0.00000
 #&gt; 2  0.00000 0.00000
@@ -230,28 +235,17 @@ by, and that sample has a similarity greater than zero to it.</p>
 #&gt; 9  1.61051 0.00000
 #&gt; 10 0.00000 1.61051</div><div class='input'>
 <span class='co'># Run the same, but use the ECDF and retain more values:</span>
-<span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'>vicinities</span>(<span class='kw'>df</span> <span class='kw'>=</span> <span class='no'>iris</span>[<span class='fl'>1</span>:<span class='fl'>10</span>,], <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt;          1       2       3       4       5       6       7       8       9
-#&gt; 1  0.62370 0.62370 0.62370 0.62370 0.62370 0.62370 0.62370 0.62370 0.62370
-#&gt; 2  0.14553 0.14553 0.14553 0.14553 0.14553 0.14553 0.14553 0.14553 0.14553
-#&gt; 3  0.05940 0.05940 0.05940 0.05940 0.05940 0.05940 0.05940 0.05940 0.05940
-#&gt; 4  0.19800 0.19800 0.19800 0.19800 0.19800 0.19800 0.19800 0.19800 0.19800
-#&gt; 5  0.62370 0.62370 0.62370 0.62370 0.62370 0.62370 0.62370 0.62370 0.62370
-#&gt; 6  1.61051 1.61051 1.61051 1.61051 1.61051 1.61051 1.61051 1.61051 1.61051
-#&gt; 7  0.24640 0.24640 0.24640 0.24640 0.24640 0.24640 0.24640 0.24640 0.24640
-#&gt; 8  0.71280 0.71280 0.71280 0.71280 0.71280 0.71280 0.71280 0.71280 0.71280
-#&gt; 9  0.02772 0.02772 0.02772 0.02772 0.02772 0.02772 0.02772 0.02772 0.02772
-#&gt; 10 0.07700 0.07700 0.07700 0.07700 0.07700 0.07700 0.07700 0.07700 0.07700
-#&gt;         10
-#&gt; 1  0.62370
-#&gt; 2  0.14553
-#&gt; 3  0.05940
-#&gt; 4  0.19800
-#&gt; 5  0.62370
-#&gt; 6  1.61051
-#&gt; 7  0.24640
-#&gt; 8  0.71280
-#&gt; 9  0.02772
-#&gt; 10 0.07700</div><div class='input'><span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'><a href='setWarnings.html'>setWarnings</a></span>(<span class='no'>w</span>)</div><div class='output co'>#&gt; [1] TRUE</div></pre>
+<span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'>vicinities</span>(<span class='kw'>df</span> <span class='kw'>=</span> <span class='no'>iris</span>[<span class='fl'>1</span>:<span class='fl'>10</span>,], <span class='kw'>doEcdf</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>retainMinValues</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: provided 10 variables to replace 1 variables</span></div><div class='output co'>#&gt; <span class='warning'>Warning: provided 10 variables to replace 1 variables</span></div><div class='output co'>#&gt; <span class='warning'>Warning: provided 10 variables to replace 1 variables</span></div><div class='output co'>#&gt; <span class='warning'>Warning: provided 10 variables to replace 1 variables</span></div><div class='output co'>#&gt; <span class='warning'>Warning: provided 10 variables to replace 1 variables</span></div><div class='output co'>#&gt; <span class='warning'>Warning: provided 10 variables to replace 1 variables</span></div><div class='output co'>#&gt; <span class='warning'>Warning: provided 10 variables to replace 1 variables</span></div><div class='output co'>#&gt; <span class='warning'>Warning: provided 10 variables to replace 1 variables</span></div><div class='output co'>#&gt; <span class='warning'>Warning: provided 10 variables to replace 1 variables</span></div><div class='output co'>#&gt; <span class='warning'>Warning: provided 10 variables to replace 1 variables</span></div><div class='output co'>#&gt;         1      2      3      4      5      6      7      8      9     10
+#&gt; 1  0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237
+#&gt; 2  0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237
+#&gt; 3  0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237
+#&gt; 4  0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237
+#&gt; 5  0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237
+#&gt; 6  0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237
+#&gt; 7  0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237
+#&gt; 8  0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237
+#&gt; 9  0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237
+#&gt; 10 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237 0.6237</div><div class='input'><span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'><a href='setWarnings.html'>setWarnings</a></span>(<span class='no'>w</span>)</div><div class='output co'>#&gt; [1] TRUE</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

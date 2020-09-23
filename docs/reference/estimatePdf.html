@@ -75,7 +75,7 @@ on the used density function, two values are often enough to estimate a PDF." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.13.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.13.3</span>
       </span>
     </div>
 
@@ -107,7 +107,12 @@ on the used density function, two values are often enough to estimate a PDF." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/MrShoenel/R-mmb/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -122,7 +127,7 @@ on the used density function, two values are often enough to estimate a PDF." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Safe PDF estimation that works also for sparse random variables.</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/MrShoenel/R-mmb/blob/master/R/pdfAndProb.R'><code>R/pdfAndProb.R</code></a></small>
     <div class="hidden name"><code>estimatePdf.Rd</code></div>
     </div>
 
@@ -178,7 +183,7 @@ observation. Otherwise, that function will return zero.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>epdf</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>mmb</span><span class='kw ns'>::</span><span class='fu'>estimatePdf</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>iris</span>$<span class='no'>Petal.Width</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>epdf</span>$<span class='no'>argmax</span>)</div><div class='output co'>#&gt; [1] 0.206581</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>epdf</span>)</div><div class='img'><img src='estimatePdf-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>epdf</span>$<span class='no'>argmax</span>)</div><div class='output co'>#&gt; [1] 0.206581</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>epdf</span>)</div><div class='img'><img src='estimatePdf-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Get relative likelihood of some values:</span>
 <span class='no'>epdf</span>$<span class='fu'>fun</span>(<span class='fl'>0.5</span>)</div><div class='output co'>#&gt; [1] 0.1769739</div><div class='input'><span class='no'>epdf</span>$<span class='fu'>fun</span>(<span class='fl'>1.7</span>)</div><div class='output co'>#&gt; [1] 0.3567506</div></pre>
   </div>
