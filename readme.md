@@ -18,6 +18,10 @@ The `master`-branch always contains a release-version. Sometimes there may be a 
 R&gt; devtools::install_github("https://github.com/MrShoenel/R-mmb", subdir = "pkg/mmb", ref = "master")
 </pre>
 
+## Documentation and function reference
+
+The latest documentation can be found at <https://mrshoenel.github.io/R-mmb/>.
+
 ## Citing
 Please use the following BibTeX to cite the package __`mmb`__:
 
