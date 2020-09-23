@@ -282,7 +282,7 @@ bayesRegress <- function(
 #' However, any other function can be used, too, such as min, max, median,
 #' average etc. You may also use this function to obtain the raw values
 #' for further processing.#'
-#' @examples
+#' @examples \donttest{
 #' df <- iris[, ]
 #' set.seed(84735)
 #' rn <- base::sample(rownames(df), 150)
@@ -292,6 +292,7 @@ bayesRegress <- function(
 #'   dfTrain, dfValid[, !(colnames(dfValid) %in% "Sepal.Length")],
 #'   "Sepal.Length", sampleFromAllBuckets = TRUE, doEcdf = TRUE)
 #' cov(res, iris[121:150,]$Sepal.Length)^2
+#' }
 #' @export
 bayesRegressAssign <- function(
   dfTrain, dfValid, targetCol, selectedFeatureNames = c(),
