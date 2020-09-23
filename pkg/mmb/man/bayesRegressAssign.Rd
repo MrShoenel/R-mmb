@@ -85,7 +85,7 @@ inferencing to to a regression for the target features for all of the
 samples given in \code{dfValid}. Assigns a regression value using either
 }
 \examples{
-\dontrun{
+\donttest{
 df <- iris[, ]
 set.seed(84735)
 rn <- base::sample(rownames(df), 150)

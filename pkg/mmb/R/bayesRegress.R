@@ -282,8 +282,7 @@ bayesRegress <- function(
 #' However, any other function can be used, too, such as min, max, median,
 #' average etc. You may also use this function to obtain the raw values
 #' for further processing.#'
-#' @examples
-#' \dontrun{
+#' @examples \donttest{
 #' df <- iris[, ]
 #' set.seed(84735)
 #' rn <- base::sample(rownames(df), 150)

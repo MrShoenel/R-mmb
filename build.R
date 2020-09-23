@@ -1,6 +1,8 @@
 args <- commandArgs(trailingOnly = TRUE)
 print(args)
 
+base::Sys.setenv('_R_CHECK_SYSTEM_CLOCK_' = 0)
+
 pkgWd <- getwd()
 setwd(paste(pkgWd, "pkg", "mmb", sep = "/"))
 base::Sys.setenv(IS_BUILD_COMMAND = "TRUE")
@@ -94,6 +96,7 @@ buildEvalVignette <- function(compute = FALSE) {
 
 cov <- function() {
   print("Generating coverage report..")
+  remove.mmb(detachOnly = TRUE)
   covr::report(
     x = covr::package_coverage(),
     file = "../../coverage.html",
@@ -103,7 +106,7 @@ cov <- function() {
 
 
 check <- function(strict = TRUE) {
-  temp <- devtools::check(manual = FALSE, document = FALSE)
+  temp <- devtools::check(manual = FALSE, document = FALSE, args = c("--no-examples"))
 
   cnt <- data.frame(
     err = length(temp$errors),
@@ -129,37 +132,36 @@ test <- function() {
   }
 }
 
-buildSite <- function() {
-  if (file.exists("../../docs")) {
-    unlink("../../docs", recursive = TRUE)
-  }
-  devtools::build_site()
+
+buildSite <- function(copyEvalVignetteArticle = TRUE) {
+  devtools::build_site(quiet = FALSE)
   file.rename("./docs", "../../docs")
 
 
-  # Copy the MD's files over:
-  fileDir <- normalizePath(paste(
-    pkgWd, "eval/hyperparameters_files", sep = "/"), mustWork = FALSE)
-  artDir <- normalizePath(paste(
-    pkgWd, "docs", "articles", sep = "/"), mustWork = FALSE)
+  if (copyEvalVignetteArticle) {
+    # Copy the MD's files over:
+    fileDir <- normalizePath(paste(
+      pkgWd, "eval/hyperparameters_files", sep = "/"), mustWork = FALSE)
+    artDir <- normalizePath(paste(
+      pkgWd, "docs", "articles", sep = "/"), mustWork = FALSE)
 
-  file.copy(fileDir, artDir, recursive = TRUE)
+    file.copy(fileDir, artDir, recursive = TRUE)
 
+    # Last, copy the hyperparameters.html to the articles:
+    tryCatch({
+      temp <- normalizePath(paste(
+        artDir, "hyperparameters.html", sep = "/"), mustWork = FALSE)
+      if (file.exists(temp)) {
+        file.remove(temp)
+      }
 
-  # Last, copy the hyperparameters.html to the articles:
-  tryCatch({
-    temp <- normalizePath(paste(
-      artDir, "hyperparameters.html", sep = "/"), mustWork = FALSE)
-    if (file.exists(temp)) {
-      file.remove(temp)
-    }
-
-    file.copy(
-      normalizePath(
-        paste(pkgWd, "eval", "hyperparameters.html", sep = "/"), mustWork = TRUE),
-      temp
-    )
-  }, error=function(cond){})
+      file.copy(
+        normalizePath(
+          paste(pkgWd, "eval", "hyperparameters.html", sep = "/"), mustWork = TRUE),
+        temp
+      )
+    }, error=function(cond){})
+  }
 
 
   browseURL(normalizePath(paste(getwd(), "../../docs/index.html", sep = "/")))
@@ -170,21 +172,44 @@ tryCatch({
   doAll <- length(args) > 0 & args[1] == "all"
 
   remove.mmb()
+  if (doAll) {
+    # remove some things that are built
+    if (file.exists("./Meta/vignette.rds")) {
+      unlink("./Meta/vignette.rds")
+    }
+    if (file.exists("./vignettes/Hyperparameter-Evaluation.rmd")) {
+      unlink("./vignettes/Hyperparameter-Evaluation.rmd")
+    }
+    if (file.exists("./vignettes/hyperparameters_files")) {
+      unlink("./vignettes/hyperparameters_files", recursive = TRUE)
+    }
+    if (file.exists("./doc")) {
+      unlink("./doc", recursive = TRUE)
+    }
+    if (file.exists("./docs")) {
+      unlink("./docs", recursive = TRUE)
+    }
+  }
   devtools::document()
 
-  # Needs to go before check!
+  # Needs to go before check()!
   install.mmb() # Builds the package w/o vignettes
+
+  if (!("mmb" %in% rownames(installed.packages()))) {
+    print(base::Sys.getenv("IS_BUILD_COMMAND"))
+    stop("mmb seems not to be installed..")
+  }
 
   if (doAll) {
     check()
   }
 
-  #test() # testing is done by cov()
+  #test() # testing is done by cov() so we don't need to call it here.
   cov()
 
   if (doAll) {
     devtools::build_readme() # only applies if we have a readme.rmd in the package
-    buildEvalVignette(compute = TRUE)
+    buildEvalVignette()
     devtools::build_vignettes()
 
     buildSite()

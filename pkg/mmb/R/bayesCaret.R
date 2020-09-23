@@ -9,7 +9,7 @@
 #' trainIndex <- caret::createDataPartition(
 #'   iris$Species, p = .8, list = FALSE, times = 1)
 #' train <- iris[ trainIndex, ]
-#' test  <- iris[-trainIndex,]
+#' test  <- iris[-trainIndex, ]
 #'
 #' fitControl <- caret::trainControl(
 #'   method = "repeatedcv", number = 2, repeats = 2)

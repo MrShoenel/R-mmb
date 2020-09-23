@@ -75,7 +75,7 @@ Supports regression and classification and an extensive default grid." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mmb</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.13.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.13.3</span>
       </span>
     </div>
 
@@ -107,7 +107,12 @@ Supports regression and classification and an extensive default grid." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/MrShoenel/R-mmb/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -123,7 +128,7 @@ Supports regression and classification and an extensive default grid." />
     <div class="page-header">
     <h1>Provides a caret-compatible wrapper around functionality for classification
 and regression, as implemented by mmb.</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/MrShoenel/R-mmb/blob/master/R/bayesCaret.R'><code>R/bayesCaret.R</code></a></small>
     <div class="hidden name"><code>bayesCaret.Rd</code></div>
     </div>
 
@@ -144,7 +149,7 @@ Supports regression and classification and an extensive default grid.</p>
 <span class='no'>trainIndex</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>caret</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/caret/man/createDataPartition.html'>createDataPartition</a></span>(
   <span class='no'>iris</span>$<span class='no'>Species</span>, <span class='kw'>p</span> <span class='kw'>=</span> <span class='fl'>.8</span>, <span class='kw'>list</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fl'>1</span>)
 <span class='no'>train</span> <span class='kw'>&lt;-</span> <span class='no'>iris</span>[ <span class='no'>trainIndex</span>, ]
-<span class='no'>test</span>  <span class='kw'>&lt;-</span> <span class='no'>iris</span>[-<span class='no'>trainIndex</span>,]
+<span class='no'>test</span>  <span class='kw'>&lt;-</span> <span class='no'>iris</span>[-<span class='no'>trainIndex</span>, ]
 
 <span class='no'>fitControl</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>caret</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/caret/man/trainControl.html'>trainControl</a></span>(
   <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"repeatedcv"</span>, <span class='kw'>number</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>repeats</span> <span class='kw'>=</span> <span class='fl'>2</span>)
