@@ -27,7 +27,7 @@ Please use the following BibTeX to cite the package __`mmb`__:
 
 <pre>
 @article{honel2020rmmb,
-	title={mmb: An R Package for Mixed Multivariate Arbitrary Dependency Bayesian Models},
+	title={mmb: Arbitrary Dependency Mixed Multivariate Bayesian Models},
 	DOI={10.5281/zenodo.4046002},
 	url={https://doi.org/10.5281/zenodo.4046002},
 	note={Install this package from CRAN: install.packages("mmb")},
