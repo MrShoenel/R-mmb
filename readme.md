@@ -6,11 +6,16 @@
 # R-package: `mmb`
 This is the repository of the R-package __`mmb`__ for _arbitrary dependency mixed multivariate bayesian models for inferencing, regression and neighborhood search using joint probabilities and Kernel Density Estimation._
 
-## Installation
-The `master`-branch always contains a 100% working release version. As long as there is no release on CRAN, you can install this package using the `devtools`:
+__Install using `CRAN`__:
+<pre>
+install.packages("mmb")
+</pre>
+
+## Installation of latest release
+The `master`-branch always contains a release-version. Sometimes there may be a short delay between the master-version and what is on CRAN. In this case, you can still install the latest release using the package `devtools` (mind the _`subdir`_):
 
 <pre>
-&gt; devtools::install_github("https://github.com/MrShoenel/R-mmb", subdir = "pkg/mmb")
+&gt; devtools::install_github("https://github.com/MrShoenel/R-mmb", subdir = "pkg/mmb", ref = "master")
 </pre>
 
 ## Building the package
