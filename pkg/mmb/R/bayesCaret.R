@@ -5,7 +5,7 @@
 #' Supports regression and classification and an extensive default grid.
 #'
 #' @author Sebastian Hönel <sebastian.honel@lnu.se>
-#' @examples \donttest{
+#' @examples \dontrun{
 #' trainIndex <- caret::createDataPartition(
 #'   iris$Species, p = .8, list = FALSE, times = 1)
 #' train <- iris[ trainIndex, ]

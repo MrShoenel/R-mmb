@@ -134,10 +134,7 @@ test <- function() {
 
 
 buildSite <- function(copyEvalVignetteArticle = TRUE) {
-  if (file.exists("../../docs")) {
-    unlink("../../docs", recursive = TRUE)
-  }
-  devtools::build_site()
+  devtools::build_site(quiet = FALSE)
   file.rename("./docs", "../../docs")
 
 
@@ -175,9 +172,21 @@ tryCatch({
   doAll <- length(args) > 0 & args[1] == "all"
 
   remove.mmb()
+  if (doAll) {
+    # remove some things that are built
+    if (file.exists("./Meta/vignette.rds")) {
+      unlink("./Meta/vignette.rds")
+    }
+    if (file.exists("./doc")) {
+      unlink("./doc", recursive = TRUE)
+    }
+    if (file.exists("./docs")) {
+      unlink("./docs", recursive = TRUE)
+    }
+  }
   devtools::document()
 
-  # Needs to go before check!
+  # Needs to go before check()!
   install.mmb() # Builds the package w/o vignettes
 
   if (!("mmb" %in% rownames(installed.packages()))) {
@@ -194,10 +203,10 @@ tryCatch({
 
   if (doAll) {
     devtools::build_readme() # only applies if we have a readme.rmd in the package
-    #buildEvalVignette(compute = TRUE)
+    buildEvalVignette()
     devtools::build_vignettes()
 
-    buildSite(copyEvalVignetteArticle = FALSE)
+    buildSite()
     devtools::build_manual()
   }
 }, finally = {

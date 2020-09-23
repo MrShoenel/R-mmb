@@ -16,7 +16,7 @@ A wrapper to be used with the package/function \code{caret::train()}.
 Supports regression and classification and an extensive default grid.
 }
 \examples{
-\donttest{
+\dontrun{
 trainIndex <- caret::createDataPartition(
   iris$Species, p = .8, list = FALSE, times = 1)
 train <- iris[ trainIndex, ]
