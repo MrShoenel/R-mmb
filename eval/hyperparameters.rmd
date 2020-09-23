@@ -58,7 +58,8 @@ packages_required <- c(
   "gbm", "xgboost", "klaR", "randomForest", "import",
   "pls", "kohonen", "brnn", "RSNNS", "bartMachine", "arm",
   "rpart", "pamr", "gam", "dplyr", "ggridges", "caret", "ranger",
-  "mmb", "rJava", "naivebayes", "Cairo", "Rtsne", "Metrics", "cowplot")
+  "mmb", "rJava", "naivebayes", "Cairo", "Rtsne", "Metrics",
+	"cowplot", "philentropy")
 
 for (pr in packages_required) {
   install.packages_cond(pr)
